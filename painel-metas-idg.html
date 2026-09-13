@@ -1,0 +1,2401 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel de Metas · IDG</title>
+<style>
+  :root{
+    --navy:#0f2438;
+    --navy-2:#16324a;
+    --ink:#1f2933;
+    --muted:#6b7785;
+    --line:#e3e8ec;
+    --bg:#f4f6f8;
+    --card:#ffffff;
+
+    --green:#1e8e5a;
+    --green-bg:#e5f6ec;
+    --green-line:#bfe5cf;
+
+    --amber:#b9740a;
+    --amber-bg:#fdf1de;
+    --amber-line:#f2d8a4;
+
+    --red:#c22b3a;
+    --red-bg:#fbe6e8;
+    --red-line:#f0bcc2;
+
+    --gray:#8a94a0;
+    --gray-bg:#eef0f2;
+    --gray-line:#dde1e5;
+
+    --teal:#1f9d78;
+    --teal-bg:#e6f9f1;
+    --accent-blue:#2f7bda;
+
+    --panel-bg:#e6f5ef;
+    --panel-bg-2:#d3ebe0;
+    --panel-border:#b9ddc9;
+    --panel-ink:#154a3d;
+    --panel-muted:#4d7a6a;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ---------- header ---------- */
+  header{
+    background:linear-gradient(135deg,var(--navy),var(--navy-2));
+    color:#fff;
+    padding:18px 28px 16px;
+  }
+  .header-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:20px;
+    max-width:1400px;
+    margin:0 auto;
+  }
+  header h1{
+    margin:0;
+    font-size:20px;
+    font-weight:600;
+    letter-spacing:.2px;
+  }
+  .header-actions{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex-shrink:0;
+  }
+  #lastUpdated{
+    font-size:12px;
+    color:#c9d6e2;
+    text-align:right;
+    line-height:1.4;
+  }
+  #refreshBtn{
+    background:rgba(255,255,255,.12);
+    border:1px solid rgba(255,255,255,.25);
+    color:#fff;
+    padding:8px 14px;
+    border-radius:7px;
+    font-size:13px;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    white-space:nowrap;
+  }
+  #refreshBtn:hover{background:rgba(255,255,255,.2);}
+  #refreshBtn:disabled{opacity:.6;cursor:default;}
+  .spin{display:inline-block;animation:spin 1s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  /* filters embedded in header */
+  .header-filters{
+    max-width:1400px;
+    margin:14px auto 0;
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+    align-items:flex-end;
+    border-top:1px solid rgba(255,255,255,.15);
+    padding-top:14px;
+  }
+  .header-filters .filter-field{display:flex;flex-direction:column;gap:5px;min-width:150px;flex:1;}
+  .header-filters .filter-field label{
+    font-size:10.5px;font-weight:600;color:#aebdcc;
+    text-transform:uppercase;letter-spacing:.4px;
+  }
+  .header-filters .filter-field select,
+  .header-filters .filter-field input[type="text"]{
+    padding:7px 10px;
+    border:1px solid rgba(255,255,255,.25);
+    border-radius:6px;
+    font-size:13px;
+    background:rgba(255,255,255,.94);
+    color:var(--ink);
+    width:100%;
+  }
+  .header-filters .filter-field input[type="text"]::placeholder{color:#8a97a5;}
+
+  /* toggle de período (Jan a Ago / Set a Dez) — mutuamente excludente */
+  .period-toggle{
+    display:flex;
+    background:rgba(255,255,255,.1);
+    border:1px solid rgba(255,255,255,.25);
+    border-radius:6px;
+    padding:2px;
+    gap:2px;
+  }
+  .period-btn{
+    flex:1;
+    border:none;
+    background:transparent;
+    color:#cdd8e3;
+    font-size:12.5px;
+    font-weight:600;
+    padding:6px 10px;
+    border-radius:5px;
+    cursor:pointer;
+    white-space:nowrap;
+  }
+  .period-btn:hover{background:rgba(255,255,255,.08);}
+  .period-btn.active{background:#ffffff;color:var(--navy);}
+
+  /* multi-select dropdown (Quadrimestre / Tipo de meta) */
+  .multiselect{position:relative;}
+  .multiselect-trigger{
+    width:100%;
+    display:flex;align-items:center;justify-content:space-between;gap:8px;
+    padding:7px 10px;
+    border:1px solid rgba(255,255,255,.25);
+    border-radius:6px;
+    font-size:13px;
+    background:rgba(255,255,255,.94);
+    color:var(--ink);
+    cursor:pointer;
+    text-align:left;
+  }
+  .multiselect-trigger svg{flex-shrink:0;color:#7c8792;transition:transform .15s ease;}
+  .multiselect.open .multiselect-trigger svg{transform:rotate(180deg);}
+  .multiselect-panel{
+    display:none;
+    position:absolute;
+    top:calc(100% + 6px);
+    left:0;
+    min-width:100%;
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:8px;
+    box-shadow:0 8px 24px rgba(15,36,56,.18);
+    padding:6px;
+    z-index:40;
+    max-height:260px;
+    overflow-y:auto;
+  }
+  .multiselect.open .multiselect-panel{display:block;}
+  .ms-option{
+    display:flex;align-items:center;gap:8px;
+    padding:6px 8px;
+    border-radius:6px;
+    font-size:13px;
+    color:var(--ink);
+    cursor:pointer;
+    white-space:nowrap;
+  }
+  .ms-option:hover{background:var(--bg);}
+  .ms-option input{margin:0;accent-color:var(--navy);flex-shrink:0;}
+  .ms-option.ms-all{font-weight:600;border-bottom:1px solid var(--line);margin-bottom:4px;padding-bottom:8px;}
+
+  #resetFilters{
+    border:1px solid rgba(255,255,255,.3);
+    background:rgba(255,255,255,.1);
+    color:#fff;
+    padding:8px 14px;
+    border-radius:6px;
+    font-size:12.5px;
+    cursor:pointer;
+    white-space:nowrap;
+  }
+  #resetFilters:hover{background:rgba(255,255,255,.2);}
+
+  /* ---------- main wrap ---------- */
+  main{
+    max-width:1400px;
+    margin:0 auto;
+    padding:20px 28px 60px;
+  }
+  .layout{
+    display:block;
+  }
+  .content{
+    min-width:0;
+  }
+
+  /* ---------- status banner ---------- */
+  #statusBanner{
+    display:none;
+    background:var(--amber-bg);
+    border:1px solid var(--amber-line);
+    color:#7a4f07;
+    padding:12px 16px;
+    border-radius:8px;
+    font-size:13px;
+    margin-bottom:16px;
+    line-height:1.5;
+  }
+  #statusBanner a{color:#7a4f07;font-weight:600;text-decoration:underline;}
+  #statusBanner.show{display:block;}
+  #statusBanner.error{background:var(--red-bg);border-color:var(--red-line);color:#7c1a26;}
+  #statusBanner.error a{color:#7c1a26;}
+
+  /* ---------- seção de estatísticas (colapsável, abaixo da tabela) ---------- */
+  .stats-section{margin-top:16px;}
+  .stats-toggle{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    background:var(--navy);
+    border:none;
+    padding:8px 16px;
+    border-radius:8px;
+    font-size:13.5px;
+    font-weight:700;
+    color:#ffffff;
+    cursor:pointer;
+    box-shadow:0 1px 3px rgba(15,36,56,.12);
+  }
+  .stats-toggle:hover{background:var(--navy-2);}
+  .stats-toggle .stats-toggle-icon{
+    display:inline-flex;width:19px;height:19px;align-items:center;justify-content:center;
+    border:1.5px solid #ffffff;border-radius:5px;color:#ffffff;
+    font-size:13px;font-weight:700;line-height:1;flex-shrink:0;
+  }
+  .stats-section.open .stats-toggle .stats-toggle-icon{ background:#ffffff; color:var(--navy); }
+
+  /* painel cinza que envolve as estatísticas quando expandidas (mesmo padrão visual do quadro de indicadores) */
+  .stats-panel{
+    display:none;
+    margin-top:10px;
+    background:#eef0f3;
+    border:1px solid #dde1e6;
+    border-radius:16px;
+    overflow:hidden;
+    box-shadow:0 2px 10px rgba(15,36,56,.05);
+  }
+  .stats-section.open .stats-panel{ display:block; }
+  .stats-panel-header{padding:18px 20px 6px;}
+  .stats-panel-header h2{
+    margin:0 0 4px;
+    font-size:17px;
+    font-weight:700;
+    color:var(--panel-ink);
+    letter-spacing:.2px;
+  }
+  .stats-panel-header p{
+    margin:0;
+    font-size:12.5px;
+    color:var(--panel-muted);
+  }
+
+  /* ---------- KPI cards — linha horizontal, estilo contorno suave ---------- */
+  .kpis{
+    display:flex;
+    flex-direction:row;
+    flex-wrap:wrap;
+    gap:10px;
+    padding:14px 20px 20px;
+  }
+  .kpi{
+    flex:1 1 150px;
+    min-width:130px;
+    border-radius:12px;
+    background:#fff;
+    border:1.6px solid var(--kpi-border, #c9d3db);
+    padding:13px 12px;
+    box-shadow:0 1px 3px rgba(15,36,56,.05);
+    text-align:center;
+  }
+  .kpi .value{
+    font-size:26px;
+    font-weight:800;
+    line-height:1;
+    color:var(--kpi-color, var(--navy));
+  }
+  .kpi .label{
+    font-size:12px;
+    color:var(--panel-muted);
+    margin-top:6px;
+  }
+  .kpi .kpi-desc{
+    font-size:10px;
+    color:#98a4b0;
+    margin-top:3px;
+    line-height:1.3;
+  }
+
+  .kpi.total{ --kpi-border:#c9d3db; --kpi-color:var(--navy); }
+  .kpi.green{ --kpi-border:var(--green); --kpi-color:var(--green); }
+  .kpi.amber{ --kpi-border:var(--amber); --kpi-color:var(--amber); }
+  .kpi.red{ --kpi-border:var(--red); --kpi-color:var(--red); }
+  .kpi.pct{ --kpi-border:#c9d3db; --kpi-color:var(--navy); text-align:center; }
+
+  /* gauge (% cumprimento médio) */
+  .gauge-wrap{position:relative;width:100%;max-width:115px;margin:0 auto;}
+  .gauge-svg{width:100%;height:auto;display:block;}
+  .gauge-bg{fill:none;stroke:#dbe4ee;stroke-width:14;stroke-linecap:round;}
+  .gauge-fg{fill:none;stroke:var(--accent-blue);stroke-width:14;stroke-linecap:round;stroke-dasharray:0 100;transition:stroke-dasharray .7s ease;}
+  .gauge-center{position:absolute;left:0;right:0;top:56%;text-align:center;}
+  .gauge-center .value{font-size:24px;color:var(--navy);}
+  .gauge-scale{display:flex;justify-content:space-between;font-size:9.5px;color:var(--muted);margin-top:-6px;padding:0 8px;}
+  .kpi.pct .label{margin-top:2px;}
+
+  /* ---------- legend bar (in content, above table) ---------- */
+  .legend-bar{
+    display:flex;
+    gap:16px;
+    align-items:center;
+    font-size:11.5px;
+    color:var(--muted);
+    flex-wrap:wrap;
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:12px 16px;
+  }
+  .legend-bar span{display:flex;align-items:center;gap:5px;white-space:nowrap;}
+  .legend-bar .dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+
+  #legendSection{margin-top:14px;}
+  .legend-wrap{display:none;margin-top:10px;}
+  #legendSection.open .legend-wrap{display:block;}
+
+  /* ---------- table shell (tema azul, estilo cartão) ---------- */
+  .panel{
+    background:var(--panel-bg);
+    border:1px solid var(--panel-border);
+    border-radius:16px;
+    overflow:hidden;
+    box-shadow:0 2px 10px rgba(15,36,56,.06);
+  }
+  .panel-header{
+    padding:20px 22px 8px;
+  }
+  .panel-header h2{
+    margin:0 0 4px;
+    font-size:19px;
+    font-weight:700;
+    color:var(--panel-ink);
+    letter-spacing:.2px;
+  }
+  .panel-header p{
+    margin:0;
+    font-size:12.5px;
+    color:var(--panel-muted);
+  }
+  /* wrapper com rolagem horizontal para a tabela */
+  .table-scroll{
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+  }
+  .table-scroll table{ min-width:920px; }
+  .table-scroll::-webkit-scrollbar{ height:10px; }
+  .table-scroll::-webkit-scrollbar-track{ background:var(--panel-bg-2); }
+  .table-scroll::-webkit-scrollbar-thumb{ background:#aebfd1; border-radius:6px; }
+  .table-scroll::-webkit-scrollbar-thumb:hover{ background:#93a8bf; }
+
+  table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:13px;
+  }
+  thead th{
+    background:transparent;
+    color:var(--panel-muted);
+    font-size:10.5px;
+    text-transform:uppercase;
+    letter-spacing:.6px;
+    font-weight:700;
+    padding:14px 12px 10px;
+    text-align:left;
+    border-bottom:1px solid rgba(34,65,95,.12);
+    white-space:nowrap;
+  }
+  thead th.month-col{text-align:center;}
+  tbody td{
+    padding:10px 12px;
+    border-bottom:1px solid rgba(255,255,255,.65);
+    vertical-align:middle;
+    color:var(--panel-ink);
+  }
+
+  /* group (projeto) header row */
+  tr.group-row td{
+    background:var(--panel-bg-2);
+    font-weight:700;
+    color:var(--panel-ink);
+    padding:11px 12px;
+    border-top:1px solid var(--panel-border);
+    border-bottom:1px solid var(--panel-border);
+    cursor:pointer;
+    user-select:none;
+  }
+  tr.group-row .grp-name{display:flex;align-items:center;gap:8px;}
+  tr.group-row .grp-toggle{
+    display:inline-flex;width:17px;height:17px;align-items:center;justify-content:center;
+    border:1.5px solid var(--panel-ink);border-radius:5px;background:#fff;color:var(--panel-ink);
+    font-size:12px;font-weight:700;line-height:1;flex-shrink:0;
+  }
+  tr.group-row .grp-meta{font-size:11.5px;color:var(--panel-muted);font-weight:500;margin-left:4px;}
+  tr.group-row .grp-icon{color:var(--panel-muted);flex-shrink:0;}
+  tr.group-row .grp-chip{
+    display:inline-flex;align-items:center;justify-content:center;
+    min-width:40px;padding:3px 6px;border-radius:6px;font-size:12px;font-weight:700;
+  }
+
+  tr.meta-row td{font-size:12.8px;}
+  tr.meta-row:hover td{background:rgba(255,255,255,.45);}
+  tr.meta-row.hidden, tr.detail-row.hidden{display:none;}
+
+  .expand-btn{
+    width:20px;height:20px;
+    border:1.5px solid var(--panel-ink);
+    background:#fff;
+    border-radius:6px;
+    color:var(--panel-ink);
+    font-size:12px;
+    font-weight:700;
+    line-height:1;
+    cursor:pointer;
+    display:inline-flex;align-items:center;justify-content:center;
+  }
+  .expand-btn:hover{background:#eef2f5;}
+
+  .col-diretoria{color:var(--panel-muted);font-size:12px;}
+  .col-projeto{max-width:170px;}
+  .col-indicador{max-width:290px;}
+  .indicador-text{
+    display:-webkit-box;
+    -webkit-box-orient:vertical;
+    -webkit-line-clamp:3;
+    max-width:290px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:normal;
+    line-height:1.35;
+  }
+  a.indicador-text{
+    color:var(--panel-ink);
+    text-decoration:none;
+    cursor:pointer;
+  }
+  a.indicador-text:hover{
+    color:var(--accent-blue);
+    text-decoration:underline;
+  }
+  a.indicador-text .ext-link-icon{
+    display:inline-block;
+    margin-left:3px;
+    font-size:11px;
+    color:var(--accent-blue);
+    vertical-align:baseline;
+  }
+  .tag{
+    display:inline-block;
+    font-size:10.5px;
+    font-weight:600;
+    padding:2px 7px;
+    border-radius:20px;
+    background:#eef2f5;
+    color:var(--navy-2);
+    white-space:nowrap;
+  }
+  .tag.local{background:#f1eefb;color:#5b3fb0;}
+  .tag.global{background:#e6f0fb;color:#1c5faa;}
+  .quad-badge{
+    font-size:11.5px;color:var(--muted);
+  }
+
+  /* month cell chip */
+  td.month-cell{text-align:center;}
+  .chip{
+    display:inline-flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:1px;
+    min-width:66px;
+    padding:5px 8px;
+    border-radius:8px;
+    border:1px solid transparent;
+    line-height:1.15;
+    cursor:help;
+  }
+  .chip .main{font-size:13.5px;font-weight:700;}
+  .chip .sub{font-size:10px;font-weight:500;opacity:.85;}
+  .chip.green{background:var(--green-bg);border-color:var(--green-line);color:var(--green);}
+  .chip.amber{background:var(--amber-bg);border-color:var(--amber-line);color:var(--amber);}
+  .chip.red{background:var(--red-bg);border-color:var(--red-line);color:var(--red);}
+  .chip.gray{background:var(--gray-bg);border-color:var(--gray-line);color:var(--gray);}
+
+  /* detail row (expand) */
+  tr.detail-row td{
+    background:rgba(255,255,255,.55);
+    padding:0;
+    border-bottom:1px solid var(--panel-border);
+  }
+  .detail-inner{
+    padding:14px 18px 16px 40px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px 26px;
+    font-size:12.5px;
+  }
+  .detail-inner .d-item{border-left:3px solid var(--panel-border);padding-left:10px;}
+  .detail-inner .d-label{
+    font-size:10.5px;text-transform:uppercase;letter-spacing:.4px;
+    color:var(--panel-muted);font-weight:700;margin-bottom:3px;
+  }
+  .detail-inner .d-value{color:var(--panel-ink);line-height:1.45;}
+  .detail-inner .full-span{grid-column:1 / -1;}
+
+  .empty-state{
+    padding:50px 20px;
+    text-align:center;
+    color:var(--panel-muted);
+    font-size:13.5px;
+  }
+
+  footer{
+    text-align:center;
+    color:var(--muted);
+    font-size:11.5px;
+    padding:18px 0 0;
+  }
+
+  @media (max-width: 980px){
+    .kpis{flex-direction:column;}
+    .detail-inner{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-row">
+    <div>
+      <h1>Painel de Metas · IDG</h1>
+    </div>
+    <div class="header-actions">
+      <div id="lastUpdated">carregando…</div>
+      <button id="refreshBtn" onclick="loadData(true)" title="Recalcula os semáforos com a data de hoje">↻ Recalcular semáforos</button>
+    </div>
+  </div>
+  <div class="header-filters">
+    <div class="filter-field">
+      <label>Período</label>
+      <div class="period-toggle" id="periodToggle">
+        <button type="button" class="period-btn" data-period="jan_ago">Jan a Ago</button>
+        <button type="button" class="period-btn" data-period="set_dez">Set a Dez</button>
+      </div>
+    </div>
+    <div class="filter-field">
+      <label for="msTipoTrigger">Tipo de meta</label>
+      <div class="multiselect" id="msTipo">
+        <button type="button" class="multiselect-trigger" id="msTipoTrigger">
+          <span class="ms-trigger-text">Todos</span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </button>
+        <div class="multiselect-panel" id="msTipoPanel"></div>
+      </div>
+    </div>
+    <div class="filter-field">
+      <label for="fDiretoria">Diretoria</label>
+      <select id="fDiretoria"><option value="">Todas</option></select>
+    </div>
+    <div class="filter-field">
+      <label for="fColab">Colaborador</label>
+      <input type="text" id="fColab" placeholder="Buscar por nome…" autocomplete="off" list="colabDatalist">
+      <datalist id="colabDatalist"></datalist>
+    </div>
+    <button id="resetFilters" onclick="resetFilters()">Limpar filtros</button>
+  </div>
+</header>
+
+<main>
+  <div id="statusBanner"></div>
+
+  <div class="layout">
+    <div class="content">
+      <div class="panel">
+        <div class="panel-header">
+          <h2>Metas por Projeto</h2>
+          <p id="panelSubtitle">Meta e check mensal por colaborador — Setembro a Dezembro</p>
+        </div>
+        <div class="table-scroll">
+        <table id="mainTable">
+          <thead>
+            <tr id="theadRow">
+              <th>Diretoria</th>
+              <th>Colaborador</th>
+              <th>Meta</th>
+            </tr>
+          </thead>
+          <tbody id="tbody">
+            <tr><td colspan="7" class="empty-state">Carregando dados da planilha…</td></tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+
+      <div class="stats-section" id="statsSection">
+        <button type="button" class="stats-toggle" id="statsToggle">
+          <span class="stats-toggle-icon">+</span>
+          Estatísticas
+        </button>
+        <div class="stats-panel">
+          <div class="stats-panel-header">
+            <h2>Estatísticas</h2>
+            <p>Resumo do filtro atual — mês vigente</p>
+          </div>
+          <div class="kpis" id="kpis">
+          <div class="kpi total">
+            <div class="value" id="kpiTotal">–</div>
+            <div class="label" id="kpiTotalSub">metas no filtro</div>
+          </div>
+          <div class="kpi green">
+            <div class="value" id="kpiGreen">–</div>
+            <div class="label" id="kpiGreenSub">no prazo</div>
+            <div class="kpi-desc">Meta atingida / em dia</div>
+          </div>
+          <div class="kpi amber">
+            <div class="value" id="kpiAmber">–</div>
+            <div class="label" id="kpiAmberSub">risco de atraso</div>
+            <div class="kpi-desc">Entre 30% e a meta</div>
+          </div>
+          <div class="kpi red">
+            <div class="value" id="kpiRed">–</div>
+            <div class="label" id="kpiRedSub">atrasadas</div>
+            <div class="kpi-desc">Abaixo de 30% / sem check e mês encerrado</div>
+          </div>
+          <div class="kpi pct">
+            <div class="gauge-wrap">
+              <svg class="gauge-svg" viewBox="0 0 200 118">
+                <path class="gauge-bg" d="M20,104 A80,80 0 0 1 180,104"></path>
+                <path class="gauge-fg" id="gaugeFg" pathLength="100" d="M20,104 A80,80 0 0 1 180,104"></path>
+              </svg>
+              <div class="gauge-center">
+                <div class="value" id="kpiPct">–</div>
+              </div>
+              <div class="gauge-scale"><span>0%</span><span>100%</span></div>
+            </div>
+            <div class="label" id="kpiPctSub">% cumprimento médio</div>
+          </div>
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>Fonte: planilha "METAS" (dados fixos, carregados em <span id="dataGenDate"></span>) · Diretoria de Projetos IDG. Semáforo calculado automaticamente conforme regra de negócio (ver detalhes em Estatísticas) e recalculado com a data de hoje a cada abertura. Para atualizar os dados, envie a planilha atualizada para regenerar este arquivo.</footer>
+</main>
+
+<script>
+/* ============================================================
+   CONFIG
+   ============================================================ */
+// Data da geração deste painel (dados fixos extraídos da planilha nesta data).
+// Para atualizar, envie a planilha nova e peça para regenerar este arquivo.
+const DATA_GENERATED_AT = "12/09/2026";
+
+const MONTHS = [
+  {key:"set", label:"Set", full:"Setembro", metaField:"metaSet", checkField:"checkSet", endDate:[8,30]}, // month index 0-based (Sept=8)
+  {key:"out", label:"Out", full:"Outubro",  metaField:"metaOut", checkField:"checkOut", endDate:[9,31]},
+  {key:"nov", label:"Nov", full:"Novembro", metaField:"metaNov", checkField:"checkNov", endDate:[10,30]},
+  {key:"dez", label:"Dez", full:"Dezembro", metaField:"metaDez", checkField:"checkDez", endDate:[11,31]}
+];
+const JAN_AGO_MONTH = {key:"janago", label:"Jan a Ago", full:"Jan a Ago", metaField:"metaJanAgo", checkField:"checkJanAgo", endDate:[7,31]};
+const ALL_MONTH_DEFS = [...MONTHS, JAN_AGO_MONTH];
+
+// Período selecionado: "set_dez" (o que falta) ou "jan_ago" (o que já foi feito). Mutuamente excludentes.
+let CURRENT_PERIOD = "set_dez";
+function activeMonths(){ return CURRENT_PERIOD === "jan_ago" ? [JAN_AGO_MONTH] : MONTHS; }
+function periodLabel(){ return CURRENT_PERIOD === "jan_ago" ? "Jan a Ago" : "Set a Dez"; }
+
+let RAW_ROWS = [];   // parsed sheet rows -> objects
+let CURRENT_YEAR = new Date().getFullYear();
+
+/* ============================================================
+   DADOS (fixos — extraídos da planilha "METAS" em 09/09/2026)
+   Para atualizar: envie a planilha nova e peça para regenerar este arquivo.
+   ============================================================ */
+const EMBEDDED_ITEMS = [
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Global",
+    "colaborador": "1. Sergio Mendes",
+    "projeto": "0. Contribuição de 6MM para o CAIXA MÍNIMO",
+    "descricaoMeta": "0. Contribuição de 6MM para o CAIXA MÍNIMO",
+    "indicador": "0. Contribuição de 6MM para o CAIXA MÍNIMO\nhttps://sergiomendesgovrj.github.io/MAZ-Painel-Financeiro/MAZ%20Painel%20Financeiro.html?v=2",
+    "periodo": "Jan a Ago",
+    "metaJanAgo": "6MM",
+    "checkJanAgo": "6MM",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "100,00%",
+    "checkOut": "",
+    "metaNov": "NPS > 8",
+    "checkNov": "",
+    "metaDez": "N/A",
+    "checkDez": "N/A"
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Global",
+    "colaborador": "1. Sergio Mendes",
+    "projeto": "1. Entrega Expo LONGA do MUSEU DAS AMAZÔNIAS",
+    "descricaoMeta": "Garantir a entrega e o pleno funcionamento do Museu das Amazônias até ago/26",
+    "indicador": "Garantir a entrega e o pleno funcionamento do Museu das Amazônias até ago/26",
+    "periodo": "Jan a Ago",
+    "metaJanAgo": "Entrega da Longa",
+    "checkJanAgo": "Feito",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "100,00%",
+    "checkOut": "",
+    "metaNov": "NPS > 8",
+    "checkNov": "",
+    "metaDez": "N/A",
+    "checkDez": "N/A"
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Global",
+    "colaborador": "1. Sergio Mendes",
+    "projeto": "2. Assinatura contrato CCMEC",
+    "descricaoMeta": "Contratação do Masterplan do CCMEC até Ago/2026",
+    "indicador": "Contratação do Masterplan do CCMEC até Ago/2026",
+    "periodo": "Jan a Ago",
+    "metaJanAgo": "Contrato assinado",
+    "checkJanAgo": "Feito",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Global",
+    "colaborador": "1. Sergio Mendes",
+    "projeto": "3. Caixa BOX (MASTERPLAN) do MUSEU DO PETRÓLEO",
+    "descricaoMeta": "Entrega do Masterplan MuP até abril de 2026",
+    "indicador": "Entrega do Masterplan MuP até abril de 2026",
+    "periodo": "Jan a Ago",
+    "metaJanAgo": "Masterplan entregue",
+    "checkJanAgo": "Feito",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Global",
+    "colaborador": "1. Sergio Mendes",
+    "projeto": "4. GUIA DE ESCUTAS",
+    "descricaoMeta": "Entrega do Guia de Escutas idg até ago/2026",
+    "indicador": "Entrega do Guia de Escutas idg até ago/2026",
+    "periodo": "Jan a Ago",
+    "metaJanAgo": "Guia de Escutas entregue",
+    "checkJanAgo": "Feito",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Global",
+    "colaborador": "1. Sergio Mendes",
+    "projeto": "5. INTELIGÊNCIA ARTIFICIAL - Desenvolvimento e Treinamento",
+    "descricaoMeta": "Painel Financeiro MAZ\nhttps://sergiomendesgovrj.github.io/MAZ-Painel-Financeiro/MAZ%20Painel%20Financeiro.html?v=2",
+    "indicador": "Painel Financeiro MAZ\nhttps://sergiomendesgovrj.github.io/MAZ-Painel-Financeiro/MAZ%20Painel%20Financeiro.html?v=2",
+    "periodo": "Jan a Ago",
+    "metaJanAgo": "Painel Financeiro MAZ",
+    "checkJanAgo": "Feito",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Global",
+    "colaborador": "1. Sergio Mendes",
+    "projeto": "5. INTELIGÊNCIA ARTIFICIAL - Desenvolvimento e Treinamento",
+    "descricaoMeta": "Painel Financeiro MdA\nhttps://sergiomendesgovrj.github.io/mda-financ/Painel_Orcamentario_2026_MDA_MJB%20%283%29",
+    "indicador": "Painel Financeiro MdA\nhttps://sergiomendesgovrj.github.io/mda-financ/Painel_Orcamentario_2026_MDA_MJB%20%283%29",
+    "periodo": "Jan a Ago",
+    "metaJanAgo": "Painel Financeiro MdA",
+    "checkJanAgo": "Feito",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Global",
+    "colaborador": "1. Sergio Mendes",
+    "projeto": "5. INTELIGÊNCIA ARTIFICIAL - Desenvolvimento e Treinamento",
+    "descricaoMeta": "Painel Financeiro MUSeDUCA\nhttps://sergiomendesgovrj.github.io/museduca/museduca_painel_financeiro.html",
+    "indicador": "Painel Financeiro MUSeDUCA\nhttps://sergiomendesgovrj.github.io/museduca/museduca_painel_financeiro.html",
+    "periodo": "Jan a Ago",
+    "metaJanAgo": "Painel Financeiro MUSeDUCA",
+    "checkJanAgo": "Feito",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Global",
+    "colaborador": "1. Sergio Mendes",
+    "projeto": "5. INTELIGÊNCIA ARTIFICIAL - Desenvolvimento e Treinamento",
+    "descricaoMeta": "Painel musEduca inauguração dez/26\nhttps://sergiomendesgovrj.github.io/salamuseduca/MUSEDUCA_marco_inicial_escopo_completo",
+    "indicador": "Painel musEduca inauguração dez/26\nhttps://sergiomendesgovrj.github.io/salamuseduca/MUSEDUCA_marco_inicial_escopo_completo",
+    "periodo": "Jan a Ago",
+    "metaJanAgo": "Painel musEduca inauguração dez/26",
+    "checkJanAgo": "Feito",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Global",
+    "colaborador": "1. Sergio Mendes",
+    "projeto": "5. INTELIGÊNCIA ARTIFICIAL - Desenvolvimento e Treinamento",
+    "descricaoMeta": "M2 exposições idg\nhttps://sergiomendesgovrj.github.io/custo-m2/analise_preco_m2_exposicoes%20(2)",
+    "indicador": "M2 exposições idg\nhttps://sergiomendesgovrj.github.io/custo-m2/analise_preco_m2_exposicoes%20(2)",
+    "periodo": "Jan a Ago",
+    "metaJanAgo": "M2 exposições idg",
+    "checkJanAgo": "Feito",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Global",
+    "colaborador": "1. Sergio Mendes",
+    "projeto": "5. INTELIGÊNCIA ARTIFICIAL - Desenvolvimento e Treinamento",
+    "descricaoMeta": "Escritório de Projetos - Documentos e modelos\nhttps://pmo-creator.github.io/egp-idg/",
+    "indicador": "Escritório de Projetos - Documentos e modelos\nhttps://pmo-creator.github.io/egp-idg/",
+    "periodo": "Jan a Ago",
+    "metaJanAgo": "Escritório de Projetos - Documentos e modelos",
+    "checkJanAgo": "Feito",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Global",
+    "colaborador": "1. Sergio Mendes",
+    "projeto": "1. MUSEU DAS AMAZÔNIAS",
+    "descricaoMeta": "Entrega do Museu das Amazônias em pleno funcionamento até 03 de novembro de 2026",
+    "indicador": "Entrega do Museu das Amazônias em pleno funcionamento até 03 de novembro de 2026, alcançando nota acima de 8,0 na avaliação institucional pela Presidência do idg",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "100,00%",
+    "checkOut": "",
+    "metaNov": "NPS > 8",
+    "checkNov": "",
+    "metaDez": "N/A",
+    "checkDez": "N/A"
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "2. Vitor Garcez",
+    "projeto": "1. MUSEU DAS AMAZÔNIAS",
+    "descricaoMeta": "BEM-VIVER - Ajustes Conteúdo",
+    "indicador": "BEM-VIVER - Ajustes Conteúdo",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "50,00%",
+    "checkSet": "",
+    "metaOut": "100,00%",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "3. Tatiana Azevedo",
+    "projeto": "1. MUSEU DAS AMAZÔNIAS",
+    "descricaoMeta": "OBRAS - Revisão Elétrica",
+    "indicador": "OBRAS - Revisão Elétrica",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "contratação especialista\ndiagnóstico",
+    "checkSet": "",
+    "metaOut": "Ajustes\ndocumentação",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "3. Tatiana Azevedo",
+    "projeto": "1. MUSEU DAS AMAZÔNIAS",
+    "descricaoMeta": "FICHA TÉCNICA",
+    "indicador": "FICHA TÉCNICA",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "50,00%",
+    "checkSet": "",
+    "metaOut": "100,00%",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "3. Tatiana Azevedo",
+    "projeto": "1. MUSEU DAS AMAZÔNIAS",
+    "descricaoMeta": "ACESSIBILIDADE",
+    "indicador": "ACESSIBILIDADE",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "50,00%",
+    "checkSet": "",
+    "metaOut": "100,00%",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "4. Camila Costa",
+    "projeto": "1. MUSEU DAS AMAZÔNIAS",
+    "descricaoMeta": "CATÁGOLO",
+    "indicador": "CATÁGOLO",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "50,00%",
+    "checkSet": "",
+    "metaOut": "100,00%",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "4. Camila Costa",
+    "projeto": "1. MUSEU DAS AMAZÔNIAS",
+    "descricaoMeta": "EVENTO DE REABERTURA",
+    "indicador": "EVENTO DE REABERTURA",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "50,00%",
+    "checkSet": "",
+    "metaOut": "100,00%",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "4. Camila Costa",
+    "projeto": "1. MUSEU DAS AMAZÔNIAS",
+    "descricaoMeta": "VÍDEO INAUGURAÇÃO - Utilização da Empena",
+    "indicador": "VÍDEO INAUGURAÇÃO",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "50,00%",
+    "checkSet": "",
+    "metaOut": "100,00%",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "5. Iago",
+    "projeto": "1. MUSEU DAS AMAZÔNIAS",
+    "descricaoMeta": "ADITIVO SECULT",
+    "indicador": "ADITIVO SECULT",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "50,00%",
+    "checkSet": "",
+    "metaOut": "100,00%",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "5. Iago",
+    "projeto": "1. MUSEU DAS AMAZÔNIAS",
+    "descricaoMeta": "CONTRATAÇÃO E TREINAMENTO TIME DE ATENDIMENTO",
+    "indicador": "CONTRATAÇÃO E TREINAMENTO TIME DE ATENDIMENTO",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "50,00%",
+    "checkSet": "",
+    "metaOut": "100,00%",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "5. Iago",
+    "projeto": "1. MUSEU DAS AMAZÔNIAS",
+    "descricaoMeta": "LOJA",
+    "indicador": "LOJA",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "50,00%",
+    "checkSet": "",
+    "metaOut": "100,00%",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "7. Pedro Rodrigues",
+    "projeto": "1. MUSEU DAS AMAZÔNIAS",
+    "descricaoMeta": "LICENÇAS (Bombeiros, Prefeitura etc)",
+    "indicador": "LICENÇAS (Bombeiros, Prefeitura etc)",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "50,00%",
+    "checkSet": "",
+    "metaOut": "100,00%",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "7. Pedro Rodrigues",
+    "projeto": "1. MUSEU DAS AMAZÔNIAS",
+    "descricaoMeta": "ALARME DE INCÊNCIO NOS FORROS",
+    "indicador": "ALARME DE INCÊNCIO NOS FORROS",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "50,00%",
+    "checkSet": "",
+    "metaOut": "100,00%",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "7. Pedro Rodrigues",
+    "projeto": "1. MUSEU DAS AMAZÔNIAS",
+    "descricaoMeta": "ESFERA - Desmontagem e Montagem",
+    "indicador": "ESFERA - Desmontagem e Montagem",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "100,00%",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "8. Jade Jares",
+    "projeto": "1. MUSEU DAS AMAZÔNIAS",
+    "descricaoMeta": "OBRAS - Aplicação de verniz; Resina; Pintura",
+    "indicador": "OBRAS - Aplicação de verniz; Resina; Pintura",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "100,00%",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "8. Jade Jares",
+    "projeto": "1. MUSEU DAS AMAZÔNIAS",
+    "descricaoMeta": "EXPO TEMPORÁRIA - OBRA",
+    "indicador": "EXPO TEMPORÁRIA - OBRA",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "80,00%",
+    "checkSet": "",
+    "metaOut": "100,00%",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "9. Amarilis",
+    "projeto": "1. MUSEU DAS AMAZÔNIAS",
+    "descricaoMeta": "VIDEO ROBERTA CARVALHO",
+    "indicador": "VIDEO ROBERTA CARVALHO",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "50,00%",
+    "checkSet": "",
+    "metaOut": "100,00%",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "5. Iago",
+    "projeto": "1. MUSEU DAS AMAZÔNIAS",
+    "descricaoMeta": "LÍTICOS",
+    "indicador": "LÍTICOS",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "100,00%",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "9. Amarilis",
+    "projeto": "1. MUSEU DAS AMAZÔNIAS",
+    "descricaoMeta": "JOGO DO PONTO DE NÃO RETORNO - Novo Jogo",
+    "indicador": "JOGO DO PONTO DE NÃO RETORNO - Novo Jogo",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "50,00%",
+    "checkSet": "",
+    "metaOut": "100,00%",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "12. Jomara Ferreira Chaves Santos",
+    "projeto": "1. MUSEU DAS AMAZÔNIAS",
+    "descricaoMeta": "EXPO TEMPORÁRIA - MONTAGEM",
+    "indicador": "EXPO TEMPORÁRIA - MONTAGEM",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "100,00%",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "18. Claire Muniz",
+    "projeto": "1. MUSEU DAS AMAZÔNIAS",
+    "descricaoMeta": "COMPRAS - Entrega dos equipamentos finais",
+    "indicador": "COMPRAS - Entrega dos equipamentos finais",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "80,00%",
+    "checkSet": "",
+    "metaOut": "100%%",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "21. Alana Clemente",
+    "projeto": "1. MUSEU DAS AMAZÔNIAS",
+    "descricaoMeta": "EXPO TEMPORÁRIA - EDUCATIVO",
+    "indicador": "EXPO TEMPORÁRIA - EDUCATIVO",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "1 itens: EDUCATIVO",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "1 itens: EDUCATIVO",
+    "checkNov": "",
+    "metaDez": "",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Global",
+    "colaborador": "1. Sergio Mendes",
+    "projeto": "3. MUSEU DO PETRÓLEO",
+    "descricaoMeta": "Entrega do MuP 2 anos após recebimento do prédio pela prefeitura/ibp",
+    "indicador": "TR Projetos Executivos Obra e Complementares\nDetalhamento Conteúdo e Expografia",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "25,00%",
+    "checkOut": "",
+    "metaNov": "50,00%",
+    "checkNov": "",
+    "metaDez": "100,00%",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Negócios",
+    "tipoMeta": "Meta Global",
+    "colaborador": "1. Daniel Bruch",
+    "projeto": "3. MUSEU DO PETRÓLEO",
+    "descricaoMeta": "Entrega do MuP 2 anos após recebimento do prédio pela prefeitura/ibp",
+    "indicador": "Efetivar 20% (28 milhões) do total do projeto (140 milões)",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "10 mihões",
+    "checkSet": "0",
+    "metaOut": "18 mihões",
+    "checkOut": "",
+    "metaNov": "N/A",
+    "checkNov": "N/A",
+    "metaDez": "N/A",
+    "checkDez": "N/A"
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "2. Vitor Garcez",
+    "projeto": "3. MUSEU DO PETRÓLEO",
+    "descricaoMeta": "Entrega do MuP 2 anos após recebimento do prédio pela prefeitura/ibp",
+    "indicador": "TR Projetos Executivos Obra",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "25,00%",
+    "checkOut": "",
+    "metaNov": "50,00%",
+    "checkNov": "",
+    "metaDez": "100,00%",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "3. Tatiana Azevedo",
+    "projeto": "3. MUSEU DO PETRÓLEO",
+    "descricaoMeta": "Entrega do MuP 2 anos após recebimento do prédio pela prefeitura/ibp",
+    "indicador": "TR Complementares",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "25,00%",
+    "checkOut": "",
+    "metaNov": "50,00%",
+    "checkNov": "",
+    "metaDez": "100,00%",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "9. Amarilis",
+    "projeto": "3. MUSEU DO PETRÓLEO",
+    "descricaoMeta": "Entrega do MuP 2 anos após recebimento do prédio pela prefeitura/ibp",
+    "indicador": "Detalhamento Conteúdo e Expografia",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "25,00%",
+    "checkOut": "",
+    "metaNov": "50,00%",
+    "checkNov": "",
+    "metaDez": "100,00%",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Global",
+    "colaborador": "1. Sergio Mendes",
+    "projeto": "4. MUSEDUCA",
+    "descricaoMeta": "Pré-inauguração Sala de Aula em dezembro de 2026",
+    "indicador": "Pré-inauguração: Hall comum da escola-museu, a Sala de Aula e o Webapp / Passaporte para o Futuro, com conteúdo sobre o futuro MusEduca / Projeto Educativo",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "25,00%",
+    "checkSet": "",
+    "metaOut": "50,00%",
+    "checkOut": "",
+    "metaNov": "75,00%",
+    "checkNov": "",
+    "metaDez": "100,00%",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "10. Leandro",
+    "projeto": "4. MUSEDUCA",
+    "descricaoMeta": "Produto 15 — Desenho de governança e modelo de gestão (R$ 85.000)",
+    "indicador": "Produto 15 — Desenho de governança e modelo de gestão (R$ 85.000)",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "Entrega: Desenho de governança e modelo de gestão (R$ 85.000) — prazo 15/09/2026",
+    "checkSet": "Feito",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "10. Leandro",
+    "projeto": "4. MUSEDUCA",
+    "descricaoMeta": "Produto 16 — Vídeo institucional de divulgação do projeto (R$ 30.000)",
+    "indicador": "Produto 16 — Vídeo institucional de divulgação do projeto (R$ 30.000)",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "Entrega: Vídeo institucional de divulgação do projeto (R$ 30.000) — prazo 30/09/2026",
+    "checkSet": "Feito",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "10. Leandro",
+    "projeto": "4. MUSEDUCA",
+    "descricaoMeta": "Produto 20 — Modelagem de gestão e operação do museu (R$ 85.000)",
+    "indicador": "Produto 20 — Modelagem de gestão e operação do museu (R$ 85.000)",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "Entrega: Modelagem de gestão e operação do museu (R$ 85.000) — prazo 30/11/2026",
+    "checkNov": "",
+    "metaDez": "",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "9. Amarilis",
+    "projeto": "4. MUSEDUCA",
+    "descricaoMeta": "Produto 17 — Projeto básico de ocupação: receptivo e áreas administrativas (R$ 30.000)",
+    "indicador": "Produto 17 — Projeto básico de ocupação: receptivo e áreas administrativas (R$ 30.000)",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "Entrega: Projeto básico de ocupação: receptivo e áreas administrativas (R$ 30.000) — prazo 14/10/2026",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "9. Amarilis",
+    "projeto": "4. MUSEDUCA",
+    "descricaoMeta": "Produto 18 — Projeto executivo de ocupação: receptivo e áreas administrativas (R$ 45.000)",
+    "indicador": "Produto 18 — Projeto executivo de ocupação: receptivo e áreas administrativas (R$ 45.000)",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "Entrega: Projeto executivo de ocupação: receptivo e áreas administrativas (R$ 45.000) — prazo 30/10/2026",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "9. Amarilis",
+    "projeto": "4. MUSEDUCA",
+    "descricaoMeta": "Produto 19 — Projeto educativo da entrega intermediária (R$ 180.000)",
+    "indicador": "Produto 19 — Projeto educativo da entrega intermediária (R$ 180.000)",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "Entrega: Projeto educativo da entrega intermediária (R$ 180.000) — prazo 11/11/2026",
+    "checkNov": "",
+    "metaDez": "",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "9. Amarilis",
+    "projeto": "4. MUSEDUCA",
+    "descricaoMeta": "Produto 21 — Apoio técnico estratégico ao Plano de Comunicação (R$ 85.000)",
+    "indicador": "Produto 21 — Apoio técnico estratégico ao Plano de Comunicação (R$ 85.000)",
+    "periodo": "Fora do período 2026 (2027)",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "9. Amarilis",
+    "projeto": "4. MUSEDUCA",
+    "descricaoMeta": "Produto 22 — Consolidação final da assessoria de implementação (R$ 85.000)",
+    "indicador": "Produto 22 — Consolidação final da assessoria de implementação (R$ 85.000)",
+    "periodo": "Fora do período 2026 (2027)",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "2. Vitor Garcez",
+    "projeto": "6. METAS SETORIAIS — EXPOSIÇÕES",
+    "descricaoMeta": "Inscrever a equipe em no mínimo 3 premiações internacionais na área de exposições até dezembro de 2026, de forma a dar visibilidade pública ao projeto.",
+    "indicador": "Premiações — inscrições: Design for a Better World; A' Design Award; MUSE Design Award; IF Design Award. Pesquisa completa de premiações em planilha de controle à parte.",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "Inscrições: Design for a Better World (até 20/09); A' Design Award (até 30/09); MUSE Design Award (até set)",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "Inscrição IF Design Award (até nov)",
+    "checkNov": "",
+    "metaDez": "Mínimo de 3 premiações internacionais inscritas até dez/2026",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "2. Vitor Garcez",
+    "projeto": "6. METAS SETORIAIS — EXPOSIÇÕES",
+    "descricaoMeta": "Estruturar a área de tecnologia aplicada a projetos de museus e exposições.",
+    "indicador": "Contratação de especialista em tecnologia (apoio a projetos, especificação de equipamentos, coordenação de equipes técnicas terceirizadas) + viagem de pesquisa à China (prospecção de fornecedores, visitas técnicas a museus de referência)",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "Especialista em tecnologia contratado; viagem técnica à China realizada (relatório e roteiro em anexo à mensagem original)",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "2. Vitor Garcez",
+    "projeto": "6. METAS SETORIAIS — EXPOSIÇÕES",
+    "descricaoMeta": "Implementar diretrizes de sustentabilidade no desenvolvimento de novos projetos.",
+    "indicador": "Plano de sustentabilidade para novos museus/exposições (base: guia de sustentabilidade IDG) + contratação de consultoria especializada para os projetos MAZ e MUP",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "Plano de sustentabilidade elaborado; consultoria contratada (MAZ e MUP)",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "2. Vitor Garcez",
+    "projeto": "6. METAS SETORIAIS — EXPOSIÇÕES",
+    "descricaoMeta": "Desenvolver propostas de exposições temporárias para equipamentos IDG e fortalecer a capacidade interna de desenvolvimento de projetos e construção de know-how.",
+    "indicador": "Aprovação de 2 propostas de exposições temporárias para 2027 (MJB — pré-aprovada pela diretoria do MJB; MAZ — em conversa com as equipes) + montagem de equipe interna piloto (1 arquiteto, 1 designer, 1 PMO) para início em 2027",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "2 propostas aprovadas (MJB, MAZ); equipe piloto montada (início previsto 2027)",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "2. Vitor Garcez",
+    "projeto": "6. METAS SETORIAIS — EXPOSIÇÕES",
+    "descricaoMeta": "Ampliar a visibilidade institucional dos projetos da equipe.",
+    "indicador": "Publicação do livro/catálogo do MAZ + 1 a 3 artigos no LinkedIn a partir da experiência do MAZ (autoria: Vitor, Marina e Amarílis)",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "Publicação do livro/catálogo do MAZ",
+    "checkNov": "",
+    "metaDez": "1 a 3 artigos publicados no LinkedIn (Vitor, Marina, Amarílis)",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "2. Vitor Garcez",
+    "projeto": "6. METAS SETORIAIS — EXPOSIÇÕES",
+    "descricaoMeta": "Capacitar a equipe de projetos em gestão de projetos de arquitetura e complementares.",
+    "indicador": "Programa de desenvolvimento em gerenciamento de projetos de arquitetura e disciplinas complementares (foco: Tati Proba; podendo se estender à equipe de produção)",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "Programa de desenvolvimento iniciado (foco: Tati Proba)",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "2. Vitor Garcez",
+    "projeto": "6. METAS SETORIAIS — EXPOSIÇÕES",
+    "descricaoMeta": "Realizar workshop de fechamento do projeto MAZ com toda a equipe, após a abertura, para identificar melhorias e direcionamentos para projetos futuros.",
+    "indicador": "1 workshop de lições aprendidas (toda a equipe IDG envolvida) + levantamento coletivo de melhorias/boas práticas + consolidação de recomendações para projetos futuros",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "Workshop realizado; recomendações consolidadas (depende da abertura do MAZ)",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Global",
+    "colaborador": "1. Sergio Mendes",
+    "projeto": "2. CCMEC",
+    "descricaoMeta": "Entrega do Masterplan do CCMEC até 01/07/2027 (10 meses)",
+    "indicador": "Masterplan do CCMEC entregue até 01/07/2027 (10 meses)",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "Plano de Trabalho",
+    "checkSet": "",
+    "metaOut": "Seminário de 15/out em Recife",
+    "checkOut": "",
+    "metaNov": "Relatório Técnico de Modelo Curatorial\nVídeo Institucional",
+    "checkNov": "",
+    "metaDez": "Plano de Ocupação Arquitetônica do CCMEC\nRelatório Técnico de Circulação e Acessibilidade",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "25. Rogério Lessa",
+    "projeto": "5. FMA — Fundo da Mata Atlântica",
+    "descricaoMeta": "Assegurar a continuidade das atividades finais de restauração florestal e a manutenção da estrutura operacional do IDG até dezembro de 2026.",
+    "indicador": "1. Continuidade do Projeto Florestas do Amanhã (FDA)",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "5º Termo Aditivo SEAS-IDG formalizado e publicado no DOE (01/09), prorrogando a vigência até dez/2026; remuneração-base negociada em R$ 137 mil/mês (+52% vs. proposta inicial da SEAS de R$ 90 mil)",
+    "checkSet": "Concluído",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "Acompanhamento do Plano de Trabalho pactuado com a SEAS; monitoramento das atividades finais de restauração, entregas, prazos e pendências das empresas executoras; manutenção da estrutura mínima durante a transição para o novo edital do FMA",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "25. Rogério Lessa",
+    "projeto": "5. FMA — Fundo da Mata Atlântica",
+    "descricaoMeta": "Coordenar a preparação do IDG para atendimento ao novo edital do FMA, buscando assegurar a continuidade da atuação institucional na gestão dos projetos. (condicionada à liberação da SEAS)",
+    "indicador": "2. Novo Edital do Fundo da Mata Atlântica (FMA)",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "Acompanhamento junto à SEAS da liberação e publicação do novo edital (previsão out/2026); análise dos requisitos técnicos, jurídicos, administrativos e financeiros",
+    "checkOut": "",
+    "metaNov": "Coordenação da elaboração e organização da proposta e documentos necessários; articulação com as áreas internas do IDG para atendimento dos requisitos e prazos",
+    "checkNov": "",
+    "metaDez": "Apoio técnico e estratégico à Diretoria durante o processo de participação no edital",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Global",
+    "colaborador": "1. Sergio Mendes",
+    "projeto": "5. FMA — Fundo da Mata Atlântica",
+    "descricaoMeta": "Coordenar a preparação do IDG para atendimento ao novo edital do FMA, buscando assegurar a continuidade da atuação institucional na gestão dos projetos. (condicionada à liberação da SEAS)",
+    "indicador": "2. Novo Edital do Fundo da Mata Atlântica (FMA)",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "Acompanhamento junto à SEAS da liberação e publicação do novo edital",
+    "checkOut": "",
+    "metaNov": "Proposta idg - Acompanhamento",
+    "checkNov": "",
+    "metaDez": "Contrato assinado",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "26. Valéria Ferro",
+    "projeto": "3. MUSEU DO PETRÓLEO",
+    "descricaoMeta": "Prestar apoio técnico e estratégico aos projetos prioritários do IDG, conforme as demandas da Diretoria.",
+    "indicador": "3. Apoio Técnico e Estratégico aos Projetos de Engenharia",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "Apoio ao desenvolvimento dos projetos do Museu do Petróleo; análise de riscos, soluções técnicas e necessidades de contratação específica; participação em reuniões técnicas e apoio à tomada de decisão da Diretoria; elaboração e revisão de planos de trabalho, propostas, relatórios e documentos técnicos",
+    "checkSet": "",
+    "metaOut": "Apoio ao desenvolvimento dos projetos do Museu do Petróleo; análise de riscos, soluções técnicas e necessidades de contratação específica; participação em reuniões técnicas e apoio à tomada de decisão da Diretoria; elaboração e revisão de planos de trabalho, propostas, relatórios e documentos técnicos",
+    "checkOut": "",
+    "metaNov": "Apoio ao desenvolvimento dos projetos do Museu do Petróleo; análise de riscos, soluções técnicas e necessidades de contratação específica; participação em reuniões técnicas e apoio à tomada de decisão da Diretoria; elaboração e revisão de planos de trabalho, propostas, relatórios e documentos técnicos",
+    "checkNov": "",
+    "metaDez": "Apoio ao desenvolvimento dos projetos do Museu do Petróleo; análise de riscos, soluções técnicas e necessidades de contratação específica; participação em reuniões técnicas e apoio à tomada de decisão da Diretoria; elaboração e revisão de planos de trabalho, propostas, relatórios e documentos técnicos",
+    "checkDez": ""
+  }
+];
+
+
+/* ============================================================
+   VALUE CLASSIFICATION
+   value types: 'empty' | 'na' | 'pct' (numeric %) | 'text' (qualitative)
+   ============================================================ */
+function classifyValue(raw){
+  if(raw === undefined || raw === null) return {type:"empty", value:null, display:""};
+  const v = String(raw).trim();
+  if(v === "") return {type:"empty", value:null, display:""};
+  if(/^n\/?a\.?$/i.test(v)) return {type:"na", value:null, display:"N/A"};
+  // percentage like 50,00% or 50% or 50.00%
+  const pctMatch = v.match(/^(-?\d+(?:[.,]\d+)?)\s*%$/);
+  if(pctMatch){
+    const num = parseFloat(pctMatch[1].replace(",", "."));
+    return {type:"pct", value:num, display: (Math.round(num*10)/10) + "%"};
+  }
+  // valor com unidade nomeada (ex: "10 milhões", "18 mil") -> quantidade com escala definida
+  const moneyMatch = v.match(/^(-?\d+(?:[.,]\d+)?)\s*([\p{L}]+)\.?$/iu);
+  if(moneyMatch){
+    const num = parseFloat(moneyMatch[1].replace(",", "."));
+    return {type:"money", value:num, unit:moneyMatch[2], display:v};
+  }
+  // plain number without % (ex: valor em R$, quantidade) -> tratado como quantidade, não percentual
+  const numMatch = v.match(/^-?\d{1,3}(?:\.\d{3})*(?:,\d+)?$|^-?\d+(?:,\d+)?$/);
+  if(numMatch){
+    const num = parseFloat(v.replace(/\./g,"").replace(",", "."));
+    return {type:"qty", value:num, display: v};
+  }
+  return {type:"text", value:v, display:v};
+}
+
+function monthEnded(monthDef){
+  const [m, d] = monthDef.endDate;
+  const end = new Date(CURRENT_YEAR, m, d, 23, 59, 59);
+  return new Date() > end;
+}
+
+/* ============================================================
+   SEMAPHORE RULE
+   ============================================================ */
+function computeStatus(metaRaw, checkRaw, monthDef){
+  const meta = classifyValue(metaRaw);
+  const check = classifyValue(checkRaw);
+
+  // Nothing defined at all -> not applicable
+  if((meta.type === "empty" || meta.type === "na")){
+    return {status:"gray", meta, check};
+  }
+
+  const ended = monthEnded(monthDef);
+
+  if(meta.type === "pct"){
+    if(check.type === "pct"){
+      if(check.value >= meta.value) return {status:"green", meta, check};
+      if(check.value >= 30) return {status:"amber", meta, check};
+      return {status:"red", meta, check};
+    }
+    if(check.type === "empty"){
+      return {status: ended ? "red" : "green", meta, check};
+    }
+    if(check.type === "na"){
+      return {status:"gray", meta, check};
+    }
+    // check has text but meta expects %, be conservative: treat presence as green if not ended-risk
+    return {status:"green", meta, check};
+  }
+
+  // meta em valor absoluto com unidade (ex: "10 milhões") -> mesma lógica dos 30%,
+  // mas proporcional ao valor da meta (já que a escala não é 0-100 como em %)
+  if(meta.type === "money"){
+    if(check.type === "money" || check.type === "qty"){
+      if(check.value >= meta.value) return {status:"green", meta, check};
+      if(check.value >= meta.value * 0.3) return {status:"amber", meta, check};
+      return {status:"red", meta, check};
+    }
+    if(check.type === "empty"){
+      return {status: ended ? "red" : "green", meta, check};
+    }
+    if(check.type === "na"){
+      return {status:"gray", meta, check};
+    }
+    return {status:"green", meta, check};
+  }
+
+  // qualitative (text) meta
+  if(check.type === "text" || check.type === "pct"){
+    return {status:"green", meta, check};
+  }
+  if(check.type === "empty"){
+    return {status: ended ? "red" : "green", meta, check};
+  }
+  return {status:"gray", meta, check};
+}
+
+/* ============================================================
+   BUILD ROW MODEL FROM EMBEDDED DATA
+   ============================================================ */
+function buildModel(embeddedItems){
+  return embeddedItems.map(row=>{
+    const months = {};
+    ALL_MONTH_DEFS.forEach(m=>{
+      months[m.key] = computeStatus(row[m.metaField], row[m.checkField], m);
+    });
+    return {
+      diretoria: row.diretoria || "",
+      tipoMeta: row.tipoMeta || "",
+      colaborador: row.colaborador || "",
+      projeto: row.projeto || "",
+      descricaoMeta: row.descricaoMeta || "",
+      indicador: row.indicador || "",
+      periodo: row.periodo || "",
+      months
+    };
+  });
+}
+
+/* ============================================================
+   LOAD (DADOS FIXOS — sem chamada de rede)
+   Recalcula os semáforos com a data atual a cada carregamento/clique,
+   já que o critério "mês encerrado" depende do dia em que o painel é aberto.
+   ============================================================ */
+function loadData(manual){
+  const banner = document.getElementById("statusBanner");
+  const btn = document.getElementById("refreshBtn");
+  banner.className = ""; banner.textContent = "";
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin">↻</span> Recalculando…';
+
+  try{
+    RAW_ROWS = buildModel(EMBEDDED_ITEMS);
+    document.getElementById("dataGenDate").textContent = DATA_GENERATED_AT;
+    document.getElementById("lastUpdated").innerHTML =
+      "Dados de " + DATA_GENERATED_AT + "<br>semáforos calc. em " + new Date().toLocaleString("pt-BR");
+    populateFilters(RAW_ROWS);
+    if(!manual){
+      // Estado inicial: Metas Globais + Metas Locais marcadas (equivalente a "Todos", mas explícito) + período Set a Dez
+      const tipos = RAW_ROWS.map(i=>i.tipoMeta);
+      const tiposUnicos = uniqueSorted(tipos);
+      const defaultTipos = tiposUnicos.filter(t => t === "Meta Global" || t === "Meta Local");
+      if(defaultTipos.length){
+        MS_STATE.msTipo = new Set(defaultTipos);
+        buildMultiselect("msTipo", tiposUnicos);
+      }
+      setPeriod("set_dez");
+    }
+    render();
+  }catch(err){
+    banner.className = "show error";
+    banner.innerHTML = "Erro ao processar os dados embutidos: " + (err && err.message ? err.message : "erro desconhecido") + ".";
+  }finally{
+    btn.disabled = false;
+    btn.innerHTML = "↻ Recalcular semáforos";
+  }
+}
+
+/* ============================================================
+   FILTERS
+   ============================================================ */
+function uniqueSorted(arr){
+  return [...new Set(arr.filter(v=>v && v.trim()!==""))].sort((a,b)=>a.localeCompare(b,'pt-BR',{numeric:true, sensitivity:'base'}));
+}
+
+// estado dos filtros multi-seleção (Set vazio = "Todos")
+const MS_STATE = {
+  msTipo: new Set()
+};
+
+function normalizeText(s){
+  return String(s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+}
+
+function setPeriod(period){
+  CURRENT_PERIOD = period;
+  document.querySelectorAll("#periodToggle .period-btn").forEach(btn=>{
+    btn.classList.toggle("active", btn.dataset.period === period);
+  });
+}
+
+document.querySelectorAll("#periodToggle .period-btn").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    setPeriod(btn.dataset.period);
+    render();
+  });
+});
+
+function populateFilters(items){
+  const tipos = uniqueSorted(items.map(i=>i.tipoMeta));
+  const diretorias = uniqueSorted(items.map(i=>i.diretoria));
+  const colabs = uniqueSorted(items.map(i=>i.colaborador));
+
+  buildMultiselect("msTipo", tipos);
+  fillSelect("fDiretoria", diretorias, "Todas");
+
+  const dl = document.getElementById("colabDatalist");
+  dl.innerHTML = colabs.map(v=>`<option value="${escapeHtml(v)}">`).join("");
+}
+
+function fillSelect(id, values, allLabel){
+  const sel = document.getElementById(id);
+  const current = sel.value;
+  sel.innerHTML = `<option value="">${allLabel}</option>` +
+    values.map(v=>`<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`).join("");
+  if(values.includes(current)) sel.value = current;
+}
+
+/* --- multiselect (checkboxes) para Quadrimestre / Tipo de meta --- */
+// Rótulo de exibição amigável para valores de filtro (não altera o valor usado na comparação/filtro)
+function displayFilterLabel(key, v){
+  if(key === "msTipo"){
+    if(v === "Meta Global") return "Metas Globais";
+    if(v === "Meta Local") return "Metas Locais";
+  }
+  return v;
+}
+
+function buildMultiselect(key, values){
+  const panel = document.getElementById(key + "Panel");
+  const selected = MS_STATE[key];
+  panel.innerHTML = `
+    <label class="ms-option ms-all">
+      <input type="checkbox" data-ms-all="${key}" ${selected.size===0 ? "checked" : ""}>
+      Todos
+    </label>
+    ${values.map(v=>`
+      <label class="ms-option">
+        <input type="checkbox" data-ms="${key}" value="${escapeHtml(v)}" ${selected.has(v) ? "checked" : ""}>
+        ${escapeHtml(displayFilterLabel(key, v))}
+      </label>
+    `).join("")}
+  `;
+  updateMsTriggerText(key, values);
+
+  panel.querySelector(`[data-ms-all="${key}"]`).addEventListener("change", (e)=>{
+    if(e.target.checked){
+      selected.clear();
+      panel.querySelectorAll(`[data-ms="${key}"]`).forEach(cb=>cb.checked=false);
+    }
+    updateMsTriggerText(key, values);
+    render();
+  });
+
+  panel.querySelectorAll(`[data-ms="${key}"]`).forEach(cb=>{
+    cb.addEventListener("change", (e)=>{
+      if(e.target.checked) selected.add(e.target.value);
+      else selected.delete(e.target.value);
+      panel.querySelector(`[data-ms-all="${key}"]`).checked = selected.size === 0;
+      updateMsTriggerText(key, values);
+      render();
+    });
+  });
+}
+
+function updateMsTriggerText(key, values){
+  const selected = MS_STATE[key];
+  const trigger = document.querySelector(`#${key}Trigger .ms-trigger-text`);
+  if(!trigger) return;
+  if(selected.size === 0) trigger.textContent = "Todos";
+  else if(selected.size === 1) trigger.textContent = displayFilterLabel(key, [...selected][0]);
+  else if(selected.size === values.length) trigger.textContent = "Todos";
+  else trigger.textContent = selected.size + " selecionados";
+}
+
+["msTipo"].forEach(key=>{
+  const wrap = document.getElementById(key);
+  const trigger = document.getElementById(key + "Trigger");
+  trigger.addEventListener("click", (e)=>{
+    e.stopPropagation();
+    const isOpen = wrap.classList.contains("open");
+    document.querySelectorAll(".multiselect.open").forEach(el=>el.classList.remove("open"));
+    if(!isOpen) wrap.classList.add("open");
+  });
+});
+document.addEventListener("click", (e)=>{
+  document.querySelectorAll(".multiselect.open").forEach(el=>{
+    if(!el.contains(e.target)) el.classList.remove("open");
+  });
+});
+
+function resetFilters(){
+  MS_STATE.msTipo.clear();
+  document.getElementById("fDiretoria").value = "";
+  document.getElementById("fColab").value = "";
+  document.querySelectorAll('[data-ms-all]').forEach(cb=>cb.checked=true);
+  document.querySelectorAll('[data-ms]').forEach(cb=>cb.checked=false);
+  updateMsTriggerText("msTipo", [...document.querySelectorAll('#msTipoPanel [data-ms]')].map(el=>el.value));
+  setPeriod("set_dez");
+  render();
+}
+
+function getFilteredItems(){
+  const d = document.getElementById("fDiretoria").value;
+  const cRaw = normalizeText(document.getElementById("fColab").value.trim());
+  const periodoAlvo = periodLabel();
+  return RAW_ROWS.filter(i=>
+    i.periodo === periodoAlvo &&
+    (MS_STATE.msTipo.size === 0 || MS_STATE.msTipo.has(i.tipoMeta)) &&
+    (!d || i.diretoria === d) &&
+    (!cRaw || normalizeText(i.colaborador).includes(cRaw))
+  );
+}
+
+document.getElementById("fColab").addEventListener("input", render);
+
+/* ============================================================
+   RENDER
+   ============================================================ */
+function currentMonthKey(){
+  if(CURRENT_PERIOD === "jan_ago") return "janago";
+  const m = new Date().getMonth(); // 0-based
+  const found = MONTHS.find(mo => {
+    // rough mapping: set=Sept(8), out=Oct(9), nov=Nov(10), dez=Dez(11)
+    const map = {set:8, out:9, nov:10, dez:11};
+    return map[mo.key] === m;
+  });
+  return found ? found.key : "set";
+}
+
+function statusColorVar(status){
+  return {green:"var(--green)", amber:"var(--amber)", red:"var(--red)", gray:"var(--gray)"}[status] || "var(--gray)";
+}
+
+function aggregateGroupStatus(rowsInGroup, monthKey){
+  const applicable = rowsInGroup.map(r=>r.months[monthKey]).filter(m=>m.status!=="gray");
+  if(!applicable.length) return "na"; // nenhuma meta aplicável neste mês -> símbolo "—"
+  const statuses = applicable.map(m=>m.status);
+  if(statuses.includes("red")) return "red";
+  if(statuses.includes("amber")) return "amber";
+  // Há meta, mas a maioria ainda não tem check lançado -> continua sendo um "●", só que cinza
+  const pendingCount = applicable.filter(m=>m.check.type==="empty").length;
+  if(pendingCount > applicable.length / 2) return "gray";
+  return "green";
+}
+
+function chipHTML(m){
+  const {status, meta, check} = m;
+  // Visual apenas: quando ainda não há check lançado (aguardando), mostra em cinza
+  // mesmo que o status interno "no prazo" (verde) continue valendo para os cálculos/KPIs.
+  const visualStatus = (status === "green" && check.type === "empty") ? "gray" : status;
+
+  if(status === "gray"){
+    if(meta.type === "na" || meta.type === "empty"){
+      return `<span class="chip gray"><span class="main">—</span><span class="sub">N/A</span></span>`;
+    }
+    // há dado lançado, mas não é avaliável automaticamente pela regra (ex: valores absolutos em R$/quantidade)
+    const mainTxt = check.type !== "empty" ? check.display : "—";
+    const tt = "Meta: " + meta.display + (check.type!=="empty" ? " · Check: " + check.display : "");
+    return `<span class="chip gray" title="${escapeHtml(tt)}"><span class="main">${mainTxt}</span><span class="sub">meta ${meta.display}</span></span>`;
+  }
+  if(meta.type === "pct" || meta.type === "money"){
+    const mainTxt = (check.type === "pct" || check.type === "money" || check.type === "qty") ? check.display : (check.type === "empty" ? "—" : check.display);
+    const tt = "Meta: " + meta.display + (check.type!=="empty" ? " · Check: " + check.display : " · Check ainda não lançado");
+    return `<span class="chip ${visualStatus}" title="${escapeHtml(tt)}"><span class="main">${mainTxt}</span><span class="sub">meta ${meta.display}</span></span>`;
+  }
+  // qualitative: mesma lógica visual dos demais — traço/valor em cima, "meta {rótulo}" embaixo.
+  // Texto completo sempre disponível no hover (title).
+  const label = deriveQualLabel(meta.display);
+  const mainTxt = check.type === "empty" ? "—" : "✓";
+  const tt = "Meta: " + meta.display + (check.type!=="empty" ? " · Check: " + check.display : " · Check ainda não lançado");
+  return `<span class="chip ${visualStatus}" title="${escapeHtml(tt)}"><span class="main">${mainTxt}</span><span class="sub">meta ${escapeHtml(label)}</span></span>`;
+}
+
+// Extrai um rótulo curto para metas qualitativas (ex: "NPS > 8" -> "NPS").
+// Quando não há um padrão reconhecível, usa "Entregável" genérico — o texto completo sempre fica disponível no hover (title).
+function deriveQualLabel(metaDisplay){
+  const firstLine = String(metaDisplay||"").split(/\r?\n/)[0].trim();
+  const m = firstLine.match(/^([A-Za-zÀ-ÿ]{2,18})\s*[><=]/);
+  if(m) return m[1];
+  return "Entregável";
+}
+
+function escapeHtml(s){
+  return String(s||"").replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+
+// Quando o texto do indicador traz um link (ex: "Painel Financeiro MAZ\nhttps://...")
+// mostra só a descrição, clicável, levando ao site em nova aba — sem exibir a URL crua.
+function indicadorHTML(rawText){
+  const text = String(rawText || "");
+  const urlMatch = text.match(/https?:\/\/\S+/);
+  if(urlMatch){
+    const url = urlMatch[0];
+    const label = text.slice(0, urlMatch.index).trim() || url;
+    return `<a class="indicador-text" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer" title="${escapeHtml(label)} ↗">${escapeHtml(label)}<span class="ext-link-icon">↗</span></a>`;
+  }
+  return `<span class="indicador-text" title="${escapeHtml(text)}">${escapeHtml(text)}</span>`;
+}
+
+let rowCounter = 0;
+
+function renderThead(){
+  const theadRow = document.getElementById("theadRow");
+  theadRow.querySelectorAll(".month-col").forEach(el=>el.remove());
+  activeMonths().forEach(m=>{
+    const th = document.createElement("th");
+    th.className = "month-col";
+    th.textContent = m.full;
+    theadRow.appendChild(th);
+  });
+  const subtitle = document.getElementById("panelSubtitle");
+  if(subtitle){
+    subtitle.textContent = CURRENT_PERIOD === "jan_ago"
+      ? "Meta e check por colaborador — Janeiro a Agosto (já realizado)"
+      : "Meta e check mensal por colaborador — Setembro a Dezembro";
+  }
+}
+
+function render(){
+  renderThead();
+  const months = activeMonths();
+  const colCount = 3 + months.length;
+  const items = getFilteredItems();
+  const tbody = document.getElementById("tbody");
+  tbody.innerHTML = "";
+
+  if(!items.length){
+    tbody.innerHTML = `<tr><td colspan="${colCount}" class="empty-state">Nenhuma meta encontrada para os filtros selecionados.</td></tr>`;
+    updateKPIs([]);
+    return;
+  }
+
+  // group by Projeto (preserving first-seen order), depois ordena pelo nome do projeto (crescente)
+  const groups = [];
+  const groupIndex = {};
+  items.forEach(item=>{
+    const key = item.projeto || "(sem projeto)";
+    if(!(key in groupIndex)){
+      groupIndex[key] = groups.length;
+      groups.push({projeto:key, rows:[]});
+    }
+    groups[groupIndex[key]].rows.push(item);
+  });
+  groups.sort((a,b)=>a.projeto.localeCompare(b.projeto, 'pt-BR', {numeric:true, sensitivity:'base'}));
+
+  const curMonth = currentMonthKey();
+
+  groups.forEach((g, gi) => {
+    const groupId = "grp_" + gi;
+    const tr = document.createElement("tr");
+    tr.className = "group-row";
+    tr.dataset.group = groupId;
+
+    let monthChips = "";
+    months.forEach(m=>{
+      const st = aggregateGroupStatus(g.rows, m.key);
+      const chipColor = (st==='gray' || st==='na') ? 'var(--gray-bg)' : `var(--${st}-bg)`;
+      const chipSymbol = st==='na' ? '—' : '●';
+      monthChips += `<td class="month-cell"><span class="grp-chip" style="background:${chipColor};color:${statusColorVar(st)}">${chipSymbol}</span></td>`;
+    });
+
+    tr.innerHTML = `
+      <td colspan="3">
+        <div class="grp-name">
+          <span class="grp-toggle" data-toggle="${groupId}">+</span>
+          <svg class="grp-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/></svg>
+          ${escapeHtml(g.projeto)}
+          <span class="grp-meta">${g.rows.length} meta${g.rows.length>1?"s":""}</span>
+        </div>
+      </td>
+      ${monthChips}
+    `;
+    tbody.appendChild(tr);
+
+    tr.querySelector(".grp-name").addEventListener("click", ()=>toggleGroup(groupId));
+
+    g.rows.forEach(item=>{
+      const mrow = document.createElement("tr");
+      mrow.className = "meta-row hidden";
+      mrow.dataset.group = groupId;
+
+      let monthCells = "";
+      months.forEach(m=>{
+        monthCells += `<td class="month-cell">${chipHTML(item.months[m.key])}</td>`;
+      });
+
+      mrow.innerHTML = `
+        <td class="col-diretoria">${escapeHtml(item.diretoria)}</td>
+        <td class="col-projeto">${escapeHtml(item.colaborador)}</td>
+        <td class="col-indicador">
+          ${indicadorHTML(item.indicador || item.descricaoMeta)}
+        </td>
+        ${monthCells}
+      `;
+      tbody.appendChild(mrow);
+    });
+  });
+
+  updateKPIs(items, curMonth);
+}
+
+function toggleGroup(groupId){
+  const rows = document.querySelectorAll(`tr[data-group="${groupId}"]`);
+  const toggleEl = document.querySelector(`[data-toggle="${groupId}"]`);
+  const willHide = toggleEl.textContent.trim() === "−";
+  rows.forEach(r=>{
+    if(r.classList.contains("group-row")) return;
+    if(willHide){
+      r.classList.add("hidden");
+      // also force-hide any open detail rows within
+      if(r.classList.contains("detail-row")) r.classList.add("hidden");
+    } else {
+      if(r.classList.contains("meta-row")) r.classList.remove("hidden");
+    }
+  });
+  toggleEl.textContent = willHide ? "+" : "−";
+}
+
+function updateKPIs(items, curMonthKeyParam){
+  const curMonth = curMonthKeyParam || currentMonthKey();
+  document.getElementById("kpiTotal").textContent = items.length;
+  const monthLabel = (ALL_MONTH_DEFS.find(m=>m.key===curMonth)||{}).full || "";
+  document.getElementById("kpiTotalSub").textContent = "metas no filtro";
+
+  let green=0, amber=0, red=0, pctSum=0, pctCount=0;
+  items.forEach(item=>{
+    const m = item.months[curMonth];
+    if(m.status === "green") green++;
+    else if(m.status === "amber") amber++;
+    else if(m.status === "red") red++;
+    if(m.meta.type === "pct" && m.check.type === "pct"){
+      pctSum += m.check.value;
+      pctCount++;
+    }
+  });
+
+  document.getElementById("kpiGreen").textContent = green;
+  document.getElementById("kpiGreenSub").textContent = "no prazo · " + monthLabel;
+  document.getElementById("kpiAmber").textContent = amber;
+  document.getElementById("kpiAmberSub").textContent = "risco de atraso · " + monthLabel;
+  document.getElementById("kpiRed").textContent = red;
+  document.getElementById("kpiRedSub").textContent = "atrasadas · " + monthLabel;
+
+  const avgPct = pctCount ? Math.round(pctSum/pctCount) : null;
+  document.getElementById("kpiPct").textContent = avgPct !== null ? avgPct + "%" : "—";
+  document.getElementById("kpiPctSub").textContent = "% cumprimento médio · " + monthLabel;
+  const gaugeFg = document.getElementById("gaugeFg");
+  if(gaugeFg){
+    const clamped = avgPct !== null ? Math.max(0, Math.min(100, avgPct)) : 0;
+    gaugeFg.style.strokeDasharray = clamped + " " + (100 - clamped);
+  }
+}
+
+/* ============================================================
+   INIT
+   ============================================================ */
+document.getElementById("fDiretoria").addEventListener("change", render);
+
+document.getElementById("statsToggle").addEventListener("click", ()=>{
+  const section = document.getElementById("statsSection");
+  const isOpen = section.classList.toggle("open");
+  document.querySelector("#statsToggle .stats-toggle-icon").textContent = isOpen ? "−" : "+";
+});
+
+loadData(false);
+</script>
+</body>
+</html>
