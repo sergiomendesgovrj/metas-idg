@@ -528,6 +528,44 @@
   .chip.red{background:var(--red-bg);border-color:var(--red-line);color:var(--red);}
   .chip.gray{background:var(--gray-bg);border-color:var(--gray-line);color:var(--gray);}
 
+  /* balão de detalhe (toque/clique) — mostra o mesmo texto do title, funciona em celular */
+  #tapPopover{
+    display:none;
+    position:fixed;
+    z-index:200;
+    max-width:260px;
+    background:var(--navy);
+    color:#fff;
+    font-size:12.5px;
+    line-height:1.4;
+    padding:9px 12px;
+    border-radius:8px;
+    box-shadow:0 6px 20px rgba(15,36,56,.3);
+  }
+  #tapPopover.show{display:block;}
+  #tapPopover::after{
+    content:"";
+    position:absolute;
+    left:16px;
+    top:-6px;
+    border-width:0 6px 6px 6px;
+    border-style:solid;
+    border-color:transparent transparent var(--navy) transparent;
+  }
+  #tapPopover.arrow-bottom::after{
+    top:auto;
+    bottom:-6px;
+    border-width:6px 6px 0 6px;
+    border-color:var(--navy) transparent transparent transparent;
+  }
+
+  /* texto da coluna Meta: toque/clique expande (útil no celular, sem hover) */
+  span.indicador-text{cursor:pointer;}
+  span.indicador-text.expanded{
+    -webkit-line-clamp:unset;
+    display:block;
+  }
+
   /* detail row (expand) */
   tr.detail-row td{
     background:rgba(255,255,255,.55);
@@ -570,6 +608,8 @@
 </style>
 </head>
 <body>
+<div id="tapPopover"></div>
+
 
 <header>
   <div class="header-row">
@@ -744,8 +784,8 @@ const EMBEDDED_ITEMS = [
     "tipoMeta": "Meta Global",
     "colaborador": "1. Sergio Mendes",
     "projeto": "4. Entrega Expo LONGA do MUSEU DAS AMAZÔNIAS",
-    "descricaoMeta": "Garantir a entrega e o pleno funcionamento do Museu das Amazônias até ago/26",
-    "indicador": "Garantir a entrega e o pleno funcionamento do Museu das Amazônias até ago/26",
+    "descricaoMeta": "Entrega Expo LONGA do MUSEU DAS AMAZÔNIAS até ago/2026",
+    "indicador": "Entrega Expo LONGA do MUSEU DAS AMAZÔNIAS até ago/2026\n\nhttps://docs.google.com/spreadsheets/d/17nttJ_ShqWztvDWH3l59iNqboLqkviZs3_PM5J3ihdA/edit?gid=1451384064#gid=1451384064",
     "periodo": "Jan a Ago",
     "metaJanAgo": "Entrega da Longa",
     "checkJanAgo": "Feito",
@@ -1029,7 +1069,7 @@ const EMBEDDED_ITEMS = [
     "tipoMeta": "Meta Local",
     "colaborador": "4. Camila Costa",
     "projeto": "1. MUSEU DAS AMAZÔNIAS",
-    "descricaoMeta": "CATÁGOLO",
+    "descricaoMeta": "CATÁLOGO",
     "indicador": "CATÁGOLO",
     "periodo": "Set a Dez",
     "metaJanAgo": "",
@@ -1101,9 +1141,9 @@ const EMBEDDED_ITEMS = [
     "checkDez": ""
   },
   {
-    "diretoria": "Diretoria de Projetos",
+    "diretoria": "Gerência Geral de Pessoas",
     "tipoMeta": "Meta Local",
-    "colaborador": "5. Iago",
+    "colaborador": "20. Isabella",
     "projeto": "1. MUSEU DAS AMAZÔNIAS",
     "descricaoMeta": "CONTRATAÇÃO E TREINAMENTO TIME DE ATENDIMENTO",
     "indicador": "CONTRATAÇÃO E TREINAMENTO TIME DE ATENDIMENTO",
@@ -1466,7 +1506,7 @@ const EMBEDDED_ITEMS = [
     "tipoMeta": "Meta Local",
     "colaborador": "10. Leandro",
     "projeto": "4. MUSEDUCA",
-    "descricaoMeta": "Produto 15 — Desenho de governança e modelo de gestão (R$ 85.000)",
+    "descricaoMeta": "Produto 15 — Definição do modelo de gestão e governança(R$ 85.000)",
     "indicador": "Produto 15 — Desenho de governança e modelo de gestão (R$ 85.000)",
     "periodo": "Set a Dez",
     "metaJanAgo": "",
@@ -1495,25 +1535,6 @@ const EMBEDDED_ITEMS = [
     "metaOut": "",
     "checkOut": "",
     "metaNov": "",
-    "checkNov": "",
-    "metaDez": "",
-    "checkDez": ""
-  },
-  {
-    "diretoria": "Diretoria de Projetos",
-    "tipoMeta": "Meta Local",
-    "colaborador": "10. Leandro",
-    "projeto": "4. MUSEDUCA",
-    "descricaoMeta": "Produto 20 — Modelagem de gestão e operação do museu (R$ 85.000)",
-    "indicador": "Produto 20 — Modelagem de gestão e operação do museu (R$ 85.000)",
-    "periodo": "Set a Dez",
-    "metaJanAgo": "",
-    "checkJanAgo": "",
-    "metaSet": "",
-    "checkSet": "",
-    "metaOut": "",
-    "checkOut": "",
-    "metaNov": "Entrega: Modelagem de gestão e operação do museu (R$ 85.000) — prazo 30/11/2026",
     "checkNov": "",
     "metaDez": "",
     "checkDez": ""
@@ -1571,6 +1592,25 @@ const EMBEDDED_ITEMS = [
     "metaOut": "",
     "checkOut": "",
     "metaNov": "Entrega: Projeto educativo da entrega intermediária (R$ 180.000) — prazo 11/11/2026",
+    "checkNov": "",
+    "metaDez": "",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "10. Leandro",
+    "projeto": "4. MUSEDUCA",
+    "descricaoMeta": "Produto 20 — Modelagem operacional de gestão e operação do museu (R$ 85.000)",
+    "indicador": "Produto 20 — Modelagem de gestão e operação do museu (R$ 85.000)",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "Entrega: Modelagem de gestão e operação do museu (R$ 85.000) — prazo 30/11/2026",
     "checkNov": "",
     "metaDez": "",
     "checkDez": ""
@@ -2393,6 +2433,58 @@ document.getElementById("statsToggle").addEventListener("click", ()=>{
   const section = document.getElementById("statsSection");
   const isOpen = section.classList.toggle("open");
   document.querySelector("#statsToggle .stats-toggle-icon").textContent = isOpen ? "−" : "+";
+});
+
+/* Toque/clique nos chips de mês -> mostra o mesmo texto do "title" num balão,
+   já que tooltip de hover não existe em celular (touch). */
+const tapPopover = document.getElementById("tapPopover");
+
+function hideTapPopover(){
+  tapPopover.classList.remove("show");
+  currentChipEl = null;
+}
+
+function showTapPopoverFor(el){
+  const text = el.getAttribute("title");
+  if(!text) return;
+  tapPopover.textContent = text;
+  tapPopover.classList.add("show");
+
+  const rect = el.getBoundingClientRect();
+  const popRect = tapPopover.getBoundingClientRect();
+  let left = rect.left + rect.width/2 - popRect.width/2;
+  left = Math.max(8, Math.min(left, window.innerWidth - popRect.width - 8));
+
+  const spaceBelow = window.innerHeight - rect.bottom;
+  const showBelow = spaceBelow > popRect.height + 16 || rect.top < popRect.height + 16;
+  const top = showBelow ? rect.bottom + 10 : rect.top - popRect.height - 10;
+  tapPopover.classList.toggle("arrow-bottom", !showBelow);
+  tapPopover.style.left = left + "px";
+  tapPopover.style.top = top + "px";
+}
+
+let currentChipEl = null;
+document.addEventListener("click", (e)=>{
+  const chip = e.target.closest(".chip[title]");
+  if(chip){
+    if(currentChipEl === chip){
+      hideTapPopover();
+    } else {
+      showTapPopoverFor(chip);
+      currentChipEl = chip;
+    }
+    return;
+  }
+  if(!e.target.closest("#tapPopover")) hideTapPopover();
+});
+
+window.addEventListener("scroll", ()=>{ if(currentChipEl) showTapPopoverFor(currentChipEl); }, true);
+window.addEventListener("resize", ()=>{ if(currentChipEl) showTapPopoverFor(currentChipEl); });
+
+/* Toque/clique no texto da coluna Meta (quando não é link) -> expande, mostrando tudo. */
+document.addEventListener("click", (e)=>{
+  const span = e.target.closest("span.indicador-text");
+  if(span) span.classList.toggle("expanded");
 });
 
 loadData(false);
