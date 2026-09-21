@@ -451,7 +451,7 @@
   tr.group-row .grp-icon{color:var(--panel-muted);flex-shrink:0;}
   tr.group-row .grp-chip{
     display:inline-flex;align-items:center;justify-content:center;
-    min-width:40px;padding:3px 6px;border-radius:6px;font-size:12px;font-weight:700;
+    min-width:40px;padding:4px 8px;border-radius:7px;font-size:14px;font-weight:700;
   }
 
   tr.meta-row td{font-size:12.8px;}
@@ -534,10 +534,11 @@
   }
   .chip .main{font-size:13.5px;font-weight:700;}
   .chip .sub{font-size:10px;font-weight:500;opacity:.85;}
-  .chip.green{background:var(--green-bg);border-color:var(--green-line);color:var(--green);}
-  .chip.amber{background:var(--amber-bg);border-color:var(--amber-line);color:var(--amber);}
-  .chip.red{background:var(--red-bg);border-color:var(--red-line);color:var(--red);}
+  .chip.green{background:var(--green);border-color:var(--green);color:#fff;}
+  .chip.amber{background:var(--amber);border-color:var(--amber);color:#fff;}
+  .chip.red{background:var(--red);border-color:var(--red);color:#fff;}
   .chip.gray{background:var(--gray-bg);border-color:var(--gray-line);color:var(--gray);}
+  .chip.green .sub, .chip.amber .sub, .chip.red .sub{color:rgba(255,255,255,.85);}
 
   /* balão de detalhe (toque/clique) — mostra o mesmo texto do title, funciona em celular */
   #tapPopover{
@@ -2702,9 +2703,11 @@ function render(){
     let monthChips = "";
     months.forEach(m=>{
       const st = aggregateGroupStatus(g.rows, m.key);
-      const chipColor = (st==='gray' || st==='na') ? 'var(--gray-bg)' : `var(--${st}-bg)`;
+      const isStrong = (st==='green' || st==='amber' || st==='red');
+      const chipColor = isStrong ? `var(--${st})` : ((st==='gray' || st==='na') ? 'var(--gray-bg)' : `var(--${st}-bg)`);
+      const chipText = isStrong ? '#fff' : statusColorVar(st);
       const chipSymbol = st==='na' ? '—' : '●';
-      monthChips += `<td class="month-cell"><span class="grp-chip" style="background:${chipColor};color:${statusColorVar(st)}">${chipSymbol}</span></td>`;
+      monthChips += `<td class="month-cell"><span class="grp-chip" style="background:${chipColor};color:${chipText}">${chipSymbol}</span></td>`;
     });
 
     tr.innerHTML = `
