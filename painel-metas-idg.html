@@ -29,9 +29,9 @@
     --green-bg:#e5f6ec;
     --green-line:#bfe5cf;
 
-    --amber:#b9740a;
-    --amber-bg:#fdf1de;
-    --amber-line:#f2d8a4;
+    --amber:#d4a600;
+    --amber-bg:#fdf6d8;
+    --amber-line:#ecd680;
 
     --red:#c22b3a;
     --red-bg:#fbe6e8;
@@ -162,6 +162,18 @@
   }
   .period-btn:hover{background:rgba(255,255,255,.08);}
   .period-btn.active{background:#ffffff;color:var(--navy);}
+
+  .filter-field-check{justify-content:flex-end;}
+  .check-label{
+    display:flex;align-items:center;gap:7px;
+    font-size:13px;color:#e7edf3;
+    cursor:pointer;
+    padding:7px 2px;
+    white-space:nowrap;
+  }
+  .check-label input[type="checkbox"]{
+    width:15px;height:15px;accent-color:#ffffff;cursor:pointer;
+  }
 
   /* multi-select dropdown (Quadrimestre / Tipo de meta) */
   .multiselect{position:relative;}
@@ -640,6 +652,7 @@
       <div class="period-toggle" id="periodToggle">
         <button type="button" class="period-btn" data-period="jan_ago">Jan a Ago</button>
         <button type="button" class="period-btn" data-period="set_dez">Set a Dez</button>
+        <button type="button" class="period-btn" data-period="y2027">2027</button>
       </div>
     </div>
     <div class="filter-field">
@@ -660,6 +673,13 @@
       <label for="fColab">Colaborador</label>
       <input type="text" id="fColab" placeholder="Buscar por nome…" autocomplete="off" list="colabDatalist">
       <datalist id="colabDatalist"></datalist>
+    </div>
+    <div class="filter-field filter-field-check">
+      <label for="fBaixaPrioridade">&nbsp;</label>
+      <label class="check-label">
+        <input type="checkbox" id="fBaixaPrioridade">
+        Mostrar baixa prioridade
+      </label>
     </div>
     <button id="resetFilters" onclick="resetFilters()">Limpar filtros</button>
   </div>
@@ -749,7 +769,7 @@
    ============================================================ */
 // Data da geração deste painel (dados fixos extraídos da planilha nesta data).
 // Para atualizar, envie a planilha nova e peça para regenerar este arquivo.
-const DATA_GENERATED_AT = "15/09/2026";
+const DATA_GENERATED_AT = "21/09/2026";
 
 const MONTHS = [
   {key:"set", label:"Set", full:"Setembro", metaField:"metaSet", checkField:"checkSet", endDate:[8,30]}, // month index 0-based (Sept=8)
@@ -758,12 +778,21 @@ const MONTHS = [
   {key:"dez", label:"Dez", full:"Dezembro", metaField:"metaDez", checkField:"checkDez", endDate:[11,31]}
 ];
 const JAN_AGO_MONTH = {key:"janago", label:"Jan a Ago", full:"Jan a Ago", metaField:"metaJanAgo", checkField:"checkJanAgo", endDate:[7,31]};
-const ALL_MONTH_DEFS = [...MONTHS, JAN_AGO_MONTH];
+const Y2027_MONTH = {key:"y2027", label:"2027", full:"2027", metaField:"meta2027", checkField:"check2027", endDate:[11,31], endYearOffset:1};
+const ALL_MONTH_DEFS = [...MONTHS, JAN_AGO_MONTH, Y2027_MONTH];
 
-// Período selecionado: "set_dez" (o que falta) ou "jan_ago" (o que já foi feito). Mutuamente excludentes.
+// Período selecionado: "set_dez" (o que falta), "jan_ago" (o que já foi feito) ou "y2027" (metas do próximo ano). Mutuamente excludentes.
 let CURRENT_PERIOD = "set_dez";
-function activeMonths(){ return CURRENT_PERIOD === "jan_ago" ? [JAN_AGO_MONTH] : MONTHS; }
-function periodLabel(){ return CURRENT_PERIOD === "jan_ago" ? "Jan a Ago" : "Set a Dez"; }
+function activeMonths(){
+  if(CURRENT_PERIOD === "jan_ago") return [JAN_AGO_MONTH];
+  if(CURRENT_PERIOD === "y2027") return [Y2027_MONTH];
+  return MONTHS;
+}
+function periodLabel(){
+  if(CURRENT_PERIOD === "jan_ago") return "Jan a Ago";
+  if(CURRENT_PERIOD === "y2027") return "2027";
+  return "Set a Dez";
+}
 
 let RAW_ROWS = [];   // parsed sheet rows -> objects
 let CURRENT_YEAR = new Date().getFullYear();
@@ -1037,7 +1066,8 @@ const EMBEDDED_ITEMS = [
     "metaNov": "",
     "checkNov": "",
     "metaDez": "",
-    "checkDez": ""
+    "checkDez": "",
+    "baixaPrioridade": true
   },
   {
     "diretoria": "Diretoria de Projetos",
@@ -1156,7 +1186,7 @@ const EMBEDDED_ITEMS = [
   {
     "diretoria": "Gerência Geral de Pessoas",
     "tipoMeta": "Meta Local",
-    "colaborador": "20. Isabella",
+    "colaborador": "20. Ellen",
     "projeto": "1. MUSEU DAS AMAZÔNIAS",
     "descricaoMeta": "CONTRATAÇÃO E TREINAMENTO TIME DE ATENDIMENTO",
     "indicador": "CONTRATAÇÃO E TREINAMENTO TIME DE ATENDIMENTO",
@@ -1265,7 +1295,8 @@ const EMBEDDED_ITEMS = [
     "metaNov": "",
     "checkNov": "",
     "metaDez": "",
-    "checkDez": ""
+    "checkDez": "",
+    "baixaPrioridade": true
   },
   {
     "diretoria": "Diretoria de Projetos",
@@ -1284,7 +1315,8 @@ const EMBEDDED_ITEMS = [
     "metaNov": "",
     "checkNov": "",
     "metaDez": "",
-    "checkDez": ""
+    "checkDez": "",
+    "baixaPrioridade": true
   },
   {
     "diretoria": "Diretoria de Projetos",
@@ -1322,7 +1354,8 @@ const EMBEDDED_ITEMS = [
     "metaNov": "",
     "checkNov": "",
     "metaDez": "",
-    "checkDez": ""
+    "checkDez": "",
+    "baixaPrioridade": true
   },
   {
     "diretoria": "Diretoria de Projetos",
@@ -1360,7 +1393,8 @@ const EMBEDDED_ITEMS = [
     "metaNov": "",
     "checkNov": "",
     "metaDez": "",
-    "checkDez": ""
+    "checkDez": "",
+    "baixaPrioridade": true
   },
   {
     "diretoria": "Diretoria de Projetos",
@@ -1398,7 +1432,8 @@ const EMBEDDED_ITEMS = [
     "metaNov": "1 itens: EDUCATIVO",
     "checkNov": "",
     "metaDez": "",
-    "checkDez": ""
+    "checkDez": "",
+    "baixaPrioridade": true
   },
   {
     "diretoria": "Diretoria de Projetos",
@@ -1437,44 +1472,6 @@ const EMBEDDED_ITEMS = [
     "checkNov": "N/A",
     "metaDez": "N/A",
     "checkDez": "N/A"
-  },
-  {
-    "diretoria": "Diretoria de Projetos",
-    "tipoMeta": "Meta Local",
-    "colaborador": "2. Vitor Garcez",
-    "projeto": "3. MUSEU DO PETRÓLEO",
-    "descricaoMeta": "Entrega do MuP 2 anos após recebimento do prédio pela prefeitura/ibp",
-    "indicador": "TR Projetos Executivos Obra",
-    "periodo": "Set a Dez",
-    "metaJanAgo": "",
-    "checkJanAgo": "",
-    "metaSet": "",
-    "checkSet": "",
-    "metaOut": "25,00%",
-    "checkOut": "",
-    "metaNov": "50,00%",
-    "checkNov": "",
-    "metaDez": "100,00%",
-    "checkDez": ""
-  },
-  {
-    "diretoria": "Diretoria de Projetos",
-    "tipoMeta": "Meta Local",
-    "colaborador": "9. Amarilis",
-    "projeto": "3. MUSEU DO PETRÓLEO",
-    "descricaoMeta": "Entrega do MuP 2 anos após recebimento do prédio pela prefeitura/ibp",
-    "indicador": "Detalhamento Conteúdo e Expografia",
-    "periodo": "Set a Dez",
-    "metaJanAgo": "",
-    "checkJanAgo": "",
-    "metaSet": "",
-    "checkSet": "",
-    "metaOut": "25,00%",
-    "checkOut": "",
-    "metaNov": "50,00%",
-    "checkNov": "",
-    "metaDez": "100,00%",
-    "checkDez": ""
   },
   {
     "diretoria": "Diretoria de Projetos",
@@ -1649,139 +1646,6 @@ const EMBEDDED_ITEMS = [
   },
   {
     "diretoria": "Diretoria de Projetos",
-    "tipoMeta": "Meta Local",
-    "colaborador": "2. Vitor Garcez",
-    "projeto": "6. METAS SETORIAIS — EXPOSIÇÕES",
-    "descricaoMeta": "Inscrever a equipe em no mínimo 3 premiações internacionais na área de exposições até dezembro de 2026, de forma a dar visibilidade pública ao projeto.",
-    "indicador": "1. PREMIAÇÕES: Inscrever a equipe em no mínimo 3 premiações internacionais na área de exposições até dezembro de 2026",
-    "periodo": "Set a Dez",
-    "metaJanAgo": "",
-    "checkJanAgo": "",
-    "metaSet": "Inscrições: Design for a Better World (até 20/09); A' Design Award (até 30/09); MUSE Design Award (até set)",
-    "checkSet": "",
-    "metaOut": "",
-    "checkOut": "",
-    "metaNov": "Inscrição IF Design Award (até nov)",
-    "checkNov": "",
-    "metaDez": "Mínimo de 3 premiações internacionais inscritas até dez/2026",
-    "checkDez": ""
-  },
-  {
-    "diretoria": "Diretoria de Projetos",
-    "tipoMeta": "Meta Local",
-    "colaborador": "2. Vitor Garcez",
-    "projeto": "6. METAS SETORIAIS — EXPOSIÇÕES",
-    "descricaoMeta": "Estruturar a área de tecnologia aplicada a projetos de museus e exposições.",
-    "indicador": "2. TECNOLOGIA PARA EXPOSIÇÕES: Estruturar a área de tecnologia aplicada a projetos de museus e exposições.",
-    "periodo": "Set a Dez",
-    "metaJanAgo": "",
-    "checkJanAgo": "",
-    "metaSet": "",
-    "checkSet": "",
-    "metaOut": "",
-    "checkOut": "",
-    "metaNov": "",
-    "checkNov": "",
-    "metaDez": "Especialista em tecnologia contratado; viagem técnica à China realizada (relatório e roteiro em anexo à mensagem original)",
-    "checkDez": ""
-  },
-  {
-    "diretoria": "Diretoria de Projetos",
-    "tipoMeta": "Meta Local",
-    "colaborador": "2. Vitor Garcez",
-    "projeto": "6. METAS SETORIAIS — EXPOSIÇÕES",
-    "descricaoMeta": "Implementar diretrizes de sustentabilidade no desenvolvimento de novos projetos.",
-    "indicador": "3. SUSTENTABILIDADE NOS PROJETOS: Implementar diretrizes de sustentabilidade no desenvolvimento de novos projetos.",
-    "periodo": "Set a Dez",
-    "metaJanAgo": "",
-    "checkJanAgo": "",
-    "metaSet": "",
-    "checkSet": "",
-    "metaOut": "",
-    "checkOut": "",
-    "metaNov": "",
-    "checkNov": "",
-    "metaDez": "Plano de sustentabilidade elaborado; consultoria contratada (MAZ e MUP)",
-    "checkDez": ""
-  },
-  {
-    "diretoria": "Diretoria de Projetos",
-    "tipoMeta": "Meta Local",
-    "colaborador": "2. Vitor Garcez",
-    "projeto": "6. METAS SETORIAIS — EXPOSIÇÕES",
-    "descricaoMeta": "Desenvolver propostas de exposições temporárias para equipamentos IDG e fortalecer a capacidade interna de desenvolvimento de projetos e construção de know-how.",
-    "indicador": "4. DESENVOLVIMENTO DE EXPOGRAFIA: Desenvolver propostas de exposições temporárias para equipamentos IDG, fortalecendo a capacidade interna de desenvolvimento de projetos e construção de know-how.",
-    "periodo": "Set a Dez",
-    "metaJanAgo": "",
-    "checkJanAgo": "",
-    "metaSet": "",
-    "checkSet": "",
-    "metaOut": "",
-    "checkOut": "",
-    "metaNov": "",
-    "checkNov": "",
-    "metaDez": "2 propostas aprovadas (MJB, MAZ); equipe piloto montada (início previsto 2027)",
-    "checkDez": ""
-  },
-  {
-    "diretoria": "Diretoria de Projetos",
-    "tipoMeta": "Meta Local",
-    "colaborador": "2. Vitor Garcez",
-    "projeto": "6. METAS SETORIAIS — EXPOSIÇÕES",
-    "descricaoMeta": "Ampliar a visibilidade institucional dos projetos da equipe.",
-    "indicador": "5. VISIBILIDADE INSTITUCIONAL: Ampliar a visibilidade institucional dos projetos da equipe.",
-    "periodo": "Set a Dez",
-    "metaJanAgo": "",
-    "checkJanAgo": "",
-    "metaSet": "",
-    "checkSet": "",
-    "metaOut": "",
-    "checkOut": "",
-    "metaNov": "Publicação do livro/catálogo do MAZ",
-    "checkNov": "",
-    "metaDez": "1 a 3 artigos publicados no LinkedIn (Vitor, Marina, Amarílis)",
-    "checkDez": ""
-  },
-  {
-    "diretoria": "Diretoria de Projetos",
-    "tipoMeta": "Meta Local",
-    "colaborador": "2. Vitor Garcez",
-    "projeto": "6. METAS SETORIAIS — EXPOSIÇÕES",
-    "descricaoMeta": "Capacitar a equipe de projetos em gestão de projetos de arquitetura e complementares.",
-    "indicador": "6. FORMAÇÃO CONTINUADA: Capacitar a equipe de projetos em gestão de projetos de arquitetura e complementares.",
-    "periodo": "Set a Dez",
-    "metaJanAgo": "",
-    "checkJanAgo": "",
-    "metaSet": "",
-    "checkSet": "",
-    "metaOut": "",
-    "checkOut": "",
-    "metaNov": "",
-    "checkNov": "",
-    "metaDez": "Programa de desenvolvimento iniciado (foco: Tati Proba)",
-    "checkDez": ""
-  },
-  {
-    "diretoria": "Diretoria de Projetos",
-    "tipoMeta": "Meta Local",
-    "colaborador": "2. Vitor Garcez",
-    "projeto": "6. METAS SETORIAIS — EXPOSIÇÕES",
-    "descricaoMeta": "Realizar workshop de fechamento do projeto MAZ com toda a equipe, após a abertura, para identificar melhorias e direcionamentos para projetos futuros.",
-    "indicador": "7. LIÇÕES APRENDIDAS — MAZ: Realizar workshop de fechamento do projeto MAZ com toda a equipe, após a abertura, para identificar melhorias e direcionamentos para projetos futuros.",
-    "periodo": "Set a Dez",
-    "metaJanAgo": "",
-    "checkJanAgo": "",
-    "metaSet": "",
-    "checkSet": "",
-    "metaOut": "",
-    "checkOut": "",
-    "metaNov": "",
-    "checkNov": "",
-    "metaDez": "Workshop realizado; recomendações consolidadas (depende da abertura do MAZ)",
-    "checkDez": ""
-  },
-  {
-    "diretoria": "Diretoria de Projetos",
     "tipoMeta": "Meta Global",
     "colaborador": "1. Sergio Mendes",
     "projeto": "2. CCMEC",
@@ -1797,7 +1661,8 @@ const EMBEDDED_ITEMS = [
     "metaNov": "Relatório Técnico de Modelo Curatorial\nVídeo Institucional\n23/11 - Lançamento CCMEC",
     "checkNov": "",
     "metaDez": "Plano de Ocupação Arquitetônica do CCMEC\nRelatório Técnico de Circulação e Acessibilidade",
-    "checkDez": ""
+    "checkDez": "",
+    "sortOrder": 1
   },
   {
     "diretoria": "Diretoria de Projetos",
@@ -1892,7 +1757,8 @@ const EMBEDDED_ITEMS = [
     "metaNov": "",
     "checkNov": "",
     "metaDez": "",
-    "checkDez": ""
+    "checkDez": "",
+    "baixaPrioridade": true
   },
   {
     "diretoria": "Diretoria de Projetos",
@@ -1911,7 +1777,8 @@ const EMBEDDED_ITEMS = [
     "metaNov": "Produção (Libras/Audiodescrição) — até 04/11",
     "checkNov": "",
     "metaDez": "",
-    "checkDez": ""
+    "checkDez": "",
+    "baixaPrioridade": true
   },
   {
     "diretoria": "Diretoria de Projetos",
@@ -1930,7 +1797,8 @@ const EMBEDDED_ITEMS = [
     "metaNov": "",
     "checkNov": "",
     "metaDez": "",
-    "checkDez": ""
+    "checkDez": "",
+    "baixaPrioridade": true
   },
   {
     "diretoria": "Diretoria de Projetos",
@@ -1949,7 +1817,8 @@ const EMBEDDED_ITEMS = [
     "metaNov": "",
     "checkNov": "",
     "metaDez": "",
-    "checkDez": ""
+    "checkDez": "",
+    "baixaPrioridade": true
   },
   {
     "diretoria": "Diretoria de Projetos",
@@ -1987,7 +1856,8 @@ const EMBEDDED_ITEMS = [
     "metaNov": "",
     "checkNov": "",
     "metaDez": "",
-    "checkDez": ""
+    "checkDez": "",
+    "baixaPrioridade": true
   },
   {
     "diretoria": "Diretoria de Projetos",
@@ -2006,140 +1876,8 @@ const EMBEDDED_ITEMS = [
     "metaNov": "",
     "checkNov": "",
     "metaDez": "",
-    "checkDez": ""
-  },
-  {
-    "diretoria": "Diretoria de Projetos",
-    "tipoMeta": "Meta Local",
-    "colaborador": "9. Amarilis",
-    "projeto": "2. CCMEC",
-    "descricaoMeta": "Plano de Trabalho do CCMEC",
-    "indicador": "PLANO DE TRABALHO\nhttps://pmo-creator.github.io/ccmec_masterplan/",
-    "periodo": "Set a Dez",
-    "metaJanAgo": "",
-    "checkJanAgo": "",
-    "metaSet": "PLANO DE TRABALHO",
-    "checkSet": "Concluído",
-    "metaOut": "",
-    "checkOut": "",
-    "metaNov": "",
-    "checkNov": "",
-    "metaDez": "",
-    "checkDez": ""
-  },
-  {
-    "diretoria": "Diretoria de Projetos",
-    "tipoMeta": "Meta Local",
-    "colaborador": "9. Amarilis",
-    "projeto": "2. CCMEC",
-    "descricaoMeta": "ESCUTAS - Grupos de Trabalho/Pesquisa",
-    "indicador": "ESCUTAS - Grupos de Trabalho/Pesquisa",
-    "periodo": "Set a Dez",
-    "metaJanAgo": "",
-    "checkJanAgo": "",
-    "metaSet": "ESCUTAS - Grupos de Trabalho/Pesquisa\nGrupo 1: Memória e Arquivo — 23/09 (qua) 10h-12h — Stela (Yuri e Vinicius), Murilo\nGrupo 2: Engenharia e Alameda — 23/09 (qua) 14h-16h — Fabiano (Lucas e Paulo)\nGrupo 3: Projeto Educativo — 24/09 (qui) 10h-12h — Edeson, Murilo\nGrupo 4: Restauro Capanema — 24/09 (qui) 14h-16h — Fernanda (Yrvin)",
-    "checkSet": "",
-    "metaOut": "",
-    "checkOut": "",
-    "metaNov": "Relatório Técnico de Modelo Curatorial",
-    "checkNov": "",
-    "metaDez": "",
-    "checkDez": ""
-  },
-  {
-    "diretoria": "Diretoria de Projetos",
-    "tipoMeta": "Meta Local",
-    "colaborador": "9. Amarilis",
-    "projeto": "2. CCMEC",
-    "descricaoMeta": "NOME do Centro Cultural do MEC",
-    "indicador": "NOME do Centro Cultural do MEC",
-    "periodo": "Set a Dez",
-    "metaJanAgo": "",
-    "checkJanAgo": "",
-    "metaSet": "20,00%",
-    "checkSet": "",
-    "metaOut": "80,00%",
-    "checkOut": "",
-    "metaNov": "",
-    "checkNov": "",
-    "metaDez": "",
-    "checkDez": ""
-  },
-  {
-    "diretoria": "Diretoria de Projetos",
-    "tipoMeta": "Meta Local",
-    "colaborador": "9. Amarilis",
-    "projeto": "2. CCMEC",
-    "descricaoMeta": "SEMINÁRIO 15/out — Conteúdo",
-    "indicador": "SEMINÁRIO 15/out — Conteúdo",
-    "periodo": "Set a Dez",
-    "metaJanAgo": "",
-    "checkJanAgo": "",
-    "metaSet": "",
-    "checkSet": "",
-    "metaOut": "SEMINÁRIO 15/out — Conteúdo",
-    "checkOut": "",
-    "metaNov": "",
-    "checkNov": "",
-    "metaDez": "",
-    "checkDez": ""
-  },
-  {
-    "diretoria": "Diretoria de Projetos",
-    "tipoMeta": "Meta Local",
-    "colaborador": "3. Tatiana Azevedo",
-    "projeto": "2. CCMEC",
-    "descricaoMeta": "SEMINÁRIO 15/out — Logística",
-    "indicador": "SEMINÁRIO 15/out — Logística",
-    "periodo": "Set a Dez",
-    "metaJanAgo": "",
-    "checkJanAgo": "",
-    "metaSet": "",
-    "checkSet": "",
-    "metaOut": "SEMINÁRIO 15/out — Logística",
-    "checkOut": "",
-    "metaNov": "",
-    "checkNov": "",
-    "metaDez": "",
-    "checkDez": ""
-  },
-  {
-    "diretoria": "Diretoria de Projetos",
-    "tipoMeta": "Meta Local",
-    "colaborador": "2. Vitor Garcez",
-    "projeto": "2. CCMEC",
-    "descricaoMeta": "PLANO DE OCUPAÇÃO ARQUITETÔNICA",
-    "indicador": "PLANO DE OCUPAÇÃO ARQUITETÔNICA",
-    "periodo": "Set a Dez",
-    "metaJanAgo": "",
-    "checkJanAgo": "",
-    "metaSet": "10,00%",
-    "checkSet": "",
-    "metaOut": "50,00%",
-    "checkOut": "",
-    "metaNov": "100,00%",
-    "checkNov": "",
-    "metaDez": "",
-    "checkDez": ""
-  },
-  {
-    "diretoria": "Diretoria de Projetos",
-    "tipoMeta": "Meta Local",
-    "colaborador": "5. Iago",
-    "projeto": "2. CCMEC",
-    "descricaoMeta": "VÍDEO INSTITUCIONAL + Lançamento CCMEC",
-    "indicador": "VÍDEO INSTITUCIONAL + Lançamento CCMEC",
-    "periodo": "Set a Dez",
-    "metaJanAgo": "",
-    "checkJanAgo": "",
-    "metaSet": "",
-    "checkSet": "",
-    "metaOut": "",
-    "checkOut": "",
-    "metaNov": "Vídeo Institucional\nLançamento CCMEC 23/11",
-    "checkNov": "",
-    "metaDez": "",
-    "checkDez": ""
+    "checkDez": "",
+    "baixaPrioridade": true
   },
   {
     "diretoria": "Diretoria de Projetos",
@@ -2182,7 +1920,7 @@ const EMBEDDED_ITEMS = [
   {
     "diretoria": "Diretoria de Projetos",
     "tipoMeta": "Meta Local",
-    "colaborador": "3. Tatiana Azevedo",
+    "colaborador": "2. Vitor Garcez",
     "projeto": "3. MUSEU DO PETRÓLEO",
     "descricaoMeta": "Detalhamento dos Entregáveis até Final de 2026",
     "indicador": "Detalhamento dos Entregáveis até Final de 2026",
@@ -2222,10 +1960,10 @@ const EMBEDDED_ITEMS = [
     "tipoMeta": "Meta Global",
     "colaborador": "1. Sergio Mendes",
     "projeto": "4. MUSEDUCA",
-    "descricaoMeta": "Formalização do Aditivo e Regularização e Entrega de Produtos",
-    "indicador": "Formalização do Aditivo e Regularização e Entrega de Produtos",
+    "descricaoMeta": "Formalização do Aditivo e Regularização e Entrega de Produtos - Estratégico",
+    "indicador": "Formalização do Aditivo e Regularização e Entrega de Produtos - Estratégico",
     "periodo": "Jan a Ago",
-    "metaJanAgo": "Formalização do Aditivo e Regularização e Entrega de Produtos",
+    "metaJanAgo": "Formalização do Aditivo e Regularização e Entrega de Produtos - Estratégico",
     "checkJanAgo": "",
     "metaSet": "",
     "checkSet": "",
@@ -2235,6 +1973,811 @@ const EMBEDDED_ITEMS = [
     "checkNov": "",
     "metaDez": "",
     "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "2. Vitor Garcez",
+    "projeto": "5. Entrega Fase 2 MUSEU DAS AMAZÔNIAS",
+    "descricaoMeta": "Entrega da exposição de longa duração (Expografia e Conteúdo)",
+    "indicador": "Entrega da exposição de longa duração (Expografia e Conteúdo)",
+    "periodo": "Jan a Ago",
+    "metaJanAgo": "Entrega da exposição de longa duração (Expografia e Conteúdo)",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "",
+    "checkDez": "",
+    "meta2027": "",
+    "check2027": "",
+    "baixaPrioridade": false,
+    "sortOrder": null
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "3. Tatiana Azevedo",
+    "projeto": "5. Entrega Fase 2 MUSEU DAS AMAZÔNIAS",
+    "descricaoMeta": "Entrega da exposição de longa duração (Produção e complementares)",
+    "indicador": "Entrega da exposição de longa duração (Produção e complementares)",
+    "periodo": "Jan a Ago",
+    "metaJanAgo": "Entrega da exposição de longa duração (Produção e complementares)",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "",
+    "checkDez": "",
+    "meta2027": "",
+    "check2027": "",
+    "baixaPrioridade": false,
+    "sortOrder": null
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "9. Amarilis",
+    "projeto": "4. MUSEDUCA",
+    "descricaoMeta": "Formalização do Aditivo e Regularização e Entrega de Produtos - Estratégico",
+    "indicador": "Formalização do Aditivo e Regularização e Entrega de Produtos - Estratégico",
+    "periodo": "Jan a Ago",
+    "metaJanAgo": "Formalização do Aditivo e Regularização e Entrega de Produtos - Estratégico",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "",
+    "checkDez": "",
+    "meta2027": "",
+    "check2027": "",
+    "baixaPrioridade": false,
+    "sortOrder": null
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "9. Amarilis",
+    "projeto": "1. Caixa BOX (MASTERPLAN) do MUSEU DO PETRÓLEO",
+    "descricaoMeta": "Entrega do Masterplan MuP até abril de 2026 - CONTEÚDO",
+    "indicador": "Entrega do Masterplan MuP até abril de 2026 - CONTEÚDO",
+    "periodo": "Jan a Ago",
+    "metaJanAgo": "Entrega do Masterplan MuP até abril de 2026 - CONTEÚDO",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "",
+    "checkDez": "",
+    "meta2027": "",
+    "check2027": "",
+    "baixaPrioridade": false,
+    "sortOrder": null
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "2. Vitor Garcez",
+    "projeto": "1. Caixa BOX (MASTERPLAN) do MUSEU DO PETRÓLEO",
+    "descricaoMeta": "Entrega do Masterplan MuP até abril de 2026 - ARQUITETURA E EXPOGRAFIA",
+    "indicador": "Entrega do Masterplan MuP até abril de 2026 - ARQUITETURA E EXPOGRAFIA",
+    "periodo": "Jan a Ago",
+    "metaJanAgo": "Entrega do Masterplan MuP até abril de 2026 - ARQUITETURA E EXPOGRAFIA",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "",
+    "checkDez": "",
+    "meta2027": "",
+    "check2027": "",
+    "baixaPrioridade": false,
+    "sortOrder": null
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "3. Tatiana Azevedo",
+    "projeto": "1. Caixa BOX (MASTERPLAN) do MUSEU DO PETRÓLEO",
+    "descricaoMeta": "Entrega do Masterplan MuP até abril de 2026 - PLANO DE GESTÃO, ORÇAMENTO",
+    "indicador": "Entrega do Masterplan MuP até abril de 2026 - PLANO DE GESTÃO, ORÇAMENTO",
+    "periodo": "Jan a Ago",
+    "metaJanAgo": "Entrega do Masterplan MuP até abril de 2026 - PLANO DE GESTÃO, ORÇAMENTO",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "",
+    "checkDez": "",
+    "meta2027": "",
+    "check2027": "",
+    "baixaPrioridade": false,
+    "sortOrder": null
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "9. Amarilis",
+    "projeto": "2. CCMEC",
+    "descricaoMeta": "Plano de Trabalho do CCMEC",
+    "indicador": "PLANO DE TRABALHO\nhttps://pmo-creator.github.io/ccmec_masterplan/",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "PLANO DE TRABALHO",
+    "checkSet": "Concluído",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "",
+    "checkDez": "",
+    "meta2027": "",
+    "check2027": "",
+    "baixaPrioridade": false,
+    "sortOrder": 2
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "3. Tatiana Azevedo",
+    "projeto": "2. CCMEC",
+    "descricaoMeta": "Workshop 15/out: identidade, transformação e futuro",
+    "indicador": "WORKSHOP 15/out: identidade, transformação e futuro",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "WORKSHOP 15/out: identidade, transformação e futuro",
+    "checkOut": "Em andamento",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "",
+    "checkDez": "",
+    "meta2027": "",
+    "check2027": "",
+    "baixaPrioridade": false,
+    "sortOrder": 3
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "5. Iago",
+    "projeto": "2. CCMEC",
+    "descricaoMeta": "Lançamento Institucional do Projeto",
+    "indicador": "Lançamento Institucional do Projeto em 23/11",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "Lançamento Institucional do Projeto em 23/11",
+    "checkNov": "",
+    "metaDez": "",
+    "checkDez": "",
+    "meta2027": "",
+    "check2027": "",
+    "baixaPrioridade": false,
+    "sortOrder": 4
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "2. Vitor Garcez",
+    "projeto": "2. CCMEC",
+    "descricaoMeta": "Rebranding (Naming e Identidade Visual)",
+    "indicador": "REBRANDING (Naming e Identidade Visual)",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "10,00%",
+    "checkSet": "",
+    "metaOut": "50,00%",
+    "checkOut": "30,00%",
+    "metaNov": "100,00%",
+    "checkNov": "",
+    "metaDez": "",
+    "checkDez": "",
+    "meta2027": "",
+    "check2027": "",
+    "baixaPrioridade": false,
+    "sortOrder": 5
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "3. Tatiana Azevedo",
+    "projeto": "2. CCMEC",
+    "descricaoMeta": "Vídeo Institucional",
+    "indicador": "VÍDEO INSTITUCIONAL",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "Vídeo Institucional",
+    "checkNov": "Em andamento",
+    "metaDez": "",
+    "checkDez": "",
+    "meta2027": "",
+    "check2027": "",
+    "baixaPrioridade": false,
+    "sortOrder": 6
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "9. Amarilis",
+    "projeto": "2. CCMEC",
+    "descricaoMeta": "Escutas (Relatório Preliminar); Modelo Curatorial e Benchmarking (Produto 1)",
+    "indicador": "ESCUTAS (Relatório Preliminar); MODELO CURATORIAL e BENCHMARKING (Produto 1)",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "10,00%",
+    "checkSet": "",
+    "metaOut": "25,00%",
+    "checkOut": "",
+    "metaNov": "50,00%",
+    "checkNov": "",
+    "metaDez": "100,00%",
+    "checkDez": "",
+    "meta2027": "",
+    "check2027": "",
+    "baixaPrioridade": false,
+    "sortOrder": 7
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "2. Vitor Garcez",
+    "projeto": "2. CCMEC",
+    "descricaoMeta": "Plano de Ocupação Arquitetônica e Relatório Técnico de Circulação e Acessibilidade (Produto 2)",
+    "indicador": "PLANO DE OCUPAÇÃO ARQUITETÔNICA e RELATÓRIO TÉCNICO DE CIRCULAÇÃO E ACESSIBILIDADE (Produto 2)",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "10,00%",
+    "checkSet": "",
+    "metaOut": "25,00%",
+    "checkOut": "",
+    "metaNov": "50,00%",
+    "checkNov": "",
+    "metaDez": "100,00%",
+    "checkDez": "",
+    "meta2027": "",
+    "check2027": "",
+    "baixaPrioridade": false,
+    "sortOrder": 8
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "3. Tatiana Azevedo",
+    "projeto": "6. METAS SETORIAIS — EXPOSIÇÕES",
+    "descricaoMeta": "Lições Aprendidas — workshop de fechamento do projeto MAZ",
+    "indicador": "LIÇÕES APRENDIDAS — Workshop de Fechamento do MAZ (3 escalas) + Relatório + Checklists",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "Workshop de fechamento do projeto MAZ (3 escalas) + relatório + checklists",
+    "checkDez": "",
+    "meta2027": "",
+    "check2027": "",
+    "baixaPrioridade": false,
+    "sortOrder": null
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "2. Vitor Garcez",
+    "projeto": "6. METAS SETORIAIS — EXPOSIÇÕES",
+    "descricaoMeta": "Premiações — inscrever o IDG em prêmios internacionais",
+    "indicador": "PREMIAÇÕES — Inscrever o IDG em no mínimo 3 premiações internacionais até dez/2026",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "Inscrever o IDG em no mínimo 3 premiações internacionais até dez/2026",
+    "checkDez": "",
+    "meta2027": "",
+    "check2027": "",
+    "baixaPrioridade": false,
+    "sortOrder": null
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "2. Vitor Garcez",
+    "projeto": "6. METAS SETORIAIS — EXPOSIÇÕES",
+    "descricaoMeta": "Premiações — registro em foto/vídeo do MAZ",
+    "indicador": "PREMIAÇÕES — Registro em Foto/Vídeo do MAZ",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "Registro em foto/vídeo do MAZ",
+    "checkSet": "Concluído",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "",
+    "checkDez": "",
+    "meta2027": "",
+    "check2027": "",
+    "baixaPrioridade": false,
+    "sortOrder": null
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "2. Vitor Garcez",
+    "projeto": "6. METAS SETORIAIS — EXPOSIÇÕES",
+    "descricaoMeta": "Premiações — inscrições em prêmios de design",
+    "indicador": "PREMIAÇÕES — Inscrições (Design for a Better World, A' Design Award, IF Design Award)",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "Design for a Better World (enviado), A' Design Award, IF Design Award",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "",
+    "checkDez": "",
+    "meta2027": "",
+    "check2027": "",
+    "baixaPrioridade": false,
+    "sortOrder": null
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "3. Tatiana Azevedo",
+    "projeto": "6. METAS SETORIAIS — EXPOSIÇÕES",
+    "descricaoMeta": "Tecnologia para Exposições — contratação de especialista",
+    "indicador": "TECNOLOGIA PARA EXPOSIÇÕES — Contratação de Especialista para CCMEC e MUP",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "Contratação de especialista para CCMEC e MUP",
+    "checkDez": "",
+    "meta2027": "",
+    "check2027": "",
+    "baixaPrioridade": false,
+    "sortOrder": null
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "2. Vitor Garcez",
+    "projeto": "6. METAS SETORIAIS — EXPOSIÇÕES",
+    "descricaoMeta": "Tecnologia para Exposições — viagem de pesquisa à China",
+    "indicador": "TECNOLOGIA PARA EXPOSIÇÕES — Viagem de Pesquisa à China",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "Viagem de pesquisa à China",
+    "checkDez": "",
+    "meta2027": "",
+    "check2027": "",
+    "baixaPrioridade": false,
+    "sortOrder": null
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "2. Vitor Garcez",
+    "projeto": "6. METAS SETORIAIS — EXPOSIÇÕES",
+    "descricaoMeta": "Desenvolvimento de Expografia — aprovação de exposição temporária 2027 (MJB)",
+    "indicador": "DESENVOLVIMENTO DE EXPOGRAFIA — Aprovação de 1 Exposição Temporária 2027 (MJB)",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "Aprovação de 1 exposição temporária 2027 (MJB)",
+    "checkDez": "",
+    "meta2027": "",
+    "check2027": "",
+    "baixaPrioridade": false,
+    "sortOrder": null
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "2. Vitor Garcez",
+    "projeto": "6. METAS SETORIAIS — EXPOSIÇÕES",
+    "descricaoMeta": "Desenvolvimento de Expografia — equipe piloto interna",
+    "indicador": "DESENVOLVIMENTO DE EXPOGRAFIA — Montagem de Equipe Interna Piloto",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "Montagem de equipe interna piloto (arquiteto, designer, PMO) para projetos de exposições temporárias e projeto do CCMEC",
+    "checkDez": "",
+    "meta2027": "",
+    "check2027": "",
+    "baixaPrioridade": false,
+    "sortOrder": null
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "4. Camila Costa",
+    "projeto": "6. METAS SETORIAIS — EXPOSIÇÕES",
+    "descricaoMeta": "Visibilidade Institucional — publicação do livro/catálogo do MAZ",
+    "indicador": "VISIBILIDADE INSTITUCIONAL — Publicação do Livro/Catálogo do MAZ",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "Publicação do livro/catálogo do MAZ",
+    "checkNov": "",
+    "metaDez": "",
+    "checkDez": "",
+    "meta2027": "",
+    "check2027": "",
+    "baixaPrioridade": false,
+    "sortOrder": null
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "2. Vitor Garcez",
+    "projeto": "6. METAS SETORIAIS — EXPOSIÇÕES",
+    "descricaoMeta": "Visibilidade Institucional — participação no congresso ICOM ICAMT",
+    "indicador": "VISIBILIDADE INSTITUCIONAL — Participação no Congresso ICOM ICAMT",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "Participação no congresso ICOM ICAMT",
+    "checkNov": "",
+    "metaDez": "",
+    "checkDez": "",
+    "meta2027": "",
+    "check2027": "",
+    "baixaPrioridade": false,
+    "sortOrder": null
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "9. Amarilis",
+    "projeto": "6. METAS SETORIAIS — EXPOSIÇÕES",
+    "descricaoMeta": "Visibilidade Institucional — artigo no LinkedIn sobre a experiência do MAZ",
+    "indicador": "VISIBILIDADE INSTITUCIONAL — Artigo no LinkedIn sobre a Experiência do MAZ",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "Artigo no LinkedIn sobre a experiência do MAZ",
+    "checkNov": "",
+    "metaDez": "",
+    "checkDez": "",
+    "meta2027": "",
+    "check2027": "",
+    "baixaPrioridade": false,
+    "sortOrder": null
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "2. Vitor Garcez",
+    "projeto": "6. METAS SETORIAIS — EXPOSIÇÕES",
+    "descricaoMeta": "Formação Continuada — programa de gestão de projetos técnicos",
+    "indicador": "FORMAÇÃO CONTINUADA — Programa de Gestão de Projetos Técnicos (Tati Proba e Marcela)",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "Programa de gestão de projetos técnicos para equipe de exposições e PMOs (Tati Proba e Marcela)",
+    "checkDez": "",
+    "meta2027": "",
+    "check2027": "",
+    "baixaPrioridade": false,
+    "sortOrder": null
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "2. Vitor Garcez",
+    "projeto": "6. METAS SETORIAIS — EXPOSIÇÕES",
+    "descricaoMeta": "Sustentabilidade em Projetos — guia de sustentabilidade para novos museus e exposições",
+    "indicador": "SUSTENTABILIDADE EM PROJETOS — Guia de Sustentabilidade para Novos Museus e Exposições (MUP/CCMEC)",
+    "periodo": "2027",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "",
+    "checkDez": "",
+    "meta2027": "Desenvolvimento de guia de sustentabilidade para novos museus e exposições (para MUP/CCMEC)",
+    "check2027": "",
+    "baixaPrioridade": false,
+    "sortOrder": null
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "2. Vitor Garcez",
+    "projeto": "6. METAS SETORIAIS — EXPOSIÇÕES",
+    "descricaoMeta": "Visibilidade Institucional — artigos no LinkedIn e outros meios",
+    "indicador": "VISIBILIDADE INSTITUCIONAL — Artigos no LinkedIn e Outros Meios (anual)",
+    "periodo": "2027",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "",
+    "checkDez": "",
+    "meta2027": "1 a 3 artigos no LinkedIn e outros meios, anualmente",
+    "check2027": "",
+    "baixaPrioridade": false,
+    "sortOrder": null
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "2. Vitor Garcez",
+    "projeto": "6. METAS SETORIAIS — EXPOSIÇÕES",
+    "descricaoMeta": "Visibilidade Institucional — palestras/workshops CULTSP Pro (Vitor Garcez, Amarílis Lage, Tati Azevedo)",
+    "indicador": "VISIBILIDADE INSTITUCIONAL — Palestras/Workshops sobre a Experiência do MAZ no CULTSP Pro",
+    "periodo": "2027",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "",
+    "checkDez": "",
+    "meta2027": "Palestras/workshops sobre a experiência do MAZ no CULTSP Pro",
+    "check2027": "",
+    "baixaPrioridade": false,
+    "sortOrder": null
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "2. Vitor Garcez",
+    "projeto": "6. METAS SETORIAIS — EXPOSIÇÕES",
+    "descricaoMeta": "Visibilidade Institucional — apresentação do projeto MAZ para todo o IDG (Vitor Garcez, Amarílis, Tati Azevedo)",
+    "indicador": "VISIBILIDADE INSTITUCIONAL — Apresentação do Projeto MAZ para Todo o IDG (com RH)",
+    "periodo": "2027",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "",
+    "checkDez": "",
+    "meta2027": "Apresentação do projeto MAZ para todo o IDG (com RH)",
+    "check2027": "",
+    "baixaPrioridade": false,
+    "sortOrder": null
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "3. Tatiana Azevedo",
+    "projeto": "6. METAS SETORIAIS — EXPOSIÇÕES",
+    "descricaoMeta": "Acessibilidade — qualificar recursos de acessibilidade nas exposições",
+    "indicador": "ACESSIBILIDADE — Qualificar Recursos de Acessibilidade nas Exposições",
+    "periodo": "2027",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "",
+    "checkDez": "",
+    "meta2027": "Qualificar recursos de acessibilidade nas exposições",
+    "check2027": "",
+    "baixaPrioridade": false,
+    "sortOrder": null
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "3. Tatiana Azevedo",
+    "projeto": "6. METAS SETORIAIS — EXPOSIÇÕES",
+    "descricaoMeta": "Acessibilidade — relatório de escutas focado em acessibilidade",
+    "indicador": "ACESSIBILIDADE — Relatório de Escutas Focado em Acessibilidade",
+    "periodo": "2027",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "",
+    "checkDez": "",
+    "meta2027": "Relatório de escutas focado em acessibilidade",
+    "check2027": "",
+    "baixaPrioridade": false,
+    "sortOrder": null
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "2. Vitor Garcez",
+    "projeto": "6. METAS SETORIAIS — EXPOSIÇÕES",
+    "descricaoMeta": "Formação Continuada — gestão de projetos técnicos e acompanhamento de obras",
+    "indicador": "FORMAÇÃO CONTINUADA — Gestão de Projetos Técnicos e Acompanhamento de Obras",
+    "periodo": "2027",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "",
+    "checkDez": "",
+    "meta2027": "Programa de gestão de projetos técnicos e acompanhamento de obras",
+    "check2027": "",
+    "baixaPrioridade": false,
+    "sortOrder": null
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "9. Amarilis",
+    "projeto": "6. METAS SETORIAIS — EXPOSIÇÕES",
+    "descricaoMeta": "Formação Continuada — uso responsável de IA",
+    "indicador": "FORMAÇÃO CONTINUADA — Curso/Treinamento de Uso Responsável de IA",
+    "periodo": "2027",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "",
+    "checkDez": "",
+    "meta2027": "Curso/treinamento de uso responsável de IA",
+    "check2027": "",
+    "baixaPrioridade": false,
+    "sortOrder": null
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "3. Tatiana Azevedo",
+    "projeto": "6. METAS SETORIAIS — EXPOSIÇÕES",
+    "descricaoMeta": "Formação Continuada — otimização de tempo e priorização",
+    "indicador": "FORMAÇÃO CONTINUADA — Curso/Treinamento de Otimização de Tempo e Priorização",
+    "periodo": "2027",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "",
+    "checkDez": "",
+    "meta2027": "Curso/treinamento de otimização de tempo e priorização",
+    "check2027": "",
+    "baixaPrioridade": false,
+    "sortOrder": null
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "2. Vitor Garcez",
+    "projeto": "6. METAS SETORIAIS — EXPOSIÇÕES",
+    "descricaoMeta": "Desenvolvimento de Expografia — guia de itinerância",
+    "indicador": "DESENVOLVIMENTO DE EXPOGRAFIA — Guia de Itinerância",
+    "periodo": "2027",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "",
+    "checkDez": "",
+    "meta2027": "Guia de itinerância",
+    "check2027": "",
+    "baixaPrioridade": false,
+    "sortOrder": null
   }
 ];
 
@@ -2271,7 +2814,8 @@ function classifyValue(raw){
 
 function monthEnded(monthDef){
   const [m, d] = monthDef.endDate;
-  const end = new Date(CURRENT_YEAR, m, d, 23, 59, 59);
+  const year = CURRENT_YEAR + (monthDef.endYearOffset || 0);
+  const end = new Date(year, m, d, 23, 59, 59);
   return new Date() > end;
 }
 
@@ -2354,6 +2898,8 @@ function buildModel(embeddedItems){
       descricaoMeta: row.descricaoMeta || "",
       indicador: row.indicador || "",
       periodo: row.periodo || "",
+      baixaPrioridade: !!row.baixaPrioridade,
+      sortOrder: (typeof row.sortOrder === "number") ? row.sortOrder : null,
       months
     };
   });
@@ -2536,21 +3082,25 @@ function getFilteredItems(){
   const d = document.getElementById("fDiretoria").value;
   const cRaw = normalizeText(document.getElementById("fColab").value.trim());
   const periodoAlvo = periodLabel();
+  const showBaixaPrioridade = document.getElementById("fBaixaPrioridade").checked;
   return RAW_ROWS.filter(i=>
     i.periodo === periodoAlvo &&
     (MS_STATE.msTipo.size === 0 || MS_STATE.msTipo.has(i.tipoMeta)) &&
     (!d || i.diretoria === d) &&
-    (!cRaw || normalizeText(i.colaborador).includes(cRaw))
+    (!cRaw || normalizeText(i.colaborador).includes(cRaw)) &&
+    (showBaixaPrioridade || !i.baixaPrioridade)
   );
 }
 
 document.getElementById("fColab").addEventListener("input", render);
+document.getElementById("fBaixaPrioridade").addEventListener("change", render);
 
 /* ============================================================
    RENDER
    ============================================================ */
 function currentMonthKey(){
   if(CURRENT_PERIOD === "jan_ago") return "janago";
+  if(CURRENT_PERIOD === "y2027") return "y2027";
   const m = new Date().getMonth(); // 0-based
   const found = MONTHS.find(mo => {
     // rough mapping: set=Sept(8), out=Oct(9), nov=Nov(10), dez=Dez(11)
@@ -2657,9 +3207,9 @@ function renderThead(){
   });
   const subtitle = document.getElementById("panelSubtitle");
   if(subtitle){
-    subtitle.textContent = CURRENT_PERIOD === "jan_ago"
-      ? "Meta e check por colaborador — Janeiro a Agosto (já realizado)"
-      : "Meta e check mensal por colaborador — Setembro a Dezembro";
+    if(CURRENT_PERIOD === "jan_ago") subtitle.textContent = "Meta e check por colaborador — Janeiro a Agosto (já realizado)";
+    else if(CURRENT_PERIOD === "y2027") subtitle.textContent = "Meta e check por colaborador — Metas para 2027";
+    else subtitle.textContent = "Meta e check mensal por colaborador — Setembro a Dezembro";
   }
 }
 
@@ -2690,7 +3240,12 @@ function render(){
   });
   groups.sort((a,b)=>a.projeto.localeCompare(b.projeto, 'pt-BR', {numeric:true, sensitivity:'base'}));
   // dentro de cada projeto, ordena as linhas por nome do colaborador (tudo do mesmo colaborador em sequência)
-  groups.forEach(g=>g.rows.sort((a,b)=>a.colaborador.localeCompare(b.colaborador, 'pt-BR', {numeric:true, sensitivity:'base'})));
+  // dentro de cada projeto, ordena por nome do colaborador — exceto quando as linhas têm
+  // "sortOrder" definido (ordenação manual explícita), que tem prioridade.
+  groups.forEach(g=>g.rows.sort((a,b)=>{
+    if(a.sortOrder!=null && b.sortOrder!=null) return a.sortOrder - b.sortOrder;
+    return a.colaborador.localeCompare(b.colaborador, 'pt-BR', {numeric:true, sensitivity:'base'});
+  }));
 
   const curMonth = currentMonthKey();
 
