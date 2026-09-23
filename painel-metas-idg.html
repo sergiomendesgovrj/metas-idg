@@ -409,21 +409,27 @@
   /* wrapper com rolagem horizontal para a tabela */
   .table-scroll{
     overflow-x:auto;
+    overflow-y:auto;
+    max-height:70vh;
     -webkit-overflow-scrolling:touch;
   }
   .table-scroll table{ min-width:920px; }
-  .table-scroll::-webkit-scrollbar{ height:10px; }
+  .table-scroll::-webkit-scrollbar{ height:10px; width:10px; }
   .table-scroll::-webkit-scrollbar-track{ background:var(--panel-bg-2); }
   .table-scroll::-webkit-scrollbar-thumb{ background:#aebfd1; border-radius:6px; }
   .table-scroll::-webkit-scrollbar-thumb:hover{ background:#93a8bf; }
 
   table{
     width:100%;
-    border-collapse:collapse;
+    border-collapse:separate;
+    border-spacing:0;
     font-size:13px;
   }
   thead th{
-    background:transparent;
+    position:sticky;
+    top:0;
+    z-index:15;
+    background:var(--panel-bg);
     color:var(--panel-muted);
     font-size:10.5px;
     text-transform:uppercase;
@@ -433,6 +439,7 @@
     text-align:left;
     border-bottom:1px solid rgba(34,65,95,.12);
     white-space:nowrap;
+    box-shadow:0 1px 0 rgba(34,65,95,.12);
   }
   thead th.month-col{text-align:center;}
   tbody td{
@@ -883,8 +890,8 @@ const EMBEDDED_ITEMS = [
     "tipoMeta": "Meta Global",
     "colaborador": "1. Sergio Mendes",
     "projeto": "2. GUIA DE ESCUTAS",
-    "descricaoMeta": "Entrega do Guia de Escutas idg até ago/2026",
-    "indicador": "Entrega do Guia de Escutas idg até ago/2026",
+    "descricaoMeta": "Entrega do Guia de Escutas IDG até ago/2026",
+    "indicador": "Entrega do Guia de Escutas IDG até ago/2026",
     "periodo": "Jan a Ago",
     "metaJanAgo": "Guia de Escutas entregue",
     "checkJanAgo": "Feito",
@@ -903,7 +910,7 @@ const EMBEDDED_ITEMS = [
     "colaborador": "1. Sergio Mendes",
     "projeto": "7. INTELIGÊNCIA ARTIFICIAL - Desenvolvimento e Treinamento",
     "descricaoMeta": "Painel Financeiro MAZ\nhttps://sergiomendesgovrj.github.io/MAZ-Painel-Financeiro/MAZ%20Painel%20Financeiro.html?v=2",
-    "indicador": "Painel Financeiro MAZ\nhttps://sergiomendesgovrj.github.io/MAZ-Painel-Financeiro/MAZ%20Painel%20Financeiro.html?v=2",
+    "indicador": "Painel Financeiro MAZ\nhttps://sites.google.com/idg.org.br/paineldomaz/in%C3%ADcio",
     "periodo": "Jan a Ago",
     "metaJanAgo": "Painel Financeiro MAZ",
     "checkJanAgo": "Feito",
@@ -940,10 +947,10 @@ const EMBEDDED_ITEMS = [
     "tipoMeta": "Meta Global",
     "colaborador": "1. Sergio Mendes",
     "projeto": "7. INTELIGÊNCIA ARTIFICIAL - Desenvolvimento e Treinamento",
-    "descricaoMeta": "Painel Financeiro MUSeDUCA\nhttps://sergiomendesgovrj.github.io/museduca/museduca_painel_financeiro.html",
-    "indicador": "Painel Financeiro MUSeDUCA\nhttps://sergiomendesgovrj.github.io/museduca/museduca_painel_financeiro.html",
+    "descricaoMeta": "Painel Financeiro MUSEDUCA\nhttps://sergiomendesgovrj.github.io/museduca/museduca_painel_financeiro.html",
+    "indicador": "Painel Financeiro MUSEDUCA\nhttps://sergiomendesgovrj.github.io/museduca/museduca_painel_financeiro.html",
     "periodo": "Jan a Ago",
-    "metaJanAgo": "Painel Financeiro MUSeDUCA",
+    "metaJanAgo": "Painel Financeiro MUSEDUCA",
     "checkJanAgo": "Feito",
     "metaSet": "",
     "checkSet": "",
@@ -959,10 +966,10 @@ const EMBEDDED_ITEMS = [
     "tipoMeta": "Meta Global",
     "colaborador": "1. Sergio Mendes",
     "projeto": "7. INTELIGÊNCIA ARTIFICIAL - Desenvolvimento e Treinamento",
-    "descricaoMeta": "Painel musEduca inauguração dez/26\nhttps://sergiomendesgovrj.github.io/salamuseduca/MUSEDUCA_marco_inicial_escopo_completo",
-    "indicador": "Painel musEduca inauguração dez/26\nhttps://sergiomendesgovrj.github.io/salamuseduca/MUSEDUCA_marco_inicial_escopo_completo",
+    "descricaoMeta": "Painel MUSEDUCA inauguração dez/26\nhttps://sergiomendesgovrj.github.io/salamuseduca/MUSEDUCA_marco_inicial_escopo_completo",
+    "indicador": "Painel MUSEDUCA inauguração dez/26\nhttps://sergiomendesgovrj.github.io/salamuseduca/MUSEDUCA_marco_inicial_escopo_completo",
     "periodo": "Jan a Ago",
-    "metaJanAgo": "Painel musEduca inauguração dez/26",
+    "metaJanAgo": "Painel MUSEDUCA inauguração dez/26",
     "checkJanAgo": "Feito",
     "metaSet": "",
     "checkSet": "",
@@ -978,10 +985,10 @@ const EMBEDDED_ITEMS = [
     "tipoMeta": "Meta Global",
     "colaborador": "1. Sergio Mendes",
     "projeto": "7. INTELIGÊNCIA ARTIFICIAL - Desenvolvimento e Treinamento",
-    "descricaoMeta": "M2 exposições idg\nhttps://sergiomendesgovrj.github.io/custo-m2/analise_preco_m2_exposicoes%20(2)",
-    "indicador": "M2 exposições idg\nhttps://sergiomendesgovrj.github.io/custo-m2/analise_preco_m2_exposicoes%20(2)",
+    "descricaoMeta": "M2 exposições IDG\nhttps://sergiomendesgovrj.github.io/custo-m2/analise_preco_m2_exposicoes%20(2)",
+    "indicador": "M2 exposições IDG\nhttps://sergiomendesgovrj.github.io/custo-m2/analise_preco_m2_exposicoes%20(2)",
     "periodo": "Jan a Ago",
-    "metaJanAgo": "M2 exposições idg",
+    "metaJanAgo": "M2 exposições IDG",
     "checkJanAgo": "Feito",
     "metaSet": "",
     "checkSet": "",
@@ -1113,7 +1120,7 @@ const EMBEDDED_ITEMS = [
     "colaborador": "4. Camila Costa",
     "projeto": "1. MUSEU DAS AMAZÔNIAS",
     "descricaoMeta": "CATÁLOGO",
-    "indicador": "CATÁGOLO",
+    "indicador": "CATÁLOGO",
     "periodo": "Set a Dez",
     "metaJanAgo": "",
     "checkJanAgo": "",
@@ -1245,8 +1252,8 @@ const EMBEDDED_ITEMS = [
     "tipoMeta": "Meta Local",
     "colaborador": "7. Pedro Rodrigues",
     "projeto": "1. MUSEU DAS AMAZÔNIAS",
-    "descricaoMeta": "ALARME DE INCÊNCIO NOS FORROS",
-    "indicador": "ALARME DE INCÊNCIO NOS FORROS",
+    "descricaoMeta": "ALARME DE INCÊNDIO NOS FORROS",
+    "indicador": "ALARME DE INCÊNDIO NOS FORROS",
     "periodo": "Set a Dez",
     "metaJanAgo": "",
     "checkJanAgo": "",
@@ -1408,7 +1415,7 @@ const EMBEDDED_ITEMS = [
     "checkJanAgo": "",
     "metaSet": "80,00%",
     "checkSet": "",
-    "metaOut": "100%%",
+    "metaOut": "100,00%",
     "checkOut": "",
     "metaNov": "",
     "checkNov": "",
@@ -1440,7 +1447,7 @@ const EMBEDDED_ITEMS = [
     "tipoMeta": "Meta Global",
     "colaborador": "1. Sergio Mendes",
     "projeto": "3. MUSEU DO PETRÓLEO",
-    "descricaoMeta": "Entrega do MuP 2 anos após recebimento do prédio pela prefeitura/ibp",
+    "descricaoMeta": "Entrega do MuP 2 anos após recebimento do prédio pela prefeitura/IBP",
     "indicador": "TR Projetos Executivos Obra e Complementares\nDetalhamento Conteúdo e Expografia",
     "periodo": "Set a Dez",
     "metaJanAgo": "",
@@ -1459,14 +1466,14 @@ const EMBEDDED_ITEMS = [
     "tipoMeta": "Meta Global",
     "colaborador": "1. Daniel Bruch",
     "projeto": "3. MUSEU DO PETRÓLEO",
-    "descricaoMeta": "Entrega do MuP 2 anos após recebimento do prédio pela prefeitura/ibp",
-    "indicador": "Efetivar 20% (28 milhões) do total do projeto (140 milões)",
+    "descricaoMeta": "Entrega do MuP 2 anos após recebimento do prédio pela prefeitura/IBP",
+    "indicador": "Efetivar 20% (28 milhões) do total do projeto (140 milhões)",
     "periodo": "Set a Dez",
     "metaJanAgo": "",
     "checkJanAgo": "",
-    "metaSet": "10 mihões",
+    "metaSet": "10 milhões",
     "checkSet": "0",
-    "metaOut": "18 mihões",
+    "metaOut": "18 milhões",
     "checkOut": "",
     "metaNov": "N/A",
     "checkNov": "N/A",
@@ -1522,7 +1529,7 @@ const EMBEDDED_ITEMS = [
     "metaJanAgo": "",
     "checkJanAgo": "",
     "metaSet": "Entrega: Vídeo institucional de divulgação do projeto (R$ 30.000) — prazo 30/09/2026",
-    "checkSet": "Feito",
+    "checkSet": "Em andamento",
     "metaOut": "",
     "checkOut": "",
     "metaNov": "",
@@ -1656,7 +1663,7 @@ const EMBEDDED_ITEMS = [
     "checkJanAgo": "",
     "metaSet": "Plano de Trabalho",
     "checkSet": "Concluído",
-    "metaOut": "Seminário de 15/out em Recife",
+    "metaOut": "WORKSHOP 15/out: identidade, transformação e futuro",
     "checkOut": "Em andamento",
     "metaNov": "Relatório Técnico de Modelo Curatorial\nVídeo Institucional\n23/11 - Lançamento CCMEC",
     "checkNov": "",
@@ -1716,7 +1723,7 @@ const EMBEDDED_ITEMS = [
     "checkSet": "",
     "metaOut": "Acompanhamento junto à SEAS da liberação e publicação do novo edital",
     "checkOut": "",
-    "metaNov": "Proposta idg - Acompanhamento",
+    "metaNov": "Proposta IDG - Acompanhamento",
     "checkNov": "",
     "metaDez": "Contrato assinado",
     "checkDez": ""
@@ -1890,7 +1897,7 @@ const EMBEDDED_ITEMS = [
     "metaJanAgo": "",
     "checkJanAgo": "",
     "metaSet": "Representação do Museu na ROG-e",
-    "checkSet": "",
+    "checkSet": "Concluído",
     "metaOut": "",
     "checkOut": "",
     "metaNov": "",
@@ -1945,7 +1952,7 @@ const EMBEDDED_ITEMS = [
     "indicador": "MAZ em Movimento (Oficinas educativas, MAZ música e Vivências MAZ)",
     "periodo": "Jan a Ago",
     "metaJanAgo": "MAZ em Movimento (Oficinas educativas, MAZ música e Vivências MAZ)",
-    "checkJanAgo": "",
+    "checkJanAgo": "Feito",
     "metaSet": "",
     "checkSet": "",
     "metaOut": "",
@@ -1964,7 +1971,7 @@ const EMBEDDED_ITEMS = [
     "indicador": "Formalização do Aditivo e Regularização e Entrega de Produtos - Estratégico",
     "periodo": "Jan a Ago",
     "metaJanAgo": "Formalização do Aditivo e Regularização e Entrega de Produtos - Estratégico",
-    "checkJanAgo": "",
+    "checkJanAgo": "Feito",
     "metaSet": "",
     "checkSet": "",
     "metaOut": "",
@@ -1983,7 +1990,7 @@ const EMBEDDED_ITEMS = [
     "indicador": "Entrega da exposição de longa duração (Expografia e Conteúdo)",
     "periodo": "Jan a Ago",
     "metaJanAgo": "Entrega da exposição de longa duração (Expografia e Conteúdo)",
-    "checkJanAgo": "",
+    "checkJanAgo": "Feito",
     "metaSet": "",
     "checkSet": "",
     "metaOut": "",
@@ -2006,7 +2013,7 @@ const EMBEDDED_ITEMS = [
     "indicador": "Entrega da exposição de longa duração (Produção e complementares)",
     "periodo": "Jan a Ago",
     "metaJanAgo": "Entrega da exposição de longa duração (Produção e complementares)",
-    "checkJanAgo": "",
+    "checkJanAgo": "Feito",
     "metaSet": "",
     "checkSet": "",
     "metaOut": "",
@@ -2029,7 +2036,7 @@ const EMBEDDED_ITEMS = [
     "indicador": "Formalização do Aditivo e Regularização e Entrega de Produtos - Estratégico",
     "periodo": "Jan a Ago",
     "metaJanAgo": "Formalização do Aditivo e Regularização e Entrega de Produtos - Estratégico",
-    "checkJanAgo": "",
+    "checkJanAgo": "Feito",
     "metaSet": "",
     "checkSet": "",
     "metaOut": "",
@@ -2052,7 +2059,7 @@ const EMBEDDED_ITEMS = [
     "indicador": "Entrega do Masterplan MuP até abril de 2026 - CONTEÚDO",
     "periodo": "Jan a Ago",
     "metaJanAgo": "Entrega do Masterplan MuP até abril de 2026 - CONTEÚDO",
-    "checkJanAgo": "",
+    "checkJanAgo": "Feito",
     "metaSet": "",
     "checkSet": "",
     "metaOut": "",
@@ -2075,7 +2082,7 @@ const EMBEDDED_ITEMS = [
     "indicador": "Entrega do Masterplan MuP até abril de 2026 - ARQUITETURA E EXPOGRAFIA",
     "periodo": "Jan a Ago",
     "metaJanAgo": "Entrega do Masterplan MuP até abril de 2026 - ARQUITETURA E EXPOGRAFIA",
-    "checkJanAgo": "",
+    "checkJanAgo": "Feito",
     "metaSet": "",
     "checkSet": "",
     "metaOut": "",
@@ -2098,7 +2105,7 @@ const EMBEDDED_ITEMS = [
     "indicador": "Entrega do Masterplan MuP até abril de 2026 - PLANO DE GESTÃO, ORÇAMENTO",
     "periodo": "Jan a Ago",
     "metaJanAgo": "Entrega do Masterplan MuP até abril de 2026 - PLANO DE GESTÃO, ORÇAMENTO",
-    "checkJanAgo": "",
+    "checkJanAgo": "Feito",
     "metaSet": "",
     "checkSet": "",
     "metaOut": "",
