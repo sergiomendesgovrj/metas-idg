@@ -311,6 +311,160 @@
     color:var(--panel-muted);
   }
 
+  /* ---------- Alocação de Tempo (timesheet) ---------- */
+  .ts-legend{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px 16px;
+    align-items:center;
+    padding:0 20px 12px;
+    font-size:11.5px;
+    color:var(--panel-muted);
+  }
+  .ts-legend-title{font-weight:700;color:var(--panel-ink);}
+  .ts-month-filter{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:0 20px 14px;
+  }
+  .ts-month-filter .period-toggle{
+    background:#eef1f4;
+    border:1px solid #d7dde3;
+  }
+  .ts-month-filter .period-btn{color:var(--panel-muted);}
+  .ts-month-filter .period-btn:hover{background:rgba(15,36,56,.06);}
+  .ts-month-filter .period-btn.active{background:var(--navy);color:#fff;}
+  .ts-scroll{overflow-x:auto;padding:0 20px 4px;}
+  .ts-table{
+    border-collapse:separate;
+    border-spacing:0;
+    width:100%;
+    min-width:640px;
+    font-size:12.5px;
+  }
+  .ts-table th{
+    text-align:left;
+    font-size:10.5px;
+    text-transform:uppercase;
+    letter-spacing:.5px;
+    color:var(--panel-muted);
+    font-weight:700;
+    padding:8px 10px;
+    border-bottom:1.5px solid rgba(34,65,95,.18);
+    white-space:nowrap;
+  }
+  .ts-table th.ts-person{text-align:center;}
+  .ts-table td{
+    padding:8px 10px;
+    border-bottom:1px solid rgba(34,65,95,.08);
+    white-space:nowrap;
+    text-align:center;
+  }
+  .ts-table td.ts-rowlabel{text-align:left;}
+  .ts-table tr.ts-row-total td{
+    border-top:1.5px solid rgba(34,65,95,.18);
+    border-bottom:none;
+    font-weight:700;
+  }
+  .ts-table .ts-rowlabel{
+    color:var(--panel-ink);
+    font-weight:600;
+  }
+  .ts-table .ts-role{
+    display:block;
+    font-size:10px;
+    font-weight:500;
+    color:var(--panel-muted);
+    text-transform:none;
+    letter-spacing:0;
+  }
+  .ts-cell{
+    display:inline-flex;
+    flex-direction:column;
+    align-items:center;
+    line-height:1.25;
+    text-align:center;
+    border-radius:6px;
+    padding:4px 8px !important;
+    font-weight:700;
+    min-width:34px;
+  }
+  .ts-cell .ts-hours{display:block;font-size:9.5px;font-weight:500;opacity:.85;}
+  .ts-cell[data-tier="0"]{background:transparent;color:#c3cbd5;font-weight:400;}
+  .ts-cell[data-tier="1"]{background:#e6edf6;color:#2b3648;}
+  .ts-cell[data-tier="2"]{background:#b9d0e8;color:#17324d;}
+  .ts-cell[data-tier="3"]{background:#7ba3cd;color:#ffffff;}
+  .ts-cell[data-tier="4"]{background:#2c5c8c;color:#ffffff;}
+  .ts-table th:first-child, .ts-table td:first-child{width:26px;padding-left:4px;padding-right:0;}
+  .ts-expand-btn{
+    width:20px;height:20px;border-radius:5px;border:1px solid rgba(34,65,95,.25);
+    background:#fff;color:var(--panel-ink);font-size:13px;line-height:1;font-weight:700;
+    cursor:pointer;display:inline-flex;align-items:center;justify-content:center;
+  }
+  .ts-expand-btn:hover{background:#eef2f5;}
+  tr.ts-detail-row td{
+    background:#f7f8fa;
+    vertical-align:top;
+    font-size:11px;
+    font-weight:400;
+    color:var(--panel-ink);
+    line-height:1.5;
+    padding:8px 10px 12px;
+    border-bottom:1.5px solid rgba(34,65,95,.12);
+    max-width:130px;
+  }
+  span.ts-detail-cell{
+    display:-webkit-box;
+    -webkit-box-orient:vertical;
+    -webkit-line-clamp:2;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:normal;
+    cursor:pointer;
+  }
+  span.ts-detail-cell:hover{color:var(--accent-blue);}
+  tr.ts-detail-row .ts-detail-empty{color:#c3cbd5;text-align:center;}
+
+  /* Lista mobile (substitui a tabela larga em telas estreitas — cada linha vira um
+     bloco com nome + total, e o "+" mostra tudo rotulado, sem precisar rolar de lado) */
+  .ts-mobile-list{display:none;}
+  .ts-mobile-card{border-bottom:1px solid rgba(34,65,95,.1);}
+  .ts-mobile-card:last-child{border-bottom:none;}
+  .ts-mobile-head{
+    display:flex;align-items:center;gap:10px;
+    padding:12px 20px;cursor:pointer;
+  }
+  .ts-mobile-name{flex:1;font-weight:700;color:var(--panel-ink);font-size:13.5px;}
+  .ts-mobile-name .ts-role{display:block;font-size:10.5px;font-weight:500;color:var(--panel-muted);}
+  .ts-mobile-total{font-weight:700;font-size:13px;color:var(--panel-ink);}
+  .ts-mobile-detail{padding:0 20px 14px 46px;display:none;}
+  .ts-mobile-card.open .ts-mobile-detail{display:block;}
+  .ts-mobile-row{
+    display:flex;justify-content:space-between;align-items:baseline;gap:10px;
+    padding:6px 0;border-bottom:1px dashed rgba(34,65,95,.1);
+  }
+  .ts-mobile-row:last-child{border-bottom:none;}
+  .ts-mobile-label{font-size:11.5px;font-weight:700;color:var(--panel-ink);white-space:nowrap;}
+  .ts-mobile-val{font-size:11.5px;font-weight:700;color:var(--panel-ink);white-space:nowrap;}
+  .ts-mobile-val.ts-mobile-zero{color:#c3cbd5;font-weight:400;}
+  .ts-mobile-goal{
+    flex-basis:100%;font-size:10.5px;font-weight:400;color:var(--panel-muted);
+    line-height:1.4;padding-top:2px;
+  }
+  .ts-mobile-goal em{font-style:italic;color:#98a3ae;}
+  @media (max-width: 760px){
+    .ts-scroll{display:none;}
+    .ts-mobile-list{display:block;}
+  }
+
+  .ts-note{
+    margin:10px 20px 18px;
+    font-size:11px;
+    color:var(--panel-muted);
+    line-height:1.5;
+  }
+
   /* ---------- KPI cards — linha horizontal, estilo contorno suave ---------- */
   .kpis{
     display:flex;
@@ -394,6 +548,26 @@
   .panel-header{
     padding:20px 22px 8px;
   }
+  .panel-header-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:12px;
+    flex-wrap:wrap;
+  }
+  .group-toggle-actions{display:flex;gap:6px;flex-shrink:0;padding-top:2px;}
+  .group-action-btn{
+    font-size:11.5px;
+    font-weight:600;
+    color:var(--panel-ink);
+    background:#fff;
+    border:1px solid rgba(34,65,95,.2);
+    border-radius:6px;
+    padding:5px 10px;
+    cursor:pointer;
+    white-space:nowrap;
+  }
+  .group-action-btn:hover{background:#eef2f5;}
   .panel-header h2{
     margin:0 0 4px;
     font-size:19px;
@@ -699,8 +873,16 @@
     <div class="content">
       <div class="panel">
         <div class="panel-header">
-          <h2>Metas por Projeto</h2>
-          <p id="panelSubtitle">Meta e check mensal por colaborador — Setembro a Dezembro</p>
+          <div class="panel-header-top">
+            <div>
+              <h2>Metas por Projeto</h2>
+              <p id="panelSubtitle">Meta e check mensal por colaborador — Setembro a Dezembro</p>
+            </div>
+            <div class="group-toggle-actions">
+              <button type="button" id="expandAllBtn" class="group-action-btn">Expandir tudo</button>
+              <button type="button" id="collapseAllBtn" class="group-action-btn">Recolher tudo</button>
+            </div>
+          </div>
         </div>
         <div class="table-scroll">
         <table id="mainTable">
@@ -715,6 +897,54 @@
             <tr><td colspan="7" class="empty-state">Carregando dados da planilha…</td></tr>
           </tbody>
         </table>
+        </div>
+      </div>
+
+      <div class="stats-section" id="timesheetSection">
+        <button type="button" class="stats-toggle" id="timesheetToggle">
+          <span class="stats-toggle-icon">+</span>
+          Alocação de Tempo — Diretoria de Projetos
+        </button>
+        <div class="stats-panel">
+          <div class="stats-panel-header">
+            <div class="panel-header-top">
+              <div>
+                <h2>Alocação de Tempo — Diretoria de Projetos</h2>
+                <p>Dedicação semanal por colaborador (semana de 40h) — Set a Dez/2026</p>
+              </div>
+              <div class="group-toggle-actions">
+                <button type="button" id="tsExpandAllBtn" class="group-action-btn">Expandir tudo</button>
+                <button type="button" id="tsCollapseAllBtn" class="group-action-btn">Recolher tudo</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="ts-month-filter">
+            <span class="ts-legend-title">Mês:</span>
+            <div class="period-toggle" id="tsMonthToggle">
+              <button type="button" class="period-btn active" data-ts-month="set">Setembro</button>
+              <button type="button" class="period-btn" data-ts-month="out">Outubro</button>
+              <button type="button" class="period-btn" data-ts-month="nov">Novembro</button>
+              <button type="button" class="period-btn" data-ts-month="dez">Dezembro</button>
+            </div>
+          </div>
+
+          <div class="ts-legend">
+            <span class="ts-legend-title">Dedicação na semana:</span>
+            <span>5% · 1/4 dia (2h)</span>
+            <span>10% · 1/2 dia (4h)</span>
+            <span>20% · 1 dia (8h)</span>
+            <span>40% · 2 dias (16h)</span>
+            <span>60% · 3 dias (24h)</span>
+            <span>80% · 4 dias (32h)</span>
+            <span>100% · 5 dias (40h)</span>
+          </div>
+
+          <div class="ts-scroll">
+            <table class="ts-table" id="timesheetTable"></table>
+          </div>
+          <div class="ts-mobile-list" id="timesheetMobileList"></div>
+          <p class="ts-note">Institucional = reunião de diretoria (só o Diretor) + ponto com a equipe + assinaturas/documentos/bancos. Gente e Gestão = planejamento da área e da equipe. Coordenador e Assessor têm apenas o ponto semanal como tempo fixo; o restante é 100% dedicado a projetos, distribuído conforme o volume de metas de cada um em Set–Dez/2026.</p>
         </div>
       </div>
 
@@ -1028,7 +1258,7 @@ const EMBEDDED_ITEMS = [
     "periodo": "Set a Dez",
     "metaJanAgo": "",
     "checkJanAgo": "",
-    "metaSet": "",
+    "metaSet": "50,00%",
     "checkSet": "",
     "metaOut": "100,00%",
     "checkOut": "",
@@ -1119,8 +1349,8 @@ const EMBEDDED_ITEMS = [
     "tipoMeta": "Meta Local",
     "colaborador": "4. Camila Costa",
     "projeto": "1. MUSEU DAS AMAZÔNIAS",
-    "descricaoMeta": "CATÁLOGO",
-    "indicador": "CATÁLOGO",
+    "descricaoMeta": "VISIBILIDADE INSTITUCIONAL — Publicação do CATÁLOGO",
+    "indicador": "VISIBILIDADE INSTITUCIONAL — Publicação do CATÁLOGO",
     "periodo": "Set a Dez",
     "metaJanAgo": "",
     "checkJanAgo": "",
@@ -2467,29 +2697,6 @@ const EMBEDDED_ITEMS = [
   {
     "diretoria": "Diretoria de Projetos",
     "tipoMeta": "Meta Local",
-    "colaborador": "4. Camila Costa",
-    "projeto": "6. METAS SETORIAIS — EXPOSIÇÕES",
-    "descricaoMeta": "Visibilidade Institucional — publicação do livro/catálogo do MAZ",
-    "indicador": "VISIBILIDADE INSTITUCIONAL — Publicação do Livro/Catálogo do MAZ",
-    "periodo": "Set a Dez",
-    "metaJanAgo": "",
-    "checkJanAgo": "",
-    "metaSet": "",
-    "checkSet": "",
-    "metaOut": "",
-    "checkOut": "",
-    "metaNov": "Publicação do livro/catálogo do MAZ",
-    "checkNov": "",
-    "metaDez": "",
-    "checkDez": "",
-    "meta2027": "",
-    "check2027": "",
-    "baixaPrioridade": false,
-    "sortOrder": null
-  },
-  {
-    "diretoria": "Diretoria de Projetos",
-    "tipoMeta": "Meta Local",
     "colaborador": "2. Vitor Garcez",
     "projeto": "6. METAS SETORIAIS — EXPOSIÇÕES",
     "descricaoMeta": "Visibilidade Institucional — participação no congresso ICOM ICAMT",
@@ -3356,6 +3563,7 @@ function render(){
   });
 
   updateKPIs(items, curMonth);
+  renderTimesheet();
 }
 
 function toggleGroup(groupId){
@@ -3374,6 +3582,19 @@ function toggleGroup(groupId){
   });
   toggleEl.textContent = willHide ? "+" : "−";
 }
+
+// "Expandir tudo" / "Recolher tudo" (igual Google Sheets) — abre/fecha todos os
+// grupos de projeto de uma vez, em vez de clicar um por um.
+document.getElementById("expandAllBtn").addEventListener("click", ()=>{
+  document.querySelectorAll("[data-toggle]").forEach(el=>{
+    if(el.textContent.trim() === "+") toggleGroup(el.dataset.toggle);
+  });
+});
+document.getElementById("collapseAllBtn").addEventListener("click", ()=>{
+  document.querySelectorAll("[data-toggle]").forEach(el=>{
+    if(el.textContent.trim() === "−") toggleGroup(el.dataset.toggle);
+  });
+});
 
 function updateKPIs(items, curMonthKeyParam){
   const curMonth = curMonthKeyParam || currentMonthKey();
@@ -3421,6 +3642,295 @@ document.getElementById("statsToggle").addEventListener("click", ()=>{
   document.querySelector("#statsToggle .stats-toggle-icon").textContent = isOpen ? "−" : "+";
 });
 
+/* ============================================================
+   ALOCAÇÃO DE TEMPO (timesheet semanal) — Diretoria de Projetos
+   Institucional e Gente e Gestão são fixos por papel (Diretor/Gerente/
+   Coordenador/Assessor) e não mudam mês a mês. O tempo de projeto de
+   cada pessoa varia por mês, refletindo a fase de cada entrega (abertura
+   do MAZ em out/nov, seminário e produtos do CCMEC, entrega do MUSEDUCA
+   em nov/dez etc.) — estimativa de Sergio + Claude, ajustável.
+   ============================================================ */
+const TS_MONTHS = [
+  {key:"set", label:"Setembro"},
+  {key:"out", label:"Outubro"},
+  {key:"nov", label:"Novembro"},
+  {key:"dez", label:"Dezembro"},
+];
+let TS_CURRENT_MONTH = "set";
+
+const TIMESHEET_PEOPLE = [
+  {key:"Sergio Mendes", label:"Sergio Mendes", role:"Diretor", diretoria:"Diretoria de Projetos", institucional:20, gestao:10},
+  {key:"Tatiana Azevedo", label:"Tatiana Azevedo", role:"Gerente", diretoria:"Diretoria de Projetos", institucional:10, gestao:10},
+  {key:"Vitor Garcez", label:"Vitor Garcez", role:"Gerente", diretoria:"Diretoria de Projetos", institucional:10, gestao:10},
+  {key:"Camila Costa", label:"Camila Costa", role:"Gerente", diretoria:"Diretoria de Projetos", institucional:10, gestao:10},
+  {key:"Rogério Lessa", label:"Rogério Lessa", role:"Gerente Geral", diretoria:"Diretoria de Projetos", institucional:10, gestao:10},
+  {key:"Amarilis", label:"Amarilis", role:"Coordenador", diretoria:"Diretoria de Projetos", institucional:5, gestao:0},
+  {key:"Iago", label:"Iago", role:"Assessor", diretoria:"Diretoria de Projetos", institucional:5, gestao:0},
+];
+
+const TS_PROJECT_COLS = [
+  {key:"maz", label:"MAZ"},
+  {key:"mup", label:"MUP"},
+  {key:"ccmec", label:"CCMEC"},
+  {key:"museduca", label:"MUSEDUCA"},
+  {key:"metasSetoriais", label:"Metas Setoriais"},
+  {key:"fma", label:"FMA"},
+];
+
+// tempo de projeto (%) por pessoa, por mês — cada linha soma ao orçamento de projeto da pessoa
+// (100 − institucional − gestão)
+const TIMESHEET_BY_MONTH = {
+  set: {
+    "Sergio Mendes":   {maz:20, mup:20, ccmec:15, museduca:10, metasSetoriais:0,  fma:5},
+    "Tatiana Azevedo": {maz:40, mup:10, ccmec:15, museduca:0,  metasSetoriais:15, fma:0},
+    "Vitor Garcez":    {maz:10, mup:5,  ccmec:15, museduca:0,  metasSetoriais:50, fma:0},
+    "Camila Costa":    {maz:60, mup:0,  ccmec:0,  museduca:0,  metasSetoriais:0,  fma:0, institucional:20, gestao:20, institucionalNote:"Ponto com a equipe (2h) · Assinaturas/documentos (2h) · Reforço temporário (4h, ex-Metas Setoriais)", gestaoNote:"Planejamento da área e da equipe (4h) + reforço temporário (4h, ex-Metas Setoriais)"},  // 20% (metas setoriais) -> institucional/gestão
+    "Rogério Lessa":   {maz:0,  mup:0,  ccmec:0,  museduca:0,  metasSetoriais:0,  fma:80},
+    "Amarilis":        {maz:20, mup:15, ccmec:20, museduca:30, metasSetoriais:10, fma:0},
+    "Iago":            {maz:50, mup:30, ccmec:15, museduca:0,  metasSetoriais:0,  fma:0},
+  },
+  out: {
+    "Sergio Mendes":   {maz:25, mup:10, ccmec:25, museduca:5,  metasSetoriais:0,  fma:5},
+    "Tatiana Azevedo": {maz:40, mup:5,  ccmec:25, museduca:0,  metasSetoriais:10, fma:0},
+    "Vitor Garcez":    {maz:15, mup:5,  ccmec:25, museduca:0,  metasSetoriais:35, fma:0},
+    "Camila Costa":    {maz:70, mup:0,  ccmec:0,  museduca:0,  metasSetoriais:0,  fma:0, institucional:15, gestao:15, institucionalNote:"Ponto com a equipe (2h) · Assinaturas/documentos (2h) · Reforço temporário (2h, ex-Metas Setoriais)", gestaoNote:"Planejamento da área e da equipe (4h) + reforço temporário (2h, ex-Metas Setoriais)"},  // 10% (metas setoriais) -> institucional/gestão
+    "Rogério Lessa":   {maz:0,  mup:0,  ccmec:0,  museduca:0,  metasSetoriais:0,  fma:80},
+    "Amarilis":        {maz:15, mup:10, ccmec:35, museduca:25, metasSetoriais:10, fma:0},
+    "Iago":            {maz:45, mup:25, ccmec:25, museduca:0,  metasSetoriais:0,  fma:0},
+  },
+  nov: {
+    "Sergio Mendes":   {maz:5,  mup:15, ccmec:15, museduca:30, metasSetoriais:0,  fma:5},
+    "Tatiana Azevedo": {maz:5,  mup:20, ccmec:35, museduca:0,  metasSetoriais:20, fma:0},
+    "Vitor Garcez":    {maz:5,  mup:10, ccmec:50, museduca:0,  metasSetoriais:15, fma:0},
+    "Camila Costa":    {maz:80, mup:0,  ccmec:0,  museduca:0,  metasSetoriais:0,  fma:0},  // mantido: 100% em Belém
+    "Rogério Lessa":   {maz:0,  mup:0,  ccmec:0,  museduca:0,  metasSetoriais:0,  fma:80},
+    "Amarilis":        {maz:5,  mup:15, ccmec:25, museduca:35, metasSetoriais:15, fma:0},
+    "Iago":            {maz:10, mup:35, ccmec:50, museduca:0,  metasSetoriais:0,  fma:0},
+  },
+  dez: {
+    "Sergio Mendes":   {maz:0,  mup:20, ccmec:15, museduca:30, metasSetoriais:0,  fma:5},
+    "Tatiana Azevedo": {maz:0,  mup:25, ccmec:30, museduca:0,  metasSetoriais:25, fma:0},
+    "Vitor Garcez":    {maz:0,  mup:10, ccmec:45, museduca:0,  metasSetoriais:25, fma:0},
+    "Camila Costa":    {maz:80, mup:0,  ccmec:0,  museduca:0,  metasSetoriais:0,  fma:0},  // dez = idem nov (mantido em Belém)
+    "Rogério Lessa":   {maz:0,  mup:0,  ccmec:0,  museduca:0,  metasSetoriais:0,  fma:80},
+    "Amarilis":        {maz:0,  mup:15, ccmec:30, museduca:40, metasSetoriais:10, fma:0},
+    "Iago":            {maz:0,  mup:55, ccmec:40, museduca:0,  metasSetoriais:0,  fma:0},
+  },
+};
+
+const TS_PROJECT_MATCHERS = {
+  maz: p => p.includes("MUSEU DAS AMAZÔNIAS"),
+  mup: p => p.includes("PETRÓLEO"),
+  ccmec: p => p.includes("CCMEC") && !p.toUpperCase().includes("ASSINATURA"),
+  museduca: p => p.includes("MUSEDUCA"),
+  metasSetoriais: p => p.includes("METAS SETORIAIS"),
+  fma: p => p.includes("FMA"),
+};
+const TS_ROLE_NOTES = {
+  "Diretor": {institucional:"Reunião de diretoria (4h) · Ponto com a equipe (2h) · Assinaturas/documentos/bancos (2h)", gestao:"Planejamento da área e da equipe"},
+  "Gerente": {institucional:"Ponto com a equipe (2h) · Assinaturas/documentos/bancos (2h)", gestao:"Planejamento da área e da equipe"},
+  "Gerente Geral": {institucional:"Ponto com a equipe (2h) · Assinaturas/documentos/bancos (2h)", gestao:"Planejamento da área e da equipe"},
+  "Coordenador": {institucional:"Ponto com a equipe", gestao:"—"},
+  "Assessor": {institucional:"Ponto com a equipe", gestao:"—"},
+};
+const TS_EXPANDED = new Set(); // colaboradores com o "+" aberto (persiste entre re-renders)
+
+// Busca, nas metas reais (EMBEDDED_ITEMS), os indicadores do colaborador+projeto que
+// têm valor lançado no mês em questão — é isso que "sustenta" o percentual do timesheet.
+function tsGoalsForProject(personKey, colKey, monthKey){
+  const matcher = TS_PROJECT_MATCHERS[colKey];
+  if(!matcher) return [];
+  const monthDef = MONTHS.find(m=>m.key===monthKey);
+  if(!monthDef) return [];
+  return EMBEDDED_ITEMS.filter(it =>
+    it.periodo === "Set a Dez" &&
+    it.colaborador.includes(personKey) &&
+    matcher(it.projeto) &&
+    it[monthDef.metaField] && it[monthDef.metaField].trim() && it[monthDef.metaField].trim().toUpperCase() !== "N/A"
+  ).map(it => it.indicador.split("\n")[0]);
+}
+
+// Uma célula de detalhe: mostra o texto cortado (2 linhas, largura da coluna) e guarda o
+// texto completo no title — clicar nela abre o mesmo balão usado nos chips de mês.
+function tsDetailCell(plainText){
+  if(!plainText) return `<td class="ts-detail-cell ts-detail-empty">—</td>`;
+  return `<td><span class="ts-detail-cell" title="${escapeHtml(plainText)}">${escapeHtml(plainText)}</span></td>`;
+}
+
+function tsDetailRow(p, proj, monthKey){
+  const roleNotes = TS_ROLE_NOTES[p.role] || {institucional:"—", gestao:"—"};
+  const instNote = proj.institucionalNote || roleNotes.institucional;
+  const gestNote = proj.gestaoNote || roleNotes.gestao;
+  let row = `<tr class="ts-detail-row"><td></td><td></td>`;
+  row += tsDetailCell(instNote);
+  row += tsDetailCell(gestNote);
+  TS_PROJECT_COLS.forEach(c=>{
+    const pct = proj[c.key]||0;
+    if(pct<=0){ row += `<td class="ts-detail-cell ts-detail-empty">—</td>`; return; }
+    const goals = tsGoalsForProject(p.key, c.key, monthKey);
+    const text = goals.length ? goals.map(g=>"• "+g).join("\n") : "—";
+    row += tsDetailCell(text);
+  });
+  row += `<td></td></tr>`;
+  return row;
+}
+
+function tsTier(pct){
+  if(pct<=0) return 0;
+  if(pct<=10) return 1;
+  if(pct<=25) return 2;
+  if(pct<=45) return 3;
+  return 4;
+}
+
+function tsCell(pct){
+  const hours = Math.round(pct/100*40*10)/10;
+  const tier = tsTier(pct);
+  const display = pct>0 ? `${pct}%<span class="ts-hours">${hours}h</span>` : "—";
+  return `<td><span class="ts-cell" data-tier="${tier}">${display}</span></td>`;
+}
+
+function renderTimesheet(){
+  const table = document.getElementById("timesheetTable");
+  if(!table) return;
+  const monthData = TIMESHEET_BY_MONTH[TS_CURRENT_MONTH];
+
+  // Aplica os mesmos filtros de Colaborador e Diretoria do painel principal.
+  // O campo Colaborador é preenchido a partir da lista com o número na frente
+  // (ex: "4. Camila Costa"), mas aqui os nomes não têm número — removemos o
+  // prefixo "N. " antes de comparar.
+  const cRaw = normalizeText(document.getElementById("fColab").value.trim()).replace(/^\d+\.\s*/, "");
+  const dSel = document.getElementById("fDiretoria").value;
+  const peopleFiltered = TIMESHEET_PEOPLE.filter(p =>
+    (!cRaw || normalizeText(p.label).includes(cRaw)) &&
+    (!dSel || p.diretoria === dSel)
+  );
+
+  let thead = "<thead><tr><th></th><th>Colaborador</th><th>Institucional</th><th>Gente e Gestão</th>";
+  TS_PROJECT_COLS.forEach(c=> thead += `<th class="ts-person">${escapeHtml(c.label)}</th>`);
+  thead += "<th>Total</th></tr></thead>";
+
+  let tbody = "<tbody>";
+  if(!peopleFiltered.length){
+    tbody += `<tr><td colspan="${4+TS_PROJECT_COLS.length+1}" class="empty-state">Nenhum colaborador encontrado para o filtro atual.</td></tr>`;
+  }
+  peopleFiltered.forEach(p=>{
+    const proj = monthData[p.key] || {};
+    const inst = (proj.institucional != null) ? proj.institucional : p.institucional;
+    const gest = (proj.gestao != null) ? proj.gestao : p.gestao;
+    const projTotal = TS_PROJECT_COLS.reduce((s,c)=> s + (proj[c.key]||0), 0);
+    const total = inst + gest + projTotal;
+    const isOpen = TS_EXPANDED.has(p.key);
+    tbody += `<tr class="ts-main-row" data-ts-person="${escapeHtml(p.key)}">`;
+    tbody += `<td><button type="button" class="ts-expand-btn" data-ts-expand="${escapeHtml(p.key)}">${isOpen ? "−" : "+"}</button></td>`;
+    tbody += `<td class="ts-rowlabel">${escapeHtml(p.label)}<span class="ts-role">${escapeHtml(p.role)}</span></td>`;
+    tbody += tsCell(inst);
+    tbody += tsCell(gest);
+    TS_PROJECT_COLS.forEach(c=> tbody += tsCell(proj[c.key]||0));
+    tbody += `<td style="text-align:center;font-weight:700;">${total}%</td>`;
+    tbody += "</tr>";
+    if(isOpen) tbody += tsDetailRow(p, proj, TS_CURRENT_MONTH);
+  });
+  tbody += "</tbody>";
+
+  table.innerHTML = thead + tbody;
+
+  const mobileList = document.getElementById("timesheetMobileList");
+  if(mobileList){
+    if(!peopleFiltered.length){
+      mobileList.innerHTML = `<div class="empty-state" style="padding:16px 20px;">Nenhum colaborador encontrado para o filtro atual.</div>`;
+    } else {
+      mobileList.innerHTML = peopleFiltered.map(p => tsMobileCard(p, monthData[p.key] || {}, TS_CURRENT_MONTH)).join("");
+    }
+  }
+}
+
+// Todas as colunas (institucional, gestão + projetos) como uma lista rotulada e vertical —
+// usado no celular no lugar da tabela larga, pra nunca perder de vista "de quem" é cada número.
+function tsMobileCard(p, proj, monthKey){
+  const inst = (proj.institucional != null) ? proj.institucional : p.institucional;
+  const gest = (proj.gestao != null) ? proj.gestao : p.gestao;
+  const projTotal = TS_PROJECT_COLS.reduce((s,c)=> s + (proj[c.key]||0), 0);
+  const total = inst + gest + projTotal;
+  const isOpen = TS_EXPANDED.has(p.key);
+  const roleNotes = TS_ROLE_NOTES[p.role] || {institucional:"—", gestao:"—"};
+  const instNote = proj.institucionalNote || roleNotes.institucional;
+  const gestNote = proj.gestaoNote || roleNotes.gestao;
+
+  const rows = [];
+  rows.push({label:"Institucional", pct:inst, goal:instNote});
+  rows.push({label:"Gente e Gestão", pct:gest, goal:gestNote});
+  TS_PROJECT_COLS.forEach(c=>{
+    const pct = proj[c.key]||0;
+    let goal = "";
+    if(pct>0){
+      const goals = tsGoalsForProject(p.key, c.key, monthKey);
+      goal = goals.length ? goals.map(g=>"• "+escapeHtml(g)).join("<br>") : "—";
+    }
+    rows.push({label:c.label, pct, goal});
+  });
+
+  let detail = "";
+  rows.forEach(r=>{
+    const hours = Math.round(r.pct/100*40*10)/10;
+    const valTxt = r.pct>0 ? `${r.pct}% · ${hours}h` : "—";
+    detail += `<div class="ts-mobile-row">
+      <span class="ts-mobile-label">${escapeHtml(r.label)}</span>
+      <span class="ts-mobile-val ${r.pct<=0?'ts-mobile-zero':''}">${valTxt}</span>
+      ${r.goal ? `<span class="ts-mobile-goal">${r.goal}</span>` : ""}
+    </div>`;
+  });
+
+  return `<div class="ts-mobile-card ${isOpen?'open':''}">
+    <div class="ts-mobile-head" data-ts-expand="${escapeHtml(p.key)}">
+      <button type="button" class="ts-expand-btn">${isOpen?"−":"+"}</button>
+      <div class="ts-mobile-name">${escapeHtml(p.label)}<span class="ts-role">${escapeHtml(p.role)}</span></div>
+      <div class="ts-mobile-total">${total}%</div>
+    </div>
+    <div class="ts-mobile-detail">${detail}</div>
+  </div>`;
+}
+
+document.getElementById("timesheetTable").addEventListener("click", (e)=>{
+  const btn = e.target.closest(".ts-expand-btn");
+  if(!btn) return;
+  const key = btn.dataset.tsExpand;
+  if(TS_EXPANDED.has(key)) TS_EXPANDED.delete(key); else TS_EXPANDED.add(key);
+  renderTimesheet();
+});
+
+document.getElementById("timesheetMobileList").addEventListener("click", (e)=>{
+  const head = e.target.closest(".ts-mobile-head");
+  if(!head) return;
+  const key = head.dataset.tsExpand;
+  if(TS_EXPANDED.has(key)) TS_EXPANDED.delete(key); else TS_EXPANDED.add(key);
+  renderTimesheet();
+});
+
+document.querySelectorAll("#tsMonthToggle .period-btn").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    TS_CURRENT_MONTH = btn.dataset.tsMonth;
+    document.querySelectorAll("#tsMonthToggle .period-btn").forEach(b=>b.classList.toggle("active", b===btn));
+    renderTimesheet();
+  });
+});
+
+document.getElementById("tsExpandAllBtn").addEventListener("click", ()=>{
+  TIMESHEET_PEOPLE.forEach(p=>TS_EXPANDED.add(p.key));
+  renderTimesheet();
+});
+document.getElementById("tsCollapseAllBtn").addEventListener("click", ()=>{
+  TS_EXPANDED.clear();
+  renderTimesheet();
+});
+
+document.getElementById("timesheetToggle").addEventListener("click", ()=>{
+  const section = document.getElementById("timesheetSection");
+  const isOpen = section.classList.toggle("open");
+  document.querySelector("#timesheetToggle .stats-toggle-icon").textContent = isOpen ? "−" : "+";
+  if(isOpen) renderTimesheet();
+});
+
 /* Toque/clique nos chips de mês -> mostra o mesmo texto do "title" num balão,
    já que tooltip de hover não existe em celular (touch). */
 const tapPopover = document.getElementById("tapPopover");
@@ -3451,7 +3961,7 @@ function showTapPopoverFor(el){
 
 let currentChipEl = null;
 document.addEventListener("click", (e)=>{
-  const chip = e.target.closest(".chip[title]");
+  const chip = e.target.closest(".chip[title], .ts-detail-cell[title]");
   if(chip){
     if(currentChipEl === chip){
       hideTapPopover();
