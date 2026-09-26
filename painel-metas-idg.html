@@ -916,13 +916,13 @@
       <div class="stats-section" id="timesheetSection">
         <button type="button" class="stats-toggle" id="timesheetToggle">
           <span class="stats-toggle-icon">+</span>
-          Alocação de Tempo — Diretoria de Projetos
+          Timesheet por %
         </button>
         <div class="stats-panel">
           <div class="stats-panel-header">
             <div class="panel-header-top">
               <div>
-                <h2>Alocação de Tempo — Diretoria de Projetos</h2>
+                <h2>Timesheet por %</h2>
                 <p>Dedicação semanal por colaborador (semana de 40h) — Set a Dez/2026</p>
               </div>
               <div class="group-toggle-actions">
@@ -964,13 +964,13 @@
       <div class="stats-section" id="goalsFirstSection">
         <button type="button" class="stats-toggle" id="goalsFirstToggle">
           <span class="stats-toggle-icon">+</span>
-          Entregas por Colaborador — Tempo Estimado
+          Timesheet por Entrega
         </button>
         <div class="stats-panel">
           <div class="stats-panel-header">
             <div class="panel-header-top">
               <div>
-                <h2>Entregas por Colaborador — Tempo Estimado</h2>
+                <h2>Timesheet por Entrega</h2>
                 <p>A entrega primeiro; o tempo alocado como informação complementar — sugestão do Vitor Garcez</p>
               </div>
               <div class="group-toggle-actions">
@@ -3822,7 +3822,7 @@ const TIMESHEET_BY_MONTH = {
   },
   out: {
     "Sergio Mendes":   {maz:25, mup:10, ccmec:25, museduca:5,  metasSetoriais:0,  fma:5},
-    "Tatiana Azevedo": {maz:65, mup:0,  ccmec:15, museduca:0,  metasSetoriais:0,  fma:0},
+    "Tatiana Azevedo": {maz:50, mup:15, ccmec:15, museduca:0,  metasSetoriais:0,  fma:0},  // -15 MAZ -> +15 MUP
     "Vitor Garcez":    {maz:40, mup:20, ccmec:20, museduca:0,  metasSetoriais:0,  fma:0},  // -20 CCMEC -> +20 MUP
     "Camila Costa":    {maz:70, mup:0,  ccmec:0,  museduca:0,  metasSetoriais:0,  fma:0, institucional:15, gestao:15, institucionalNote:"Ponto com a equipe (2h) · Assinaturas/documentos (2h) · Reforço temporário (2h, ex-Metas Setoriais)", gestaoNote:"Planejamento da área e da equipe (4h) + reforço temporário (2h, ex-Metas Setoriais)"},  // 10% (metas setoriais) -> institucional/gestão
     "Rogério Lessa":   {maz:0,  mup:0,  ccmec:0,  museduca:0,  metasSetoriais:0,  fma:80},
@@ -3831,7 +3831,7 @@ const TIMESHEET_BY_MONTH = {
   },
   nov: {
     "Sergio Mendes":   {maz:5,  mup:15, ccmec:15, museduca:30, metasSetoriais:0,  fma:5},
-    "Tatiana Azevedo": {maz:0,  mup:0,  ccmec:80, museduca:0,  metasSetoriais:0,  fma:0},
+    "Tatiana Azevedo": {maz:20, mup:20, ccmec:40, museduca:0,  metasSetoriais:0,  fma:0},  // -40 CCMEC -> +20 MUP / +20 MAZ
     "Vitor Garcez":    {maz:5,  mup:45, ccmec:25, museduca:0,  metasSetoriais:5,  fma:0},  // -20 Metas Setoriais -> +15 MUP / +5 MAZ; -30 CCMEC -> +30 MUP
     "Camila Costa":    {maz:80, mup:0,  ccmec:0,  museduca:0,  metasSetoriais:0,  fma:0},  // mantido: 100% em Belém
     "Rogério Lessa":   {maz:0,  mup:0,  ccmec:0,  museduca:0,  metasSetoriais:0,  fma:80},
@@ -3840,11 +3840,11 @@ const TIMESHEET_BY_MONTH = {
   },
   dez: {
     "Sergio Mendes":   {maz:0,  mup:20, ccmec:15, museduca:30, metasSetoriais:0,  fma:5},
-    "Tatiana Azevedo": {maz:0,  mup:0,  ccmec:0,  museduca:0,  metasSetoriais:80, fma:0},
-    "Vitor Garcez":    {maz:5,  mup:25, ccmec:45, museduca:0,  metasSetoriais:5,  fma:0},  // -60 Metas Setoriais -> +5 MAZ, +55 dividido entre CCMEC/MUP (30/25, em múltiplos de 5%)
+    "Tatiana Azevedo": {maz:0,  mup:20, ccmec:20, museduca:0,  metasSetoriais:40, fma:0},  // -40 Metas Setoriais (Lições Aprendidas) -> +20 CCMEC / +20 MUP
+    "Vitor Garcez":    {maz:0,  mup:30, ccmec:45, museduca:0,  metasSetoriais:5,  fma:0},  // -60 Metas Setoriais -> +55 dividido entre CCMEC/MUP; os 5% de MAZ passaram para o MUP
     "Camila Costa":    {maz:80, mup:0,  ccmec:0,  museduca:0,  metasSetoriais:0,  fma:0},  // dez = idem nov (mantido em Belém)
     "Rogério Lessa":   {maz:0,  mup:0,  ccmec:0,  museduca:0,  metasSetoriais:0,  fma:80},
-    "Amarilis":        {maz:5,  mup:15, ccmec:35, museduca:40, metasSetoriais:0,  fma:0},  // metas setoriais zeradas; +5% MAZ (pedido); restante (5%) para o CCMEC, em múltiplos de 5%
+    "Amarilis":        {maz:0,  mup:20, ccmec:35, museduca:40, metasSetoriais:0,  fma:0},  // metas setoriais zeradas; os 5% de MAZ passaram para o MUP
     "Iago":            {maz:0,  mup:55, ccmec:40, museduca:0,  metasSetoriais:0,  fma:0},
   },
 };
