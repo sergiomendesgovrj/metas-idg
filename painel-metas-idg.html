@@ -458,6 +458,49 @@
     .ts-mobile-list{display:block;}
   }
 
+  /* ---------- Entregas por Colaborador (goal-first) ---------- */
+  .gf-list{padding:4px 0 0;}
+  .gf-person-block{border-bottom:1px solid rgba(34,65,95,.1);}
+  .gf-person-block:last-child{border-bottom:none;}
+  .gf-person-head{
+    display:flex;align-items:center;gap:10px;
+    padding:12px 20px;cursor:pointer;
+  }
+  .gf-person-name{flex:1;font-weight:700;color:var(--panel-ink);font-size:13.5px;}
+  .gf-person-name .ts-role{display:block;font-size:10.5px;font-weight:500;color:var(--panel-muted);}
+  .gf-person-count{font-size:11px;color:var(--panel-muted);font-weight:600;}
+  .gf-goals{display:none;padding:0 20px 14px 46px;}
+  .gf-person-block.open .gf-goals{display:block;}
+  .gf-goal-card{
+    border:1px solid rgba(34,65,95,.1);
+    border-radius:8px;
+    padding:9px 12px;
+    margin-bottom:8px;
+    background:#fff;
+  }
+  .gf-goal-card:last-child{margin-bottom:0;}
+  .gf-goal-top{display:flex;align-items:flex-start;gap:8px;}
+  .gf-goal-title{
+    flex:1;font-size:12.5px;font-weight:700;color:var(--panel-ink);line-height:1.35;
+  }
+  .gf-goal-tag{
+    flex-shrink:0;font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;
+    color:var(--accent-blue);background:#eaf2fb;border-radius:5px;padding:3px 7px;white-space:nowrap;
+  }
+  .gf-goal-expand-btn{
+    flex-shrink:0;width:20px;height:20px;border-radius:5px;border:1px solid rgba(34,65,95,.2);
+    background:#fff;color:var(--panel-ink);font-size:12px;font-weight:700;line-height:1;
+    cursor:pointer;display:inline-flex;align-items:center;justify-content:center;
+  }
+  .gf-goal-expand-btn:hover{background:#eef2f5;}
+  .gf-goal-time{
+    display:none;margin-top:7px;padding-top:7px;border-top:1px dashed rgba(34,65,95,.12);
+    font-size:11px;color:var(--panel-muted);
+  }
+  .gf-goal-time strong{color:var(--panel-ink);}
+  .gf-goal-card.open .gf-goal-time{display:block;}
+  .gf-shared-note{color:#98a3ae;font-style:italic;}
+
   .ts-note{
     margin:10px 20px 18px;
     font-size:11px;
@@ -945,6 +988,40 @@
           </div>
           <div class="ts-mobile-list" id="timesheetMobileList"></div>
           <p class="ts-note">Institucional = reunião de diretoria (só o Diretor) + ponto com a equipe + assinaturas/documentos/bancos. Gente e Gestão = planejamento da área e da equipe. Coordenador e Assessor têm apenas o ponto semanal como tempo fixo; o restante é 100% dedicado a projetos, distribuído conforme o volume de metas de cada um em Set–Dez/2026.</p>
+        </div>
+      </div>
+
+      <div class="stats-section" id="goalsFirstSection">
+        <button type="button" class="stats-toggle" id="goalsFirstToggle">
+          <span class="stats-toggle-icon">+</span>
+          Entregas por Colaborador — Tempo Estimado
+        </button>
+        <div class="stats-panel">
+          <div class="stats-panel-header">
+            <div class="panel-header-top">
+              <div>
+                <h2>Entregas por Colaborador — Tempo Estimado</h2>
+                <p>A entrega primeiro; o tempo alocado como informação complementar — sugestão do Vitor Garcez</p>
+              </div>
+              <div class="group-toggle-actions">
+                <button type="button" id="gfExpandAllBtn" class="group-action-btn">Expandir tudo</button>
+                <button type="button" id="gfCollapseAllBtn" class="group-action-btn">Recolher tudo</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="ts-month-filter">
+            <span class="ts-legend-title">Mês:</span>
+            <div class="period-toggle" id="gfMonthToggle">
+              <button type="button" class="period-btn active" data-gf-month="set">Setembro</button>
+              <button type="button" class="period-btn" data-gf-month="out">Outubro</button>
+              <button type="button" class="period-btn" data-gf-month="nov">Novembro</button>
+              <button type="button" class="period-btn" data-gf-month="dez">Dezembro</button>
+            </div>
+          </div>
+
+          <div id="goalsFirstList" class="gf-list"></div>
+          <p class="ts-note">Cada card é uma entrega real (ou uma rotina fixa, no caso de Institucional/Gente e Gestão). O "+" abre o tempo estimado dedicado a ela na semana — quando duas ou mais entregas dividem o mesmo projeto/mês, o percentual mostrado é do projeto inteiro, não de cada uma isoladamente.</p>
         </div>
       </div>
 
@@ -3564,6 +3641,7 @@ function render(){
 
   updateKPIs(items, curMonth);
   renderTimesheet();
+  renderGoalsFirst();
 }
 
 function toggleGroup(groupId){
@@ -3890,6 +3968,129 @@ function tsMobileCard(p, proj, monthKey){
     <div class="ts-mobile-detail">${detail}</div>
   </div>`;
 }
+
+/* ============================================================
+   ENTREGAS POR COLABORADOR (goal-first) — sugestão do Vitor Garcez:
+   a entrega é a ficha principal; o tempo alocado é o detalhe no "+".
+   Reaproveita os mesmos dados/funções da Alocação de Tempo.
+   ============================================================ */
+let GF_CURRENT_MONTH = "set";
+const GF_EXPANDED = new Set();       // pessoas com o bloco aberto
+const GF_GOAL_EXPANDED = new Set();  // cards individuais com o tempo aberto
+
+function gfGoalCardsForPerson(p, monthKey){
+  const monthData = TIMESHEET_BY_MONTH[monthKey];
+  const proj = (monthData && monthData[p.key]) || {};
+  const inst = (proj.institucional != null) ? proj.institucional : p.institucional;
+  const gest = (proj.gestao != null) ? proj.gestao : p.gestao;
+  const roleNotes = TS_ROLE_NOTES[p.role] || {institucional:"—", gestao:"—"};
+  const instNote = proj.institucionalNote || roleNotes.institucional;
+  const gestNote = proj.gestaoNote || roleNotes.gestao;
+
+  const cards = [];
+  if(inst>0) cards.push({title:instNote, tag:"Institucional", pct:inst, shared:false});
+  if(gest>0) cards.push({title:gestNote, tag:"Gente e Gestão", pct:gest, shared:false});
+
+  TS_PROJECT_COLS.forEach(c=>{
+    const pct = proj[c.key]||0;
+    if(pct<=0) return;
+    const goals = tsGoalsForProject(p.key, c.key, monthKey);
+    if(!goals.length){
+      cards.push({title:"(sem meta específica registrada para este mês)", tag:c.label, pct, shared:false, empty:true});
+    } else {
+      goals.forEach(g=> cards.push({title:g, tag:c.label, pct, shared: goals.length>1}));
+    }
+  });
+  return cards;
+}
+
+function renderGoalsFirst(){
+  const list = document.getElementById("goalsFirstList");
+  if(!list) return;
+
+  const cRaw = normalizeText(document.getElementById("fColab").value.trim()).replace(/^\d+\.\s*/, "");
+  const dSel = document.getElementById("fDiretoria").value;
+  const peopleFiltered = TIMESHEET_PEOPLE.filter(p =>
+    (!cRaw || normalizeText(p.label).includes(cRaw)) &&
+    (!dSel || p.diretoria === dSel)
+  );
+
+  if(!peopleFiltered.length){
+    list.innerHTML = `<div class="empty-state" style="padding:16px 20px;">Nenhum colaborador encontrado para o filtro atual.</div>`;
+    return;
+  }
+
+  list.innerHTML = peopleFiltered.map(p=>{
+    const cards = gfGoalCardsForPerson(p, GF_CURRENT_MONTH);
+    const isOpen = GF_EXPANDED.has(p.key);
+    const cardsHtml = cards.map((c, idx)=>{
+      const cardKey = p.key + "|" + idx;
+      const cardOpen = GF_GOAL_EXPANDED.has(cardKey);
+      const hours = Math.round(c.pct/100*40*10)/10;
+      return `<div class="gf-goal-card ${cardOpen?'open':''}">
+        <div class="gf-goal-top">
+          <button type="button" class="gf-goal-expand-btn" data-gf-goal="${escapeHtml(cardKey)}">${cardOpen?"−":"+"}</button>
+          <div class="gf-goal-title">${c.empty ? `<em style="font-weight:400;color:#98a3ae;">${escapeHtml(c.title)}</em>` : escapeHtml(c.title)}</div>
+          <div class="gf-goal-tag">${escapeHtml(c.tag)}</div>
+        </div>
+        <div class="gf-goal-time">
+          <strong>${c.pct}% da semana · ${hours}h</strong>
+          ${c.shared ? `<div class="gf-shared-note">Tempo do projeto "${escapeHtml(c.tag)}" dividido com outras entregas do mesmo mês — não é exclusivo desta.</div>` : ""}
+        </div>
+      </div>`;
+    }).join("");
+
+    return `<div class="gf-person-block ${isOpen?'open':''}">
+      <div class="gf-person-head" data-gf-person="${escapeHtml(p.key)}">
+        <button type="button" class="ts-expand-btn">${isOpen?"−":"+"}</button>
+        <div class="gf-person-name">${escapeHtml(p.label)}<span class="ts-role">${escapeHtml(p.role)}</span></div>
+        <div class="gf-person-count">${cards.length} ${cards.length===1?"item":"itens"}</div>
+      </div>
+      <div class="gf-goals">${cardsHtml}</div>
+    </div>`;
+  }).join("");
+}
+
+document.getElementById("goalsFirstList").addEventListener("click", (e)=>{
+  const goalBtn = e.target.closest(".gf-goal-expand-btn");
+  if(goalBtn){
+    const key = goalBtn.dataset.gfGoal;
+    if(GF_GOAL_EXPANDED.has(key)) GF_GOAL_EXPANDED.delete(key); else GF_GOAL_EXPANDED.add(key);
+    renderGoalsFirst();
+    return;
+  }
+  const head = e.target.closest(".gf-person-head");
+  if(head){
+    const key = head.dataset.gfPerson;
+    if(GF_EXPANDED.has(key)) GF_EXPANDED.delete(key); else GF_EXPANDED.add(key);
+    renderGoalsFirst();
+  }
+});
+
+document.querySelectorAll("#gfMonthToggle .period-btn").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    GF_CURRENT_MONTH = btn.dataset.gfMonth;
+    document.querySelectorAll("#gfMonthToggle .period-btn").forEach(b=>b.classList.toggle("active", b===btn));
+    renderGoalsFirst();
+  });
+});
+
+document.getElementById("gfExpandAllBtn").addEventListener("click", ()=>{
+  TIMESHEET_PEOPLE.forEach(p=>GF_EXPANDED.add(p.key));
+  renderGoalsFirst();
+});
+document.getElementById("gfCollapseAllBtn").addEventListener("click", ()=>{
+  GF_EXPANDED.clear();
+  GF_GOAL_EXPANDED.clear();
+  renderGoalsFirst();
+});
+
+document.getElementById("goalsFirstToggle").addEventListener("click", ()=>{
+  const section = document.getElementById("goalsFirstSection");
+  const isOpen = section.classList.toggle("open");
+  document.querySelector("#goalsFirstToggle .stats-toggle-icon").textContent = isOpen ? "−" : "+";
+  if(isOpen) renderGoalsFirst();
+});
 
 document.getElementById("timesheetTable").addEventListener("click", (e)=>{
   const btn = e.target.closest(".ts-expand-btn");
