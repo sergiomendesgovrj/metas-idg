@@ -1793,9 +1793,28 @@ const EMBEDDED_ITEMS = [
   {
     "diretoria": "Diretoria de Projetos",
     "tipoMeta": "Meta Local",
+    "colaborador": "3. Tatiana Azevedo",
+    "projeto": "4. MUSEDUCA",
+    "descricaoMeta": "Pré-inauguração: Produção",
+    "indicador": "Pré-inauguração: Produção",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "25,00%",
+    "checkSet": "",
+    "metaOut": "50,00%",
+    "checkOut": "",
+    "metaNov": "75,00%",
+    "checkNov": "",
+    "metaDez": "100,00%",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
     "colaborador": "10. Leandro",
     "projeto": "4. MUSEDUCA",
-    "descricaoMeta": "Produto 15 — Definição do modelo de gestão e governança(R$ 85.000)",
+    "descricaoMeta": "Produto 15 — Definição do modelo de gestão e governança (R$ 85.000)",
     "indicador": "Produto 15 — Desenho de governança e modelo de gestão (R$ 85.000)",
     "periodo": "Set a Dez",
     "metaJanAgo": "",
@@ -3822,7 +3841,7 @@ const TIMESHEET_BY_MONTH = {
   },
   out: {
     "Sergio Mendes":   {maz:25, mup:10, ccmec:25, museduca:5,  metasSetoriais:0,  fma:5},
-    "Tatiana Azevedo": {maz:50, mup:15, ccmec:15, museduca:0,  metasSetoriais:0,  fma:0},  // -15 MAZ -> +15 MUP
+    "Tatiana Azevedo": {maz:30, mup:15, ccmec:15, museduca:20, metasSetoriais:0,  fma:0},  // -15 MAZ -> +15 MUP; -20 MAZ -> +20 MUSEDUCA (Pré-inauguração: Produção)
     "Vitor Garcez":    {maz:40, mup:20, ccmec:20, museduca:0,  metasSetoriais:0,  fma:0},  // -20 CCMEC -> +20 MUP
     "Camila Costa":    {maz:70, mup:0,  ccmec:0,  museduca:0,  metasSetoriais:0,  fma:0, institucional:15, gestao:15, institucionalNote:"Ponto com a equipe (2h) · Assinaturas/documentos (2h) · Reforço temporário (2h, ex-Metas Setoriais)", gestaoNote:"Planejamento da área e da equipe (4h) + reforço temporário (2h, ex-Metas Setoriais)"},  // 10% (metas setoriais) -> institucional/gestão
     "Rogério Lessa":   {maz:0,  mup:0,  ccmec:0,  museduca:0,  metasSetoriais:0,  fma:80},
@@ -3831,7 +3850,7 @@ const TIMESHEET_BY_MONTH = {
   },
   nov: {
     "Sergio Mendes":   {maz:5,  mup:15, ccmec:15, museduca:30, metasSetoriais:0,  fma:5},
-    "Tatiana Azevedo": {maz:20, mup:20, ccmec:40, museduca:0,  metasSetoriais:0,  fma:0},  // -40 CCMEC -> +20 MUP / +20 MAZ
+    "Tatiana Azevedo": {maz:20, mup:20, ccmec:20, museduca:20, metasSetoriais:0,  fma:0},  // -40 CCMEC -> +20 MUP / +20 MAZ; -20 CCMEC -> +20 MUSEDUCA (Pré-inauguração: Produção)
     "Vitor Garcez":    {maz:5,  mup:45, ccmec:25, museduca:0,  metasSetoriais:5,  fma:0},  // -20 Metas Setoriais -> +15 MUP / +5 MAZ; -30 CCMEC -> +30 MUP
     "Camila Costa":    {maz:80, mup:0,  ccmec:0,  museduca:0,  metasSetoriais:0,  fma:0},  // mantido: 100% em Belém
     "Rogério Lessa":   {maz:0,  mup:0,  ccmec:0,  museduca:0,  metasSetoriais:0,  fma:80},
@@ -3840,7 +3859,7 @@ const TIMESHEET_BY_MONTH = {
   },
   dez: {
     "Sergio Mendes":   {maz:0,  mup:20, ccmec:15, museduca:30, metasSetoriais:0,  fma:5},
-    "Tatiana Azevedo": {maz:0,  mup:20, ccmec:20, museduca:0,  metasSetoriais:40, fma:0},  // -40 Metas Setoriais (Lições Aprendidas) -> +20 CCMEC / +20 MUP
+    "Tatiana Azevedo": {maz:0,  mup:20, ccmec:20, museduca:20, metasSetoriais:20, fma:0},  // -40 Metas Setoriais (Lições Aprendidas) -> +20 CCMEC / +20 MUP; -20 Metas Setoriais (Lições Aprendidas) -> +20 MUSEDUCA (Pré-inauguração: Produção)
     "Vitor Garcez":    {maz:0,  mup:30, ccmec:45, museduca:0,  metasSetoriais:5,  fma:0},  // -60 Metas Setoriais -> +55 dividido entre CCMEC/MUP; os 5% de MAZ passaram para o MUP
     "Camila Costa":    {maz:80, mup:0,  ccmec:0,  museduca:0,  metasSetoriais:0,  fma:0},  // dez = idem nov (mantido em Belém)
     "Rogério Lessa":   {maz:0,  mup:0,  ccmec:0,  museduca:0,  metasSetoriais:0,  fma:80},
