@@ -1070,13 +1070,13 @@
 const DATA_GENERATED_AT = "21/09/2026";
 
 const MONTHS = [
-  {key:"set", label:"Set", full:"Setembro", metaField:"metaSet", checkField:"checkSet", endDate:[8,30]}, // month index 0-based (Sept=8)
-  {key:"out", label:"Out", full:"Outubro",  metaField:"metaOut", checkField:"checkOut", endDate:[9,31]},
-  {key:"nov", label:"Nov", full:"Novembro", metaField:"metaNov", checkField:"checkNov", endDate:[10,30]},
-  {key:"dez", label:"Dez", full:"Dezembro", metaField:"metaDez", checkField:"checkDez", endDate:[11,31]}
+  {key:"set", label:"Set", full:"Setembro", metaField:"metaSet", checkField:"checkSet", statusField:"statusSet", endDate:[8,30]}, // month index 0-based (Sept=8)
+  {key:"out", label:"Out", full:"Outubro",  metaField:"metaOut", checkField:"checkOut", statusField:"statusOut", endDate:[9,31]},
+  {key:"nov", label:"Nov", full:"Novembro", metaField:"metaNov", checkField:"checkNov", statusField:"statusNov", endDate:[10,30]},
+  {key:"dez", label:"Dez", full:"Dezembro", metaField:"metaDez", checkField:"checkDez", statusField:"statusDez", endDate:[11,31]}
 ];
-const JAN_AGO_MONTH = {key:"janago", label:"Jan a Ago", full:"Jan a Ago", metaField:"metaJanAgo", checkField:"checkJanAgo", endDate:[7,31]};
-const Y2027_MONTH = {key:"y2027", label:"2027", full:"2027", metaField:"meta2027", checkField:"check2027", endDate:[11,31], endYearOffset:1};
+const JAN_AGO_MONTH = {key:"janago", label:"Jan a Ago", full:"Jan a Ago", metaField:"metaJanAgo", checkField:"checkJanAgo", statusField:"statusJanAgo", endDate:[7,31]};
+const Y2027_MONTH = {key:"y2027", label:"2027", full:"2027", metaField:"meta2027", checkField:"check2027", statusField:"status2027", endDate:[11,31], endYearOffset:1};
 const ALL_MONTH_DEFS = [...MONTHS, JAN_AGO_MONTH, Y2027_MONTH];
 
 // Período selecionado: "set_dez" (o que falta), "jan_ago" (o que já foi feito) ou "y2027" (metas do próximo ano). Mutuamente excludentes.
@@ -1200,8 +1200,8 @@ const EMBEDDED_ITEMS = [
     "tipoMeta": "Meta Global",
     "colaborador": "1. Sergio Mendes",
     "projeto": "7. INTELIGÊNCIA ARTIFICIAL - Desenvolvimento e Treinamento",
-    "descricaoMeta": "Painel Financeiro MAZ\nhttps://sergiomendesgovrj.github.io/MAZ-Painel-Financeiro/MAZ%20Painel%20Financeiro.html?v=2",
-    "indicador": "Painel Financeiro MAZ\nhttps://sites.google.com/idg.org.br/paineldomaz/in%C3%ADcio",
+    "descricaoMeta": "Painel Financeiro MAZ\nhttps://sites.google.com/idg.org.br/paineldomaz/in%C3%ADcio?pli=1&authuser=0",
+    "indicador": "Painel Financeiro MAZ\nhttps://sites.google.com/idg.org.br/paineldomaz/in%C3%ADcio?pli=1&authuser=0",
     "periodo": "Jan a Ago",
     "metaJanAgo": "Painel Financeiro MAZ",
     "checkJanAgo": "Feito",
@@ -1320,7 +1320,8 @@ const EMBEDDED_ITEMS = [
     "metaJanAgo": "",
     "checkJanAgo": "",
     "metaSet": "50,00%",
-    "checkSet": "",
+    "checkSet": "Meta cumprida — Ponto de Controle N2, 29/09",
+    "statusSet": "green",
     "metaOut": "100,00%",
     "checkOut": "",
     "metaNov": "NPS > 8",
@@ -1358,7 +1359,7 @@ const EMBEDDED_ITEMS = [
     "metaJanAgo": "",
     "checkJanAgo": "",
     "metaSet": "Contratação de Inspeção técnica especializada\nLaudo técnico e diagnóstico das instalações",
-    "checkSet": "",
+    "checkSet": "Concluído — Ponto de Controle N2, 29/09",
     "metaOut": "Correções e adequações das instalações elétricas\nDocumentação Técnica Final – Instalações Elétricas (As Built)",
     "checkOut": "",
     "metaNov": "",
@@ -1378,7 +1379,8 @@ const EMBEDDED_ITEMS = [
     "metaJanAgo": "",
     "checkJanAgo": "",
     "metaSet": "50,00%",
-    "checkSet": "Ficha técnica revisada; será enviada junto com o catálogo — Ponto de Controle N2, 29/09",
+    "checkSet": "Meta cumprida, porém em amarelo: ficha técnica finalizada e texto do IDG institucional será enviado hoje; falta ainda confirmar retorno de um item de equipe (pendência de saber a volta) e alinhar nome oficial (MAZ) e uso de textos/observações no catálogo antes do fechamento — Ponto de Controle N2, 29/09",
+    "statusSet": "amber",
     "metaOut": "100,00%",
     "checkOut": "",
     "metaNov": "",
@@ -1435,7 +1437,7 @@ const EMBEDDED_ITEMS = [
     "metaJanAgo": "",
     "checkJanAgo": "",
     "metaSet": "50,00%",
-    "checkSet": "",
+    "checkSet": "Camila apresentou a 1ª versão do roteiro do evento de abertura — Ponto de Controle N2, 29/09",
     "metaOut": "100,00%",
     "checkOut": "",
     "metaNov": "",
@@ -1568,8 +1570,9 @@ const EMBEDDED_ITEMS = [
     "metaJanAgo": "",
     "checkJanAgo": "",
     "metaSet": "100,00%",
-    "checkSet": "Prazo estendido até sexta-feira por correções de desalinhamento estrutural; segue com sala multiuso 1 no sábado — Ponto de Controle N2, 29/09",
-    "metaOut": "",
+    "checkSet": "Cumprida 90% da meta; previsão de finalização em 03/10 — Ponto de Controle N2, 29/09",
+    "statusSet": "amber",
+    "metaOut": "10,00%",
     "checkOut": "",
     "metaNov": "",
     "checkNov": "",
@@ -1587,7 +1590,8 @@ const EMBEDDED_ITEMS = [
     "metaJanAgo": "",
     "checkJanAgo": "",
     "metaSet": "100,00%",
-    "checkSet": "",
+    "checkSet": "Atrasado; previsão de finalização em 03/10 — Ponto de Controle N2, 29/09",
+    "statusSet": "red",
     "metaOut": "",
     "checkOut": "",
     "metaNov": "",
@@ -1608,6 +1612,7 @@ const EMBEDDED_ITEMS = [
     "checkJanAgo": "",
     "metaSet": "80,00%",
     "checkSet": "Meta de entrega definida p/ 03/10 (pressão ao fornecedor RCM); cronograma técnico de Gabi mantém 16/10; pilares e forro em compensado ainda em obra — Ponto de Controle N2, 29/09",
+    "statusSet": "amber",
     "metaOut": "100,00%",
     "checkOut": "",
     "metaNov": "",
@@ -1629,7 +1634,7 @@ const EMBEDDED_ITEMS = [
     "metaSet": "50,00%",
     "checkSet": "Cronograma definido: preliminar em 05/10, ajustes 10–15/10, final em 15/10 (instalação Inova Tag) — Ponto de Controle N2, 29/09",
     "metaOut": "100,00%",
-    "checkOut": "",
+    "checkOut": "05/10 – [Roberta] Entrega da versão completa, com os ajustes dos feedbacks do IDG e da curadoria\n10/10 – [IDG] Retorno da curadoria sobre essa versão\n15/10 – [Roberta] Entrega da versão final renderizada dos arquivos que serão exibidos na sala (arquivos técnicos para a Inovatec) — Ponto de Controle N2, 29/09",
     "metaNov": "",
     "checkNov": "",
     "metaDez": "",
@@ -1646,7 +1651,7 @@ const EMBEDDED_ITEMS = [
     "metaJanAgo": "",
     "checkJanAgo": "",
     "metaSet": "100,00%",
-    "checkSet": "",
+    "checkSet": "Em andamento — Ponto de Controle N2, 29/09",
     "metaOut": "",
     "checkOut": "",
     "metaNov": "",
@@ -1658,17 +1663,37 @@ const EMBEDDED_ITEMS = [
   {
     "diretoria": "Diretoria de Projetos",
     "tipoMeta": "Meta Local",
+    "colaborador": "5. Iago",
+    "projeto": "1. MUSEU DAS AMAZÔNIAS",
+    "descricaoMeta": "RELATÓRIO FINAL PARA CAF",
+    "indicador": "RELATÓRIO FINAL PARA CAF",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "Relatório final para CAF",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
     "colaborador": "9. Amarilis",
     "projeto": "1. MUSEU DAS AMAZÔNIAS",
-    "descricaoMeta": "JOGO DO PONTO DE NÃO RETORNO - Novo Jogo",
-    "indicador": "JOGO DO PONTO DE NÃO RETORNO - Novo Jogo",
+    "descricaoMeta": "JOGO EDUCATIVO — Quiz de Combate a Incêndio por Mangueira (novo jogo, ex-Ponto de Não Retorno)",
+    "indicador": "JOGO EDUCATIVO — Quiz de Combate a Incêndio por Mangueira (novo jogo, ex-Ponto de Não Retorno)",
     "periodo": "Set a Dez",
     "metaJanAgo": "",
     "checkJanAgo": "",
     "metaSet": "50,00%",
-    "checkSet": "",
+    "checkSet": "Setembro concluído: envio do pedido de ajustes (23/09) — feito; aprovação das soluções propostas (24/09); desenvolvimento e implementação do código (25–28/09); entrega do link/protótipo para avaliação e feedback (29/09) — Ponto de Controle N2, 29/09",
     "metaOut": "100,00%",
-    "checkOut": "",
+    "checkOut": "Cronograma: feedback parcial em 02/10 (com teste no equipamento do museu, Amarilis); ajustes finais até 08/10; envio do arquivo para instalação em 08/10; instalação remota em 09/10 (com apoio de equipe local); testes presenciais em 13–14/10 (Vitor) e feedback final; reunião de alinhamento em 14/10 — Ponto de Controle N2, 29/09",
+    "statusOut": "gray",
     "metaNov": "",
     "checkNov": "",
     "metaDez": "",
@@ -1687,7 +1712,8 @@ const EMBEDDED_ITEMS = [
     "metaSet": "",
     "checkSet": "",
     "metaOut": "100,00%",
-    "checkOut": "",
+    "checkOut": "Atrasado; prazo de entrega 03/10. Cronograma: iluminação 19–23/10, montagem fina 26–28/10, comunicação visual 28–30/10; ajustes finais em 31/10 com arquiteto Caio, curador Éder e 2 fotógrafos — Ponto de Controle N2, 29/09",
+    "statusOut": "red",
     "metaNov": "",
     "checkNov": "",
     "metaDez": "",
@@ -1705,7 +1731,7 @@ const EMBEDDED_ITEMS = [
     "metaJanAgo": "",
     "checkJanAgo": "",
     "metaSet": "80,00%",
-    "checkSet": "",
+    "checkSet": "Em andamento — Ponto de Controle N2, 29/09",
     "metaOut": "100,00%",
     "checkOut": "",
     "metaNov": "",
@@ -1726,7 +1752,8 @@ const EMBEDDED_ITEMS = [
     "metaSet": "",
     "checkSet": "",
     "metaOut": "PREPARAÇÃO EDUCATIVO",
-    "checkOut": "",
+    "checkOut": "Em andamento — Ponto de Controle N2, 29/09",
+    "statusOut": "green",
     "metaNov": "1 itens: EDUCATIVO",
     "checkNov": "",
     "metaDez": "",
@@ -1974,7 +2001,8 @@ const EMBEDDED_ITEMS = [
     "metaSet": "Plano de Trabalho",
     "checkSet": "Concluído",
     "metaOut": "WORKSHOP 15/out: identidade, transformação e futuro",
-    "checkOut": "Em andamento",
+    "checkOut": "Em andamento — Ponto de Controle N2, 29/09",
+    "statusOut": "green",
     "metaNov": "Relatório Técnico de Modelo Curatorial\nVídeo Institucional\n23/11 - Lançamento CCMEC",
     "checkNov": "",
     "metaDez": "Plano de Ocupação Arquitetônica do CCMEC\nRelatório Técnico de Circulação e Acessibilidade",
@@ -2102,7 +2130,8 @@ const EMBEDDED_ITEMS = [
     "metaSet": "",
     "checkSet": "",
     "metaOut": "Validação do material (Libras/Audiodescrição) — 19-20/10",
-    "checkOut": "",
+    "checkOut": "Em andamento — Ponto de Controle N2, 29/09",
+    "statusOut": "green",
     "metaNov": "Produção (Libras/Audiodescrição) — até 04/11",
     "checkNov": "",
     "metaDez": "",
@@ -2122,7 +2151,8 @@ const EMBEDDED_ITEMS = [
     "metaSet": "",
     "checkSet": "",
     "metaOut": "Ajustes de textos, legendas e placas nas áreas expositivas + Ficha Técnica (diagramação e impressão)",
-    "checkOut": "",
+    "checkOut": "Em andamento — Ponto de Controle N2, 29/09",
+    "statusOut": "green",
     "metaNov": "",
     "checkNov": "",
     "metaDez": "",
@@ -2142,7 +2172,8 @@ const EMBEDDED_ITEMS = [
     "metaSet": "",
     "checkSet": "",
     "metaOut": "Automação SALT, troca de telas, instalação de som/projeção e afinamento audiovisual",
-    "checkOut": "",
+    "checkOut": "Em andamento — Ponto de Controle N2, 29/09",
+    "statusOut": "green",
     "metaNov": "",
     "checkNov": "",
     "metaDez": "",
@@ -2159,9 +2190,10 @@ const EMBEDDED_ITEMS = [
     "periodo": "Set a Dez",
     "metaJanAgo": "",
     "checkJanAgo": "",
-    "metaSet": "50,00%",
-    "checkSet": "",
-    "metaOut": "100,00%",
+    "metaSet": "90,00%",
+    "checkSet": "60% cumprido; meta de entrega mantida p/ 03/10 (pressão ao fornecedor RCM); cronograma técnico de Gabi mantém 16/10; ar-condicionado (Imperador) com atraso, prazo até 09/10, Sergio vai cobrar Leandro; grelha de saída de ar ainda pendente de definição com a GRZ — Ponto de Controle N2, 29/09",
+    "statusSet": "amber",
+    "metaOut": "10,00%",
     "checkOut": "",
     "metaNov": "",
     "checkNov": "",
@@ -2179,7 +2211,8 @@ const EMBEDDED_ITEMS = [
     "metaJanAgo": "",
     "checkJanAgo": "",
     "metaSet": "50,00%",
-    "checkSet": "",
+    "checkSet": "Não foi apresentado nada sobre este item na reunião (Ponto de Controle N2, 29/09)",
+    "statusSet": "amber",
     "metaOut": "100,00%",
     "checkOut": "",
     "metaNov": "",
@@ -2201,7 +2234,7 @@ const EMBEDDED_ITEMS = [
     "metaSet": "",
     "checkSet": "",
     "metaOut": "Ajustes pontuais de curadoria e expografia nas Áreas 0, 1, 2, 3 e 4",
-    "checkOut": "",
+    "checkOut": "Concluído — Ponto de Controle N2, 29/09",
     "metaNov": "",
     "checkNov": "",
     "metaDez": "",
@@ -2475,9 +2508,11 @@ const EMBEDDED_ITEMS = [
     "metaJanAgo": "",
     "checkJanAgo": "",
     "metaSet": "Preparação do Workshop (50%)",
-    "checkSet": "Em andamento",
-    "metaOut": "",
+    "checkSet": "Concluído — Ponto de Controle N2, 29/09",
+    "statusSet": "green",
+    "metaOut": "WORKSHOP 15/out - PRODUÇÃO",
     "checkOut": "",
+    "statusOut": "gray",
     "metaNov": "",
     "checkNov": "",
     "metaDez": "",
@@ -2490,52 +2525,6 @@ const EMBEDDED_ITEMS = [
   {
     "diretoria": "Diretoria de Projetos",
     "tipoMeta": "Meta Local",
-    "colaborador": "3. Tatiana Azevedo",
-    "projeto": "2. CCMEC",
-    "descricaoMeta": "Workshop 15/out - Produção",
-    "indicador": "WORKSHOP 15/out - PRODUÇÃO",
-    "periodo": "Set a Dez",
-    "metaJanAgo": "",
-    "checkJanAgo": "",
-    "metaSet": "",
-    "checkSet": "",
-    "metaOut": "WORKSHOP 15/out - PRODUÇÃO",
-    "checkOut": "Em andamento",
-    "metaNov": "",
-    "checkNov": "",
-    "metaDez": "",
-    "checkDez": "",
-    "meta2027": "",
-    "check2027": "",
-    "baixaPrioridade": false,
-    "sortOrder": 4
-  },
-  {
-    "diretoria": "Diretoria de Projetos",
-    "tipoMeta": "Meta Local",
-    "colaborador": "9. Amarilis",
-    "projeto": "2. CCMEC",
-    "descricaoMeta": "Workshop 15/out - Conteúdo",
-    "indicador": "WORKSHOP 15/out - CONTEÚDO",
-    "periodo": "Set a Dez",
-    "metaJanAgo": "",
-    "checkJanAgo": "",
-    "metaSet": "",
-    "checkSet": "",
-    "metaOut": "WORKSHOP 15/out - CONTEÚDO",
-    "checkOut": "Em andamento",
-    "metaNov": "",
-    "checkNov": "",
-    "metaDez": "",
-    "checkDez": "",
-    "meta2027": "",
-    "check2027": "",
-    "baixaPrioridade": false,
-    "sortOrder": 5
-  },
-  {
-    "diretoria": "Diretoria de Projetos",
-    "tipoMeta": "Meta Local",
     "colaborador": "9. Amarilis",
     "projeto": "2. CCMEC",
     "descricaoMeta": "Preparação do Workshop 15/out — Conteúdo",
@@ -2544,9 +2533,11 @@ const EMBEDDED_ITEMS = [
     "metaJanAgo": "",
     "checkJanAgo": "",
     "metaSet": "Preparação do Workshop (50%)",
-    "checkSet": "Em andamento",
-    "metaOut": "",
+    "checkSet": "Concluído — Ponto de Controle N2, 29/09",
+    "statusSet": "green",
+    "metaOut": "WORKSHOP 15/out - CONTEÚDO",
     "checkOut": "",
+    "statusOut": "gray",
     "metaNov": "",
     "checkNov": "",
     "metaDez": "",
@@ -2593,6 +2584,7 @@ const EMBEDDED_ITEMS = [
     "checkSet": "",
     "metaOut": "50,00%",
     "checkOut": "30,00%",
+    "statusOut": "green",
     "metaNov": "100,00%",
     "checkNov": "",
     "metaDez": "",
@@ -2617,7 +2609,8 @@ const EMBEDDED_ITEMS = [
     "metaOut": "",
     "checkOut": "",
     "metaNov": "Vídeo Institucional",
-    "checkNov": "Em andamento",
+    "checkNov": "Em andamento — Ponto de Controle N2, 29/09",
+    "statusNov": "green",
     "metaDez": "",
     "checkDez": "",
     "meta2027": "",
@@ -3243,13 +3236,20 @@ function monthEnded(monthDef){
 /* ============================================================
    SEMAPHORE RULE
    ============================================================ */
-function computeStatus(metaRaw, checkRaw, monthDef){
+function computeStatus(metaRaw, checkRaw, monthDef, statusOverride){
   const meta = classifyValue(metaRaw);
   const check = classifyValue(checkRaw);
 
   // Nothing defined at all -> not applicable
   if((meta.type === "empty" || meta.type === "na")){
     return {status:"gray", meta, check};
+  }
+
+  // Override manual do semáforo (definido na reunião/ata) — tem prioridade sobre o cálculo
+  // automático por %; usado quando o encaminhamento indica risco/atraso que o valor bruto
+  // (ex: um texto qualitativo) não capturaria sozinho.
+  if(statusOverride === "green" || statusOverride === "amber" || statusOverride === "red" || statusOverride === "gray"){
+    return {status: statusOverride, meta, check};
   }
 
   const ended = monthEnded(monthDef);
@@ -3309,7 +3309,7 @@ function buildModel(embeddedItems){
   return embeddedItems.map(row=>{
     const months = {};
     ALL_MONTH_DEFS.forEach(m=>{
-      months[m.key] = computeStatus(row[m.metaField], row[m.checkField], m);
+      months[m.key] = computeStatus(row[m.metaField], row[m.checkField], m, row[m.statusField]);
     });
     return {
       diretoria: row.diretoria || "",
