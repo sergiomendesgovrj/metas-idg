@@ -1635,6 +1635,7 @@ const EMBEDDED_ITEMS = [
     "checkSet": "Cronograma definido: preliminar em 05/10, ajustes 10–15/10, final em 15/10 (instalação Inova Tag) — Ponto de Controle N2, 29/09",
     "metaOut": "100,00%",
     "checkOut": "05/10 – [Roberta] Entrega da versão completa, com os ajustes dos feedbacks do IDG e da curadoria\n10/10 – [IDG] Retorno da curadoria sobre essa versão\n15/10 – [Roberta] Entrega da versão final renderizada dos arquivos que serão exibidos na sala (arquivos técnicos para a Inovatec) — Ponto de Controle N2, 29/09",
+    "statusOut": "gray",
     "metaNov": "",
     "checkNov": "",
     "metaDez": "",
@@ -2002,7 +2003,7 @@ const EMBEDDED_ITEMS = [
     "checkSet": "Concluído",
     "metaOut": "WORKSHOP 15/out: identidade, transformação e futuro",
     "checkOut": "Em andamento — Ponto de Controle N2, 29/09",
-    "statusOut": "green",
+    "statusOut": "gray",
     "metaNov": "Relatório Técnico de Modelo Curatorial\nVídeo Institucional\n23/11 - Lançamento CCMEC",
     "checkNov": "",
     "metaDez": "Plano de Ocupação Arquitetônica do CCMEC\nRelatório Técnico de Circulação e Acessibilidade",
@@ -2581,10 +2582,10 @@ const EMBEDDED_ITEMS = [
     "metaJanAgo": "",
     "checkJanAgo": "",
     "metaSet": "10,00%",
-    "checkSet": "",
+    "checkSet": "10,00%",
     "metaOut": "50,00%",
-    "checkOut": "30,00%",
-    "statusOut": "green",
+    "checkOut": "",
+    "statusOut": "gray",
     "metaNov": "100,00%",
     "checkNov": "",
     "metaDez": "",
@@ -2604,13 +2605,13 @@ const EMBEDDED_ITEMS = [
     "periodo": "Set a Dez",
     "metaJanAgo": "",
     "checkJanAgo": "",
-    "metaSet": "",
-    "checkSet": "",
+    "metaSet": "Vídeo Institucional",
+    "checkSet": "Em andamento — Ponto de Controle N2, 29/09",
+    "statusSet": "green",
     "metaOut": "",
     "checkOut": "",
-    "metaNov": "Vídeo Institucional",
-    "checkNov": "Em andamento — Ponto de Controle N2, 29/09",
-    "statusNov": "green",
+    "metaNov": "",
+    "checkNov": "",
     "metaDez": "",
     "checkDez": "",
     "meta2027": "",
@@ -3574,8 +3575,11 @@ function chipHTML(m){
     // há dado lançado, mas não é avaliável automaticamente pela regra (ex: valores absolutos em R$/quantidade)
     // texto completo do check (observação) fica só no hover — nunca escrito na célula.
     const mainTxt = check.type !== "empty" ? (check.type === "pct" || check.type === "money" || check.type === "qty" ? check.display : "✓") : "—";
+    // meta em % ou R$ é curta e pode ir direto na célula; meta em texto (qualitativa) usa
+    // o mesmo rótulo curto ("Entregável" etc.) do branch abaixo — texto completo só no hover.
+    const subLabel = (meta.type === "pct" || meta.type === "money" || meta.type === "qty") ? meta.display : deriveQualLabel(meta.display);
     const tt = formatMetaTooltip(meta, check);
-    return `<span class="chip gray" title="${escapeHtml(tt)}"><span class="main">${mainTxt}</span><span class="sub">meta ${meta.display}</span></span>`;
+    return `<span class="chip gray" title="${escapeHtml(tt)}"><span class="main">${mainTxt}</span><span class="sub">meta ${escapeHtml(subLabel)}</span></span>`;
   }
   if(meta.type === "pct" || meta.type === "money"){
     // observação em texto (check qualitativo) nunca aparece na célula — só no hover (title).
