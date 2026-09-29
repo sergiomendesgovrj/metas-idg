@@ -3572,12 +3572,14 @@ function chipHTML(m){
       return `<span class="chip gray"><span class="main">—</span><span class="sub">N/A</span></span>`;
     }
     // há dado lançado, mas não é avaliável automaticamente pela regra (ex: valores absolutos em R$/quantidade)
-    const mainTxt = check.type !== "empty" ? check.display : "—";
+    // texto completo do check (observação) fica só no hover — nunca escrito na célula.
+    const mainTxt = check.type !== "empty" ? (check.type === "pct" || check.type === "money" || check.type === "qty" ? check.display : "✓") : "—";
     const tt = formatMetaTooltip(meta, check);
     return `<span class="chip gray" title="${escapeHtml(tt)}"><span class="main">${mainTxt}</span><span class="sub">meta ${meta.display}</span></span>`;
   }
   if(meta.type === "pct" || meta.type === "money"){
-    const mainTxt = (check.type === "pct" || check.type === "money" || check.type === "qty") ? check.display : (check.type === "empty" ? "—" : check.display);
+    // observação em texto (check qualitativo) nunca aparece na célula — só no hover (title).
+    const mainTxt = (check.type === "pct" || check.type === "money" || check.type === "qty") ? check.display : (check.type === "empty" ? "—" : "✓");
     const tt = formatMetaTooltip(meta, check);
     return `<span class="chip ${visualStatus}" title="${escapeHtml(tt)}"><span class="main">${mainTxt}</span><span class="sub">meta ${meta.display}</span></span>`;
   }
