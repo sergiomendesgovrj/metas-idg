@@ -618,6 +618,7 @@
   .panel{
     background:var(--panel-bg);
     border:1px solid var(--panel-border);
+    border-top:4px solid var(--navy); /* acento navy — teste a pedido do Sergio, amarra com o cabeçalho */
     border-radius:16px;
     overflow:hidden;
     box-shadow:0 2px 10px rgba(15,36,56,.06);
@@ -645,11 +646,17 @@
     white-space:nowrap;
   }
   .group-action-btn:hover{background:#eef2f5;}
+  /* acento navy nos botões de "Metas por Projeto" — só essa seção, amarra com a faixa/título */
+  #expandAllBtn, #collapseAllBtn{
+    color:var(--navy);
+    border-color:rgba(15,36,56,.3);
+  }
+  #expandAllBtn:hover, #collapseAllBtn:hover{background:#e9edf1;}
   .panel-header h2{
     margin:0 0 4px;
     font-size:19px;
     font-weight:700;
-    color:var(--panel-ink);
+    color:var(--navy); /* acento navy — teste, antes era var(--panel-ink) roxo */
     letter-spacing:.2px;
   }
   .panel-header p{
