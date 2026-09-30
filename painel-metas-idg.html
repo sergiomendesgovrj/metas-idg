@@ -584,6 +584,10 @@
   .colab-pending-dot.amber{background:var(--amber);}
   .colab-pending-dot.red{background:var(--red);}
   .colab-pending-text{font-size:11.5px; color:var(--ink); line-height:1.35;}
+  .colab-pending-text .cpt-projeto{
+    display:block; font-size:9.5px; font-weight:700; letter-spacing:.03em; text-transform:uppercase;
+    color:var(--panel-muted); margin-bottom:1px;
+  }
   .colab-pending-text .cpt-title{font-weight:700;}
   .colab-pending-text .cpt-gap{color:var(--muted); display:block; font-size:11px; margin-top:1px;}
   .colab-empty{font-size:12px; color:var(--panel-muted); padding:6px 2px;}
@@ -3984,6 +3988,7 @@ function renderColabStats(items, curMonth){
     } else {
       bucket.pending.push({
         title: item.indicador || item.descricaoMeta || "",
+        projeto: item.projeto || "",
         status: m.status,
         gap: computeGapText(m)
       });
@@ -4019,7 +4024,7 @@ function renderColabStats(items, curMonth){
       : `<div class="colab-pending">${c.pending.map(p=>`
           <div class="colab-pending-item">
             <span class="colab-pending-dot ${p.status}"></span>
-            <span class="colab-pending-text"><span class="cpt-title">${escapeHtml(p.title)}</span><span class="cpt-gap">${escapeHtml(p.gap)}</span></span>
+            <span class="colab-pending-text">${p.projeto ? `<span class="cpt-projeto">${escapeHtml(stripColabPrefix(p.projeto))}</span>` : ""}<span class="cpt-title">${escapeHtml(p.title)}</span><span class="cpt-gap">${escapeHtml(p.gap)}</span></span>
           </div>
         `).join("")}</div>`;
     return `
