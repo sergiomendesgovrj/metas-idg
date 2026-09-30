@@ -514,21 +514,81 @@
     line-height:1.3;
   }
 
-  .kpi.total{ --kpi-border:#c9d3db; --kpi-color:var(--navy); }
-  .kpi.green{ --kpi-border:var(--green); --kpi-color:var(--green); }
-  .kpi.amber{ --kpi-border:var(--amber); --kpi-color:var(--amber); }
-  .kpi.red{ --kpi-border:var(--red); --kpi-color:var(--red); }
-  .kpi.pct{ --kpi-border:#c9d3db; --kpi-color:var(--navy); text-align:center; }
+  /* ---------- semáforo compacto — ficha única (total + % cumprido + barra empilhada), ---------- */
+  /* substitui os 5 cards separados (total / verde / âmbar / vermelho / gauge) por um só.        */
+  .kpi.status-kpi-solo{ --kpi-border:#c9d3db; flex:1 1 100%; text-align:left; }
+  .status-solo-top{display:flex; gap:32px; flex-wrap:wrap; margin-bottom:14px;}
+  .status-solo-stat .value{font-size:26px;font-weight:800;line-height:1;color:var(--navy);}
+  .status-solo-stat .label{font-size:12px;color:var(--panel-muted);margin-top:6px;}
+  .status-kpi-head{display:flex; align-items:baseline; justify-content:space-between; margin-bottom:9px;}
+  .status-kpi-title{font-size:12px; font-weight:700; color:var(--navy);}
+  .status-kpi-sub{font-size:11px; color:var(--panel-muted);}
+  .status-bar{
+    display:flex; width:100%; height:14px; border-radius:7px; overflow:hidden;
+    background:var(--gray-bg);
+  }
+  .status-bar-seg{height:100%; min-width:0; transition:width .4s ease;}
+  .status-bar-seg + .status-bar-seg{ margin-left:2px; } /* respiro entre segmentos, cor da superfície aparece no vão */
+  .status-bar-seg.green{background:var(--green);}
+  .status-bar-seg.amber{background:var(--amber);}
+  .status-bar-seg.red{background:var(--red);}
+  .status-legend{display:flex; flex-wrap:wrap; gap:6px 16px; margin-top:10px; font-size:11.5px; color:var(--ink);}
+  .status-legend-item{display:flex; align-items:center; gap:5px; white-space:nowrap;}
+  .status-legend-item b{font-weight:800; color:var(--ink);}
+  .status-legend .dot{width:8px; height:8px; border-radius:50%; display:inline-block; flex:0 0 auto;}
+  .status-legend .dot.green{background:var(--green);}
+  .status-legend .dot.amber{background:var(--amber);}
+  .status-legend .dot.red{background:var(--red);}
 
-  /* gauge (% cumprimento médio) */
-  .gauge-wrap{position:relative;width:100%;max-width:115px;margin:0 auto;}
-  .gauge-svg{width:100%;height:auto;display:block;}
-  .gauge-bg{fill:none;stroke:#dbe4ee;stroke-width:14;stroke-linecap:round;}
-  .gauge-fg{fill:none;stroke:var(--accent-blue);stroke-width:14;stroke-linecap:round;stroke-dasharray:0 100;transition:stroke-dasharray .7s ease;}
-  .gauge-center{position:absolute;left:0;right:0;top:56%;text-align:center;}
-  .gauge-center .value{font-size:24px;color:var(--navy);}
-  .gauge-scale{display:flex;justify-content:space-between;font-size:9.5px;color:var(--muted);margin-top:-6px;padding:0 8px;}
-  .kpi.pct .label{margin-top:2px;}
+  /* ---------- visão por colaborador (dentro de Estatísticas) ---------- */
+  .colab-block{padding:4px 20px 20px;}
+  .colab-block-head{
+    display:flex; align-items:baseline; justify-content:space-between; gap:10px;
+    margin-bottom:10px; flex-wrap:wrap;
+  }
+  .colab-block-head h3{font-size:14px; font-weight:700; color:var(--navy); margin:0;}
+  .colab-block-head .colab-sub{font-size:11.5px; color:var(--panel-muted);}
+  .colab-sort-toggle{
+    font-size:11px; color:var(--accent-blue); background:none; border:none; cursor:pointer;
+    font-weight:600; padding:2px 0;
+  }
+  .colab-sort-toggle:hover{text-decoration:underline;}
+  .colab-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(230px, 1fr));
+    gap:10px;
+  }
+  .colab-card{
+    border-radius:12px; background:#fff; border:1.6px solid var(--kpi-border, #c9d3db);
+    padding:12px 13px; box-shadow:0 1px 3px rgba(15,36,56,.05);
+  }
+  .colab-card.cc-green{ --kpi-border:var(--green); }
+  .colab-card.cc-amber{ --kpi-border:var(--amber); }
+  .colab-card.cc-red{ --kpi-border:var(--red); }
+  .colab-card.cc-gray{ --kpi-border:#c9d3db; }
+  .colab-card-head{display:flex; align-items:center; justify-content:space-between; gap:8px;}
+  .colab-name{font-size:13px; font-weight:700; color:var(--ink);}
+  .colab-score{
+    font-size:11px; font-weight:700; padding:2px 8px; border-radius:20px; white-space:nowrap;
+  }
+  .colab-card.cc-green .colab-score{background:var(--green-bg); color:var(--green);}
+  .colab-card.cc-amber .colab-score{background:var(--amber-bg); color:var(--amber);}
+  .colab-card.cc-red .colab-score{background:var(--red-bg); color:var(--red);}
+  .colab-card.cc-gray .colab-score{background:var(--gray-bg); color:var(--gray);}
+  .colab-ok-line{font-size:11.5px; color:var(--green); margin-top:8px; font-weight:600;}
+  .colab-pending{margin-top:8px; display:flex; flex-direction:column; gap:6px;}
+  .colab-pending-item{display:flex; gap:7px; align-items:flex-start;}
+  .colab-pending-dot{
+    flex:0 0 auto; width:8px; height:8px; border-radius:50%; margin-top:4px;
+  }
+  .colab-pending-dot.amber{background:var(--amber);}
+  .colab-pending-dot.red{background:var(--red);}
+  .colab-pending-text{font-size:11.5px; color:var(--ink); line-height:1.35;}
+  .colab-pending-text .cpt-title{font-weight:700;}
+  .colab-pending-text .cpt-gap{color:var(--muted); display:block; font-size:11px; margin-top:1px;}
+  .colab-empty{font-size:12px; color:var(--panel-muted); padding:6px 2px;}
+  .colab-block .ts-month-filter{padding:0 0 12px;}
+  .colab-frozen-note{font-size:11px; color:var(--panel-muted); font-style:italic;}
 
   /* ---------- legend bar (in content, above table) ---------- */
   .legend-bar{
@@ -823,6 +883,7 @@
   @media (max-width: 980px){
     .kpis{flex-direction:column;}
     .detail-inner{grid-template-columns:1fr;}
+    .colab-grid{grid-template-columns:1fr;}
   }
 </style>
 </head>
@@ -1020,38 +1081,53 @@
             <p>Resumo do filtro atual — mês vigente</p>
           </div>
           <div class="kpis" id="kpis">
-          <div class="kpi total">
-            <div class="value" id="kpiTotal">–</div>
-            <div class="label" id="kpiTotalSub">metas no filtro</div>
-          </div>
-          <div class="kpi green">
-            <div class="value" id="kpiGreen">–</div>
-            <div class="label" id="kpiGreenSub">no prazo</div>
-            <div class="kpi-desc">Meta atingida / em dia</div>
-          </div>
-          <div class="kpi amber">
-            <div class="value" id="kpiAmber">–</div>
-            <div class="label" id="kpiAmberSub">risco de atraso</div>
-            <div class="kpi-desc">Entre 30% e a meta</div>
-          </div>
-          <div class="kpi red">
-            <div class="value" id="kpiRed">–</div>
-            <div class="label" id="kpiRedSub">atrasadas</div>
-            <div class="kpi-desc">Abaixo de 30% / sem check e mês encerrado</div>
-          </div>
-          <div class="kpi pct">
-            <div class="gauge-wrap">
-              <svg class="gauge-svg" viewBox="0 0 200 118">
-                <path class="gauge-bg" d="M20,104 A80,80 0 0 1 180,104"></path>
-                <path class="gauge-fg" id="gaugeFg" pathLength="100" d="M20,104 A80,80 0 0 1 180,104"></path>
-              </svg>
-              <div class="gauge-center">
-                <div class="value" id="kpiPct">–</div>
+          <div class="kpi status-kpi-solo">
+            <div class="status-solo-top">
+              <div class="status-solo-stat">
+                <div class="value" id="kpiTotal">–</div>
+                <div class="label" id="kpiTotalSub">metas no filtro</div>
               </div>
-              <div class="gauge-scale"><span>0%</span><span>100%</span></div>
+              <div class="status-solo-stat">
+                <div class="value" id="kpiPct">–</div>
+                <div class="label" id="kpiPctSub">% de metas cumpridas</div>
+              </div>
             </div>
-            <div class="label" id="kpiPctSub">% cumprimento médio</div>
+            <div class="status-kpi-head">
+              <span class="status-kpi-title">Semáforo</span>
+              <span class="status-kpi-sub" id="statusKpiSub">Setembro</span>
+            </div>
+            <div class="status-bar" id="statusBar">
+              <div class="status-bar-seg green" id="segGreen"></div>
+              <div class="status-bar-seg amber" id="segAmber"></div>
+              <div class="status-bar-seg red" id="segRed"></div>
+            </div>
+            <div class="status-legend">
+              <span class="status-legend-item"><i class="dot green"></i><b id="legGreen">–</b> no prazo</span>
+              <span class="status-legend-item"><i class="dot amber"></i><b id="legAmber">–</b> risco de atraso</span>
+              <span class="status-legend-item"><i class="dot red"></i><b id="legRed">–</b> atrasadas</span>
+            </div>
           </div>
+        </div>
+
+        <div class="colab-block">
+          <div class="colab-block-head">
+            <div>
+              <h3 id="colabBlockTitle">Cumprimento por colaborador — Setembro</h3>
+              <div class="colab-sub" id="colabBlockSub">Quem cumpriu a meta do mês, quem não cumpriu e o que faltou</div>
+            </div>
+            <button type="button" class="colab-sort-toggle" id="colabSortToggle">Ordenar: pendências primeiro</button>
+          </div>
+          <div class="ts-month-filter" id="colabMonthFilter">
+            <span class="ts-legend-title">Mês:</span>
+            <div class="period-toggle" id="colabMonthToggle">
+              <button type="button" class="period-btn" data-colab-month="set">Setembro</button>
+              <button type="button" class="period-btn" data-colab-month="out">Outubro</button>
+              <button type="button" class="period-btn" data-colab-month="nov">Novembro</button>
+              <button type="button" class="period-btn" data-colab-month="dez">Dezembro</button>
+            </div>
+            <span class="colab-frozen-note" id="colabFrozenNote"></span>
+          </div>
+          <div class="colab-grid" id="colabGrid"></div>
         </div>
         </div>
       </div>
@@ -3782,34 +3858,194 @@ function updateKPIs(items, curMonthKeyParam){
   const monthLabel = (ALL_MONTH_DEFS.find(m=>m.key===curMonth)||{}).full || "";
   document.getElementById("kpiTotalSub").textContent = "metas no filtro";
 
-  let green=0, amber=0, red=0, pctSum=0, pctCount=0;
+  let green=0, amber=0, red=0;
   items.forEach(item=>{
     const m = item.months[curMonth];
     if(m.status === "green") green++;
     else if(m.status === "amber") amber++;
     else if(m.status === "red") red++;
-    if(m.meta.type === "pct" && m.check.type === "pct"){
-      pctSum += m.check.value;
-      pctCount++;
+  });
+
+  // Semáforo compacto: uma única barra empilhada (verde/âmbar/vermelho, proporcional às metas
+  // aplicáveis no mês) substitui os 3 cards separados — mesma informação, bem menos espaço.
+  const applicableForBar = green + amber + red;
+  document.getElementById("statusKpiSub").textContent = monthLabel;
+  const segGreen = document.getElementById("segGreen");
+  const segAmber = document.getElementById("segAmber");
+  const segRed = document.getElementById("segRed");
+  const wGreen = applicableForBar ? (green/applicableForBar*100) : 0;
+  const wAmber = applicableForBar ? (amber/applicableForBar*100) : 0;
+  const wRed = applicableForBar ? (red/applicableForBar*100) : 0;
+  segGreen.style.width = wGreen + "%";
+  segAmber.style.width = wAmber + "%";
+  segRed.style.width = wRed + "%";
+  segGreen.title = `${green} no prazo`;
+  segAmber.title = `${amber} em risco de atraso`;
+  segRed.title = `${red} atrasada${red===1?"":"s"}`;
+  document.getElementById("legGreen").textContent = green;
+  document.getElementById("legAmber").textContent = amber;
+  document.getElementById("legRed").textContent = red;
+
+  // % de metas cumpridas no mês = verde ÷ total de metas aplicáveis (verde+amarelo+vermelho,
+  // excluindo as sem meta lançada no mês/N-A). Substituiu a antiga média bruta dos valores de
+  // check em %, que confundia "progresso numérico da régua" com "nota de desempenho".
+  const pctCumprido = applicableForBar ? Math.round((green/applicableForBar)*100) : null;
+  document.getElementById("kpiPct").textContent = pctCumprido !== null ? pctCumprido + "%" : "—";
+  document.getElementById("kpiPctSub").textContent = "de metas cumpridas"; // mês já aparece na linha do Semáforo, logo abaixo
+
+  // A visão por colaborador tem seleção de mês própria (aba clicável): segue o mês vigente
+  // por padrão, mas fica fixada no mês escolhido até o usuário trocar de aba — assim setembro
+  // continua consultável (congelado) mesmo depois que o painel passar a girar em torno de outubro.
+  LAST_ITEMS_FOR_COLAB = items;
+  renderColabStats(items, COLAB_MONTH || curMonth);
+}
+
+/* ============================================================
+   VISÃO POR COLABORADOR (dentro de Estatísticas)
+   Quem cumpriu a meta do mês vigente, quem não cumpriu e o que faltou.
+   Considera só metas aplicáveis no mês (status !== "gray"); metas sem
+   meta lançada naquele mês (N/A) não contam nem a favor nem contra ninguém.
+   Tem seleção de mês independente (aba Set/Out/Nov/Dez) para consultar o
+   histórico de meses já encerrados sem depender da data de hoje.
+   ============================================================ */
+let COLAB_SORT_MODE = "pending_first"; // "pending_first" | "alpha"
+let COLAB_MONTH = null; // null = segue o mês vigente automaticamente; fixo após clique numa aba
+let LAST_ITEMS_FOR_COLAB = [];
+let LAST_STATS_ITEMS = [];
+let LAST_STATS_MONTH = "set";
+const COLAB_MONTH_ORDER = ["set","out","nov","dez"];
+
+// Remove o prefixo numérico de ordenação usado internamente (ex: "9. Amarilis" -> "Amarilis").
+function stripColabPrefix(c){
+  return String(c || "").replace(/^\d+\.\s*/, "");
+}
+
+// Descreve, em poucas palavras, o que falta para uma meta amber/red ser cumprida.
+function computeGapText(m){
+  const {meta, check} = m;
+  if(check.type === "empty"){
+    if(meta.type === "pct" || meta.type === "money" || meta.type === "qty") return `meta ${meta.display} — sem check lançado`;
+    return "sem check lançado";
+  }
+  if(meta.type === "pct" && check.type === "pct"){
+    const diff = Math.round((meta.value - check.value) * 10) / 10;
+    return diff > 0 ? `alcançou ${check.display} de ${meta.display} (faltam ${diff}%)` : `alcançou ${check.display} de ${meta.display}`;
+  }
+  if((meta.type === "money" || meta.type === "qty") && (check.type === "money" || check.type === "qty")){
+    return `alcançou ${check.display} de ${meta.display}`;
+  }
+  // meta qualitativa (texto): o check já traz a observação do que está pendente/em andamento
+  return check.display;
+}
+
+function renderColabStats(items, curMonth){
+  LAST_STATS_ITEMS = items;
+  LAST_STATS_MONTH = curMonth;
+
+  const monthLabel = (ALL_MONTH_DEFS.find(m=>m.key===curMonth)||{}).full || "";
+  const titleEl = document.getElementById("colabBlockTitle");
+  if(titleEl) titleEl.textContent = "Cumprimento por colaborador — " + monthLabel;
+
+  // aba de mês: só faz sentido dentro do período Set–Dez (Jan-Ago e 2027 são períodos únicos, sem abas)
+  const filterRow = document.getElementById("colabMonthFilter");
+  if(filterRow) filterRow.style.display = (CURRENT_PERIOD === "set_dez") ? "" : "none";
+  document.querySelectorAll("#colabMonthToggle .period-btn").forEach(btn=>{
+    btn.classList.toggle("active", btn.dataset.colabMonth === curMonth);
+  });
+
+  // aviso de "congelado" para meses já encerrados — o vigente segue sendo atualizado normalmente
+  const frozenNote = document.getElementById("colabFrozenNote");
+  if(frozenNote){
+    const liveMonth = currentMonthKey();
+    const idx = COLAB_MONTH_ORDER.indexOf(curMonth), liveIdx = COLAB_MONTH_ORDER.indexOf(liveMonth);
+    frozenNote.textContent = (idx >= 0 && liveIdx >= 0 && idx < liveIdx)
+      ? `histórico — ${monthLabel} não é mais atualizado`
+      : "";
+  }
+
+  const grid = document.getElementById("colabGrid");
+  if(!grid) return;
+
+  // agrupa por colaborador, só considerando metas aplicáveis neste mês
+  const byColab = {};
+  const order = [];
+  items.forEach(item=>{
+    const m = item.months[curMonth];
+    if(!m || m.status === "gray") return; // sem meta aplicável neste mês
+    const key = item.colaborador || "(sem colaborador)";
+    if(!(key in byColab)){
+      byColab[key] = {colaborador:key, total:0, green:0, pending:[]};
+      order.push(key);
+    }
+    const bucket = byColab[key];
+    bucket.total++;
+    if(m.status === "green"){
+      bucket.green++;
+    } else {
+      bucket.pending.push({
+        title: item.indicador || item.descricaoMeta || "",
+        status: m.status,
+        gap: computeGapText(m)
+      });
     }
   });
 
-  document.getElementById("kpiGreen").textContent = green;
-  document.getElementById("kpiGreenSub").textContent = "no prazo · " + monthLabel;
-  document.getElementById("kpiAmber").textContent = amber;
-  document.getElementById("kpiAmberSub").textContent = "risco de atraso · " + monthLabel;
-  document.getElementById("kpiRed").textContent = red;
-  document.getElementById("kpiRedSub").textContent = "atrasadas · " + monthLabel;
+  let colabs = order.map(k=>byColab[k]);
 
-  const avgPct = pctCount ? Math.round(pctSum/pctCount) : null;
-  document.getElementById("kpiPct").textContent = avgPct !== null ? avgPct + "%" : "—";
-  document.getElementById("kpiPctSub").textContent = "% cumprimento médio · " + monthLabel;
-  const gaugeFg = document.getElementById("gaugeFg");
-  if(gaugeFg){
-    const clamped = avgPct !== null ? Math.max(0, Math.min(100, avgPct)) : 0;
-    gaugeFg.style.strokeDasharray = clamped + " " + (100 - clamped);
+  if(!colabs.length){
+    grid.innerHTML = `<div class="colab-empty">Nenhuma meta aplicável a ${escapeHtml(monthLabel)} para os filtros selecionados.</div>`;
+    return;
   }
+
+  if(COLAB_SORT_MODE === "pending_first"){
+    colabs.sort((a,b)=>{
+      const aRed = a.pending.some(p=>p.status==="red");
+      const bRed = b.pending.some(p=>p.status==="red");
+      if(aRed !== bRed) return aRed ? -1 : 1;
+      if(a.pending.length !== b.pending.length) return b.pending.length - a.pending.length;
+      return stripColabPrefix(a.colaborador).localeCompare(stripColabPrefix(b.colaborador), 'pt-BR', {numeric:true});
+    });
+  } else {
+    colabs.sort((a,b)=> stripColabPrefix(a.colaborador).localeCompare(stripColabPrefix(b.colaborador), 'pt-BR', {numeric:true}));
+  }
+
+  grid.innerHTML = colabs.map(c=>{
+    const hasRed = c.pending.some(p=>p.status==="red");
+    const hasAmber = c.pending.some(p=>p.status==="amber");
+    const cls = hasRed ? "cc-red" : (hasAmber ? "cc-amber" : "cc-green");
+    const scoreTxt = `${c.green}/${c.total} cumprida${c.total>1?"s":""}`;
+    const body = !c.pending.length
+      ? `<div class="colab-ok-line">✓ Todas as metas cumpridas</div>`
+      : `<div class="colab-pending">${c.pending.map(p=>`
+          <div class="colab-pending-item">
+            <span class="colab-pending-dot ${p.status}"></span>
+            <span class="colab-pending-text"><span class="cpt-title">${escapeHtml(p.title)}</span><span class="cpt-gap">${escapeHtml(p.gap)}</span></span>
+          </div>
+        `).join("")}</div>`;
+    return `
+      <div class="colab-card ${cls}">
+        <div class="colab-card-head">
+          <span class="colab-name">${escapeHtml(stripColabPrefix(c.colaborador))}</span>
+          <span class="colab-score">${scoreTxt}</span>
+        </div>
+        ${body}
+      </div>
+    `;
+  }).join("");
 }
+
+document.getElementById("colabSortToggle").addEventListener("click", ()=>{
+  COLAB_SORT_MODE = COLAB_SORT_MODE === "pending_first" ? "alpha" : "pending_first";
+  document.getElementById("colabSortToggle").textContent = COLAB_SORT_MODE === "pending_first" ? "Ordenar: pendências primeiro" : "Ordenar: A-Z";
+  renderColabStats(LAST_STATS_ITEMS, LAST_STATS_MONTH);
+});
+
+document.querySelectorAll("#colabMonthToggle .period-btn").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    COLAB_MONTH = btn.dataset.colabMonth;
+    renderColabStats(LAST_ITEMS_FOR_COLAB, COLAB_MONTH);
+  });
+});
 
 /* ============================================================
    INIT
