@@ -264,27 +264,30 @@
 
   /* ---------- seção de estatísticas (colapsável, abaixo da tabela) ---------- */
   .stats-section{margin-top:16px;}
+  /* Estilo outline (não mais preenchimento sólido): são togglers de "mostrar mais",
+     não ações primárias — o navy sólido fica reservado para ações que o usuário executa. */
   .stats-toggle{
     display:inline-flex;
     align-items:center;
     gap:8px;
-    background:var(--navy);
-    border:none;
+    background:#ffffff;
+    border:1.5px solid rgba(15,36,56,.35);
     padding:8px 16px;
     border-radius:8px;
     font-size:13.5px;
     font-weight:700;
-    color:#ffffff;
+    color:var(--navy);
     cursor:pointer;
-    box-shadow:0 1px 3px rgba(15,36,56,.12);
+    box-shadow:0 1px 3px rgba(15,36,56,.06);
   }
-  .stats-toggle:hover{background:var(--navy-2);}
+  .stats-toggle:hover{background:#eef2f5;border-color:rgba(15,36,56,.5);}
   .stats-toggle .stats-toggle-icon{
     display:inline-flex;width:19px;height:19px;align-items:center;justify-content:center;
-    border:1.5px solid #ffffff;border-radius:5px;color:#ffffff;
+    border:1.5px solid var(--navy);border-radius:5px;color:var(--navy);
     font-size:13px;font-weight:700;line-height:1;flex-shrink:0;
   }
-  .stats-section.open .stats-toggle .stats-toggle-icon{ background:#ffffff; color:var(--navy); }
+  .stats-section.open .stats-toggle{ background:var(--navy); color:#ffffff; border-color:var(--navy); }
+  .stats-section.open .stats-toggle .stats-toggle-icon{ background:#ffffff; color:var(--navy); border-color:#ffffff; }
 
   /* painel cinza que envolve as estatísticas quando expandidas (mesmo padrão visual do quadro de indicadores) */
   .stats-panel{
@@ -994,8 +997,7 @@
           <div class="stats-panel-header">
             <div class="panel-header-top">
               <div>
-                <h2>Timesheet por %</h2>
-                <p>Dedicação semanal por colaborador (semana de 40h) — Set a Dez/2026</p>
+                <h2>Timesheet por %</h2>                <p>Dedicação semanal por colaborador (semana de 40h) — Set a Dez/2026</p>
               </div>
               <div class="group-toggle-actions">
                 <button type="button" id="tsExpandAllBtn" class="group-action-btn">Expandir tudo</button>
@@ -1994,8 +1996,7 @@ const EMBEDDED_ITEMS = [
     "checkSet": "",
     "metaOut": "",
     "checkOut": "",
-    "metaNov": "",
-    "checkNov": "",
+    "metaNov": "",    "checkNov": "",
     "metaDez": "",
     "checkDez": "",
     "meta2027": "5º Termo Aditivo SEAS-IDG formalizado e publicado no DOE (01/09/2026), prorrogando a vigência até dez/2026, com remuneração-base negociada em R$ 137 mil/mês (+52% vs. proposta inicial da SEAS de R$ 90 mil) — concluído; acompanhamento do Plano de Trabalho pactuado com a SEAS; monitoramento das atividades finais de restauração, entregas, prazos e pendências das empresas executoras; manutenção da estrutura mínima durante a transição para o novo edital do FMA",
@@ -2994,8 +2995,7 @@ const EMBEDDED_ITEMS = [
     "metaJanAgo": "",
     "checkJanAgo": "",
     "metaSet": "",
-    "checkSet": "",
-    "metaOut": "",
+    "checkSet": "",    "metaOut": "",
     "checkOut": "",
     "metaNov": "",
     "checkNov": "",
@@ -3994,8 +3994,7 @@ function renderColabStats(items, curMonth){
       byColab[key] = {colaborador:key, total:0, green:0, pending:[]};
       order.push(key);
     }
-    const bucket = byColab[key];
-    bucket.total++;
+    const bucket = byColab[key];    bucket.total++;
     if(m.status === "green"){
       bucket.green++;
     } else {
