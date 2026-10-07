@@ -997,7 +997,8 @@
           <div class="stats-panel-header">
             <div class="panel-header-top">
               <div>
-                <h2>Timesheet por %</h2>                <p>Dedicação semanal por colaborador (semana de 40h) — Set a Dez/2026</p>
+                <h2>Timesheet por %</h2>
+                <p>Dedicação semanal por colaborador (semana de 40h) — Set a Dez/2026</p>
               </div>
               <div class="group-toggle-actions">
                 <button type="button" id="tsExpandAllBtn" class="group-action-btn">Expandir tudo</button>
@@ -1289,8 +1290,8 @@ const EMBEDDED_ITEMS = [
     "tipoMeta": "Meta Global",
     "colaborador": "1. Sergio Mendes",
     "projeto": "7. INTELIGÊNCIA ARTIFICIAL - Desenvolvimento e Treinamento",
-    "descricaoMeta": "Painel Financeiro MAZ\nhttps://sites.google.com/idg.org.br/paineldomaz/in%C3%ADcio?pli=1&authuser=0",
-    "indicador": "Painel Financeiro MAZ\nhttps://sites.google.com/idg.org.br/paineldomaz/in%C3%ADcio?pli=1&authuser=0",
+    "descricaoMeta": "Painel Financeiro MAZ\nhttps://sites.google.com/idg.org.br/painelmaz/tela-cheia",
+    "indicador": "Painel Financeiro MAZ\nhttps://sites.google.com/idg.org.br/painelmaz/tela-cheia",
     "periodo": "Jan a Ago",
     "metaJanAgo": "Painel Financeiro MAZ",
     "checkJanAgo": "Feito",
@@ -1996,7 +1997,8 @@ const EMBEDDED_ITEMS = [
     "metaSet": "",
     "checkSet": "",
     "metaOut": "",
-    "checkOut": "",    "metaNov": "",
+    "checkOut": "",
+    "metaNov": "",
     "checkNov": "",
     "metaDez": "",
     "checkDez": ""
@@ -2995,7 +2997,8 @@ const EMBEDDED_ITEMS = [
     "metaSet": "",
     "checkSet": "",
     "metaOut": "",
-    "checkOut": "",    "metaNov": "",
+    "checkOut": "",
+    "metaNov": "",
     "checkNov": "",
     "metaDez": "",
     "checkDez": "",
@@ -3994,7 +3997,8 @@ function resetFilters(){
   document.querySelectorAll('[data-ms]').forEach(cb=>cb.checked=false);
   updateMsTriggerText("msTipo", [...document.querySelectorAll('#msTipoPanel [data-ms]')].map(el=>el.value));
   setPeriod("set_dez");
-  render();}
+  render();
+}
 
 function getFilteredItems(){
   const d = document.getElementById("fDiretoria").value;
@@ -4993,7 +4997,8 @@ document.addEventListener("click", (e)=>{
       showTapPopoverFor(chip);
       currentChipEl = chip;
     }
-    return;  }
+    return;
+  }
   if(!e.target.closest("#tapPopover")) hideTapPopover();
 });
 
