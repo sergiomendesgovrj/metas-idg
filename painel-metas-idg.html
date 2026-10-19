@@ -950,6 +950,13 @@
         Mostrar baixa prioridade
       </label>
     </div>
+    <div class="filter-field filter-field-check">
+      <label for="fMetasPre">&nbsp;</label>
+      <label class="check-label">
+        <input type="checkbox" id="fMetasPre">
+        Metas PRE
+      </label>
+    </div>
     <button id="resetFilters" onclick="resetFilters()">Limpar filtros</button>
   </div>
 </header>
@@ -3715,6 +3722,90 @@ const EMBEDDED_ITEMS = [
     "metaOut": "Reunião de trabalho com a PRIO para escrever o plano; depois, reunião maior de aprovação do projeto",
     "checkOut": "06/10 – Reunião de trabalho ia ser amanhã (07/10), mas a PRIO pediu nova data. Quando fechar, enviar a data para Sergio, que repassa à Camila.",
     "statusOut": "gray"
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Global",
+    "colaborador": "1. Sergio Mendes",
+    "projeto": "8. METAS PRE",
+    "descricaoMeta": "Pensar em uma dinâmica de contribuição para o caixa mínimo",
+    "indicador": "Definição de dinâmica de contribuição de cada projeto para a formação do caixa mínimo do IDG, até 31/12/2026",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "Até 31/12/2026",
+    "checkDez": "",
+    "baixaPrioridade": false,
+    "pre": true
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Global",
+    "colaborador": "1. Sergio Mendes",
+    "projeto": "8. METAS PRE",
+    "descricaoMeta": "Criar uma meta de disseminação do processo de gestão. Estabelecer indicadores que evidenciem esse trabalho de formação interna.",
+    "indicador": "Disseminação do processo de gestão do IDG, com indicadores que evidenciem o trabalho de formação interna, até 31/12/2026",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "Até 31/12/2026",
+    "checkDez": "",
+    "baixaPrioridade": false,
+    "pre": true
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Global",
+    "colaborador": "1. Sergio Mendes",
+    "projeto": "8. METAS PRE",
+    "descricaoMeta": "Nova estrutura 2026 - equipe fixa",
+    "indicador": "Estruturação da nova estrutura organizacional 2026, com equipe fixa, até 31/12/2026",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "Até 31/12/2026",
+    "checkDez": "",
+    "baixaPrioridade": false,
+    "pre": true
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Global",
+    "colaborador": "1. Sergio Mendes",
+    "projeto": "8. METAS PRE",
+    "descricaoMeta": "Precisamos encorpar a diretoria, para ter uma mecânica de administração, uma dinâmica que permita ter um gestor para cada projeto, e o Sérgio poderá administrar as metas, em um cenário de mais projetos concomitantes.",
+    "indicador": "Fortalecimento da Diretoria de Projetos para um modelo com um gestor por projeto, que permita administrar as metas em um cenário de mais projetos concomitantes, até 31/12/2026",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "",
+    "checkNov": "",
+    "metaDez": "Até 31/12/2026",
+    "checkDez": "",
+    "baixaPrioridade": false,
+    "pre": true
   }
 ];
 
@@ -3859,6 +3950,7 @@ function buildModel(embeddedItems){
       indicador: row.indicador || "",
       periodo: row.periodo || "",
       baixaPrioridade: !!row.baixaPrioridade,
+      pre: !!row.pre,
       sortOrder: (typeof row.sortOrder === "number") ? row.sortOrder : null,
       months
     };
@@ -4043,17 +4135,20 @@ function getFilteredItems(){
   const cRaw = normalizeText(document.getElementById("fColab").value.trim());
   const periodoAlvo = periodLabel();
   const showBaixaPrioridade = document.getElementById("fBaixaPrioridade").checked;
+  const showMetasPre = document.getElementById("fMetasPre").checked;
   return RAW_ROWS.filter(i=>
     i.periodo === periodoAlvo &&
     (MS_STATE.msTipo.size === 0 || MS_STATE.msTipo.has(i.tipoMeta)) &&
     (!d || i.diretoria === d) &&
     (!cRaw || normalizeText(i.colaborador).includes(cRaw)) &&
-    (showBaixaPrioridade || !i.baixaPrioridade)
+    (showBaixaPrioridade || !i.baixaPrioridade) &&
+    (showMetasPre || !i.pre)
   );
 }
 
 document.getElementById("fColab").addEventListener("input", render);
 document.getElementById("fBaixaPrioridade").addEventListener("change", render);
+document.getElementById("fMetasPre").addEventListener("change", render);
 
 /* ============================================================
    RENDER
@@ -4626,11 +4721,13 @@ function tsGoalsForProject(personKey, colKey, monthKey){
   const monthDef = MONTHS.find(m=>m.key===monthKey);
   if(!monthDef) return [];
   const showBaixaPrioridade = document.getElementById("fBaixaPrioridade").checked;
+  const showMetasPre = document.getElementById("fMetasPre").checked;
   return EMBEDDED_ITEMS.filter(it =>
     it.periodo === "Set a Dez" &&
     it.colaborador.includes(personKey) &&
     matcher(it.projeto) &&
     (showBaixaPrioridade || !it.baixaPrioridade) &&
+    (showMetasPre || !it.pre) &&
     it[monthDef.metaField] && it[monthDef.metaField].trim() && it[monthDef.metaField].trim().toUpperCase() !== "N/A"
   ).map(it => it.indicador.split("\n")[0]);
 }
