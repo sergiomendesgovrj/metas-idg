@@ -1857,16 +1857,16 @@ const EMBEDDED_ITEMS = [
     "periodo": "Set a Dez",
     "metaJanAgo": "",
     "checkJanAgo": "",
-    "metaSet": "10 milhões",
-    "checkSet": "0",
+    "metaSet": "Entregável: articulações iniciais",
+    "checkSet": "Ok!",
     "metaOut": "Entregável: aprovação do departamento de Compras",
-    "checkOut": "⚠️ Observação: 20/10 – Prioridade máxima mantida.\n\nA documentação já foi enviada à Petrobras;\n\nfalta apenas a retificação (ajustar o cronograma de desembolso e reenviar).\n\nCombinado com a Petrobras: parcelas atreladas a entregas de comunicação (não de projeto), com plano de mídia já montado;\n\ndesembolso em 36 meses, com 5 milhões na assinatura e 23 milhões no mês 1, e as demais parcelas ao longo do tempo (ex.: visita-teste no mês 24 gera parcela no mês 25).\n\nSeguem junto o trimestral e a curva S;\n\na aba de execução da planilha fica oculta.\n\nÚltima etapa da diligência (compliance e conselho) respondida em 13/10;\n\ncontrato precisa ser assinado em 2026.\n\nAcesso à Petronect ainda pendente.",
+    "checkOut": "⚠️ Observação: 20/10 – Prioridade máxima mantida.\n\nA documentação já foi enviada à Petrobras;\n\nfalta apenas a retificação (ajustar o cronograma de desembolso e reenviar).\n\nCombinado com a Petrobras: parcelas atreladas a entregas de comunicação (não de projeto), com plano de mídia já montado;\n\ndesembolso em 36 meses, com 5 milhões na assinatura e 23 milhões no mês 1, e as demais parcelas ao longo do tempo (ex.: visita-teste no mês 24 gera parcela no mês 25).\n\nReunião agendada para 22/10 com time de suprimentos da Petrobras.",
     "metaNov": "Entregável: aprovação na 1ª reunião com a SECOM",
     "checkNov": "",
     "metaDez": "Entregável: assinatura do patrocínio",
     "checkDez": "",
     "statusOut": "amber",
-    "statusSet": "gray"
+    "statusSet": "green"
   },
   {
     "diretoria": "Diretoria de Projetos",
@@ -1944,7 +1944,7 @@ const EMBEDDED_ITEMS = [
     "checkNov": "",
     "metaDez": "",
     "checkDez": "",
-    "statusOut": "amber"
+    "statusOut": "gray"
   },
   {
     "diretoria": "Diretoria de Projetos",
@@ -4389,7 +4389,7 @@ function formatMetaTooltip(meta, check, extra){
     out += "\n" + extra.desc;
   }
   if(check.type !== "empty"){
-    out += "\nCheck: " + check.display;
+    out += (meta.type === "text" ? "\n\n\n" : "\n") + "Check: " + check.display;
   }
   if(extra && extra.obs){
     out += "\n\n⚠️ Observação: " + extra.obs;
