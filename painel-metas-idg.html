@@ -920,7 +920,8 @@
       <label>Período</label>
       <div class="period-toggle" id="periodToggle">
         <button type="button" class="period-btn" data-period="jan_ago">Jan a Ago</button>
-        <button type="button" class="period-btn" data-period="set_dez">Set a Dez</button>
+        <button type="button" class="period-btn" data-period="set_out">Set a Out</button>
+        <button type="button" class="period-btn" data-period="set_dez">Nov a Dez</button>
         <button type="button" class="period-btn" data-period="y2027">2027</button>
       </div>
     </div>
@@ -1005,7 +1006,7 @@
             <div class="panel-header-top">
               <div>
                 <h2>Timesheet por %</h2>
-                <p>Dedicação semanal por colaborador (semana de 40h) — Set a Dez/2026</p>
+                <p>Dedicação semanal por colaborador (semana de 40h) — <span id="tsPeriodLabel">Nov a Dez/2026</span></p>
               </div>
               <div class="group-toggle-actions">
                 <button type="button" id="tsExpandAllBtn" class="group-action-btn">Expandir tudo</button>
@@ -1039,7 +1040,7 @@
             <table class="ts-table" id="timesheetTable"></table>
           </div>
           <div class="ts-mobile-list" id="timesheetMobileList"></div>
-          <p class="ts-note">Institucional = reunião de diretoria (só o Diretor) + ponto com a equipe + assinaturas/documentos/bancos. Gente e Gestão = planejamento da área e da equipe. Coordenador e Assessor têm apenas o ponto semanal como tempo fixo; o restante é 100% dedicado a projetos, distribuído conforme o volume de metas de cada um em Set–Dez/2026.</p>
+          <p class="ts-note">Institucional = reunião de diretoria (só o Diretor) + ponto com a equipe + assinaturas/documentos/bancos. Gente e Gestão = planejamento da área e da equipe. Coordenador, Assessor e Analistas têm apenas o ponto semanal como tempo fixo; o restante é 100% dedicado a projetos, distribuído conforme o volume de metas de cada um em Set–Dez/2026.</p>
         </div>
       </div>
 
@@ -1181,12 +1182,18 @@ let CURRENT_PERIOD = "set_dez";
 function activeMonths(){
   if(CURRENT_PERIOD === "jan_ago") return [JAN_AGO_MONTH];
   if(CURRENT_PERIOD === "y2027") return [Y2027_MONTH];
-  return MONTHS;
+  if(CURRENT_PERIOD === "set_out") return [MONTHS[0], MONTHS[1]];   // Set e Out — período encerrado, em aba própria
+  return [MONTHS[2], MONTHS[3]];                                     // aba principal: só Nov e Dez
+}
+function periodMonthKeys(){ return CURRENT_PERIOD === "set_out" ? ["set","out"] : ["nov","dez"]; }
+// metas de Set–Dez compartilham o mesmo conjunto de dados; cada aba mostra só as metas com conteúdo nos meses dela
+function itemHasMetaInMonths(i, months){
+  return months.some(m=>{ const mm = i.months && i.months[m.key]; return mm && mm.meta && mm.meta.type !== "empty" && mm.meta.type !== "na"; });
 }
 function periodLabel(){
   if(CURRENT_PERIOD === "jan_ago") return "Jan a Ago";
   if(CURRENT_PERIOD === "y2027") return "2027";
-  return "Set a Dez";
+  return "Set a Dez"; // valor do campo "periodo" nos dados (set_out e set_dez usam o mesmo conjunto)
 }
 
 let RAW_ROWS = [];   // parsed sheet rows -> objects
@@ -3443,7 +3450,7 @@ const EMBEDDED_ITEMS = [
     "metaDez": "",
     "checkDez": "",
     "baixaPrioridade": true,
-    "colaborador": "22. Erick Costa",
+    "colaborador": "22. Erick Cunha",
     "descricaoMeta": "Tela de retroprojeção reserva — Brasil Telões",
     "indicador": "TELA DE RETROPROJEÇÃO RESERVA — Brasil Telões",
     "metaOut": "Acompanhar despacho e emissão do DANFE da tela reserva (a partir de 01/10); liberar 2ª parcela após recebimento",
@@ -3834,6 +3841,481 @@ const EMBEDDED_ITEMS = [
     "checkDez": "",
     "baixaPrioridade": false,
     "pre": true
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "18. Claire Muniz",
+    "projeto": "1. MUSEU DAS AMAZÔNIAS",
+    "descricaoMeta": "Produção administrativa e gestão de compras — MUSEU DAS AMAZÔNIAS",
+    "indicador": "Produção administrativa e gestão de compras — MUSEU DAS AMAZÔNIAS",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "Requisições de compra e pagamento; conformidade dos fluxos; intermediação entre áreas transversais; cronograma e orçamento; ciclo de compras; logística de viagens; prestação de contas; justificativas e termos de abertura; NFs de fornecedores.",
+    "checkNov": "",
+    "metaDez": "Requisições de compra e pagamento; conformidade dos fluxos; intermediação entre áreas transversais; cronograma e orçamento; ciclo de compras; logística de viagens; prestação de contas; justificativas e termos de abertura; NFs de fornecedores.",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "22. Erick Cunha",
+    "projeto": "1. MUSEU DAS AMAZÔNIAS",
+    "descricaoMeta": "Produção administrativa (execução de requisições) — MUSEU DAS AMAZÔNIAS",
+    "indicador": "Produção administrativa (execução de requisições) — MUSEU DAS AMAZÔNIAS",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "Execução de requisições; intermediação entre áreas; apoio ao ciclo de compras; logística de viagens; NFs de fornecedores.",
+    "checkNov": "",
+    "metaDez": "Execução de requisições; intermediação entre áreas; apoio ao ciclo de compras; logística de viagens; NFs de fornecedores.",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "27. João Paes",
+    "projeto": "1. MUSEU DAS AMAZÔNIAS",
+    "descricaoMeta": "Apresentações e monitoramento de métricas — MUSEU DAS AMAZÔNIAS",
+    "indicador": "Apresentações e monitoramento de métricas — MUSEU DAS AMAZÔNIAS",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "Apresentações do projeto; métricas; arquivamento e registro de informações.",
+    "checkNov": "",
+    "metaDez": "Apresentações do projeto; métricas; arquivamento e registro de informações.",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "18. Claire Muniz",
+    "projeto": "4. MUSEDUCA",
+    "descricaoMeta": "Produção administrativa e gestão de compras — MUSEDUCA",
+    "indicador": "Produção administrativa e gestão de compras — MUSEDUCA",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "Requisições de compra e pagamento; conformidade dos fluxos; intermediação entre áreas transversais; cronograma e orçamento; ciclo de compras; logística de viagens; prestação de contas; justificativas e termos de abertura; NFs de fornecedores.",
+    "checkNov": "",
+    "metaDez": "Requisições de compra e pagamento; conformidade dos fluxos; intermediação entre áreas transversais; cronograma e orçamento; ciclo de compras; logística de viagens; prestação de contas; justificativas e termos de abertura; NFs de fornecedores.",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "22. Erick Cunha",
+    "projeto": "4. MUSEDUCA",
+    "descricaoMeta": "Produção administrativa (execução de requisições) — MUSEDUCA",
+    "indicador": "Produção administrativa (execução de requisições) — MUSEDUCA",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "Execução de requisições; intermediação entre áreas; apoio ao ciclo de compras; logística de viagens; NFs de fornecedores.",
+    "checkNov": "",
+    "metaDez": "Execução de requisições; intermediação entre áreas; apoio ao ciclo de compras; logística de viagens; NFs de fornecedores.",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "27. João Paes",
+    "projeto": "4. MUSEDUCA",
+    "descricaoMeta": "Apresentações e monitoramento de métricas — MUSEDUCA",
+    "indicador": "Apresentações e monitoramento de métricas — MUSEDUCA",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "Apresentações do projeto; métricas; arquivamento e registro de informações.",
+    "checkNov": "",
+    "metaDez": "Apresentações do projeto; métricas; arquivamento e registro de informações.",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "18. Claire Muniz",
+    "projeto": "3. CCMEC",
+    "descricaoMeta": "Produção administrativa e gestão de compras — CCMEC",
+    "indicador": "Produção administrativa e gestão de compras — CCMEC",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "Requisições de compra e pagamento; conformidade dos fluxos; intermediação entre áreas transversais; cronograma e orçamento; ciclo de compras; logística de viagens; prestação de contas; justificativas e termos de abertura; NFs de fornecedores.",
+    "checkNov": "",
+    "metaDez": "Requisições de compra e pagamento; conformidade dos fluxos; intermediação entre áreas transversais; cronograma e orçamento; ciclo de compras; logística de viagens; prestação de contas; justificativas e termos de abertura; NFs de fornecedores.",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "22. Erick Cunha",
+    "projeto": "3. CCMEC",
+    "descricaoMeta": "Produção administrativa (execução de requisições) — CCMEC",
+    "indicador": "Produção administrativa (execução de requisições) — CCMEC",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "Execução de requisições; intermediação entre áreas; apoio ao ciclo de compras; logística de viagens; NFs de fornecedores.",
+    "checkNov": "",
+    "metaDez": "Execução de requisições; intermediação entre áreas; apoio ao ciclo de compras; logística de viagens; NFs de fornecedores.",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "27. João Paes",
+    "projeto": "3. CCMEC",
+    "descricaoMeta": "Apresentações e monitoramento de métricas — CCMEC",
+    "indicador": "Apresentações e monitoramento de métricas — CCMEC",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "Apresentações do projeto; métricas; arquivamento e registro de informações.",
+    "checkNov": "",
+    "metaDez": "Apresentações do projeto; métricas; arquivamento e registro de informações.",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "18. Claire Muniz",
+    "projeto": "2. MUSEU DO PETRÓLEO",
+    "descricaoMeta": "Produção administrativa e gestão de compras — MUSEU DO PETRÓLEO",
+    "indicador": "Produção administrativa e gestão de compras — MUSEU DO PETRÓLEO",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "Requisições de compra e pagamento; conformidade dos fluxos; intermediação entre áreas transversais; cronograma e orçamento; ciclo de compras; logística de viagens; prestação de contas; justificativas e termos de abertura; NFs de fornecedores.",
+    "checkNov": "",
+    "metaDez": "Requisições de compra e pagamento; conformidade dos fluxos; intermediação entre áreas transversais; cronograma e orçamento; ciclo de compras; logística de viagens; prestação de contas; justificativas e termos de abertura; NFs de fornecedores.",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "22. Erick Cunha",
+    "projeto": "2. MUSEU DO PETRÓLEO",
+    "descricaoMeta": "Produção administrativa (execução de requisições) — MUSEU DO PETRÓLEO",
+    "indicador": "Produção administrativa (execução de requisições) — MUSEU DO PETRÓLEO",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "Execução de requisições; intermediação entre áreas; apoio ao ciclo de compras; logística de viagens; NFs de fornecedores.",
+    "checkNov": "",
+    "metaDez": "Execução de requisições; intermediação entre áreas; apoio ao ciclo de compras; logística de viagens; NFs de fornecedores.",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "27. João Paes",
+    "projeto": "2. MUSEU DO PETRÓLEO",
+    "descricaoMeta": "Apresentações e monitoramento de métricas — MUSEU DO PETRÓLEO",
+    "indicador": "Apresentações e monitoramento de métricas — MUSEU DO PETRÓLEO",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "Apresentações do projeto; métricas; arquivamento e registro de informações.",
+    "checkNov": "",
+    "metaDez": "Apresentações do projeto; métricas; arquivamento e registro de informações.",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "21. Débora Pires",
+    "projeto": "1. MUSEU DAS AMAZÔNIAS",
+    "descricaoMeta": "Produção executiva — MUSEU DAS AMAZÔNIAS",
+    "indicador": "Produção executiva — MUSEU DAS AMAZÔNIAS",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "Fornecedores (negociação e execução); intermediação; cronograma; prestação de contas; justificativas; NFs; direitos de imagem; manuais técnicos dos fornecedores.",
+    "checkNov": "",
+    "metaDez": "Fornecedores (negociação e execução); intermediação; cronograma; prestação de contas; justificativas; NFs; direitos de imagem; manuais técnicos dos fornecedores.",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "21. Débora Pires",
+    "projeto": "4. MUSEDUCA",
+    "descricaoMeta": "Produção executiva — MUSEDUCA",
+    "indicador": "Produção executiva — MUSEDUCA",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "Fornecedores (negociação e execução); intermediação; cronograma; prestação de contas; justificativas; NFs.",
+    "checkNov": "",
+    "metaDez": "Fornecedores (negociação e execução); intermediação; cronograma; prestação de contas; justificativas; NFs.",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "21. Débora Pires",
+    "projeto": "2. MUSEU DO PETRÓLEO",
+    "descricaoMeta": "Produção executiva — MUSEU DO PETRÓLEO",
+    "indicador": "Produção executiva — MUSEU DO PETRÓLEO",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "Fornecedores (negociação e execução); intermediação; cronograma; prestação de contas; justificativas; NFs.",
+    "checkNov": "",
+    "metaDez": "Fornecedores (negociação e execução); intermediação; cronograma; prestação de contas; justificativas; NFs.",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "11. Ricardo de Aquino",
+    "projeto": "4. MUSEDUCA",
+    "descricaoMeta": "Produção executiva, cronograma e orçamento — MUSEDUCA",
+    "indicador": "Produção executiva, cronograma e orçamento — MUSEDUCA",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "Produção executiva; cronograma; orçamento; justificativas.",
+    "checkNov": "",
+    "metaDez": "Produção executiva; cronograma; orçamento; justificativas.",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "11. Ricardo de Aquino",
+    "projeto": "2. MUSEU DO PETRÓLEO",
+    "descricaoMeta": "Produção executiva, cronograma e orçamento — MUSEU DO PETRÓLEO",
+    "indicador": "Produção executiva, cronograma e orçamento — MUSEU DO PETRÓLEO",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "Produção executiva; cronograma; orçamento; justificativas.",
+    "checkNov": "",
+    "metaDez": "Produção executiva; cronograma; orçamento; justificativas.",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "10. Leandro",
+    "projeto": "1. MUSEU DAS AMAZÔNIAS",
+    "descricaoMeta": "WebApp e acessibilidade",
+    "indicador": "WebApp e acessibilidade",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "WebApp e acessibilidade, com revisão junto à Conecta Acessibilidade.",
+    "checkNov": "",
+    "metaDez": "WebApp e acessibilidade, com revisão junto à Conecta Acessibilidade.",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "10. Leandro",
+    "projeto": "1. MUSEU DAS AMAZÔNIAS",
+    "descricaoMeta": "Conteúdos audiovisuais complementares",
+    "indicador": "Conteúdos audiovisuais complementares",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "Vídeos complementares (Seu Otaci, Seu Joel, Seu Valdeli) e vídeos dos muralistas Shipibo-Konibo.",
+    "checkNov": "",
+    "metaDez": "Vídeos complementares (Seu Otaci, Seu Joel, Seu Valdeli) e vídeos dos muralistas Shipibo-Konibo.",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "10. Leandro",
+    "projeto": "1. MUSEU DAS AMAZÔNIAS",
+    "descricaoMeta": "Paisagens sonoras",
+    "indicador": "Paisagens sonoras",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "Entrega das paisagens sonoras.",
+    "checkNov": "",
+    "metaDez": "Entrega das paisagens sonoras.",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "10. Leandro",
+    "projeto": "4. MUSEDUCA",
+    "descricaoMeta": "Produtos 17 e 18 — participação em TI",
+    "indicador": "Produtos 17 e 18 — participação em TI",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "Participação parcial (frente de TI) nos Produtos 17 e 18.",
+    "checkNov": "",
+    "metaDez": "Participação parcial (frente de TI) nos Produtos 17 e 18.",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "10. Leandro",
+    "projeto": "4. MUSEDUCA",
+    "descricaoMeta": "Articulação técnica e institucional com a SEDUC-RS",
+    "indicador": "Articulação técnica e institucional com a SEDUC-RS",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "Articulação técnica e institucional com a SEDUC-RS.",
+    "checkNov": "",
+    "metaDez": "Articulação técnica e institucional com a SEDUC-RS.",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "10. Leandro",
+    "projeto": "3. CCMEC",
+    "descricaoMeta": "Modelo Curatorial — participação",
+    "indicador": "Modelo Curatorial — participação",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "Participação na elaboração do Modelo Curatorial.",
+    "checkNov": "",
+    "metaDez": "Participação na elaboração do Modelo Curatorial.",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "10. Leandro",
+    "projeto": "3. CCMEC",
+    "descricaoMeta": "Projeto Expográfico — apoio",
+    "indicador": "Projeto Expográfico — apoio",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "Apoio ao Projeto Expográfico.",
+    "checkNov": "",
+    "metaDez": "Apoio ao Projeto Expográfico.",
+    "checkDez": ""
+  },
+  {
+    "diretoria": "Diretoria de Projetos",
+    "tipoMeta": "Meta Local",
+    "colaborador": "10. Leandro",
+    "projeto": "3. CCMEC",
+    "descricaoMeta": "Relatório de Infraestrutura Tecnológica",
+    "indicador": "Relatório de Infraestrutura Tecnológica",
+    "periodo": "Set a Dez",
+    "metaJanAgo": "",
+    "checkJanAgo": "",
+    "metaSet": "",
+    "checkSet": "",
+    "metaOut": "",
+    "checkOut": "",
+    "metaNov": "Elaboração do Relatório de Infraestrutura Tecnológica.",
+    "checkNov": "",
+    "metaDez": "Elaboração do Relatório de Infraestrutura Tecnológica.",
+    "checkDez": ""
   }
 ];
 
@@ -4166,6 +4648,7 @@ function getFilteredItems(){
   const showMetasPre = document.getElementById("fMetasPre").checked;
   return RAW_ROWS.filter(i=>
     i.periodo === periodoAlvo &&
+    ((CURRENT_PERIOD !== "set_out" && CURRENT_PERIOD !== "set_dez") || itemHasMetaInMonths(i, activeMonths())) &&
     (MS_STATE.msTipo.size === 0 || MS_STATE.msTipo.has(i.tipoMeta)) &&
     (!d || i.diretoria === d) &&
     (!cRaw || normalizeText(i.colaborador).includes(cRaw)) &&
@@ -4185,12 +4668,13 @@ function currentMonthKey(){
   if(CURRENT_PERIOD === "jan_ago") return "janago";
   if(CURRENT_PERIOD === "y2027") return "y2027";
   const m = new Date().getMonth(); // 0-based
-  const found = MONTHS.find(mo => {
+  if(CURRENT_PERIOD === "set_out") return "out";
+  const found = activeMonths().find(mo => {
     // rough mapping: set=Sept(8), out=Oct(9), nov=Nov(10), dez=Dez(11)
     const map = {set:8, out:9, nov:10, dez:11};
     return map[mo.key] === m;
   });
-  return found ? found.key : "set";
+  return found ? found.key : "nov";
 }
 
 function statusColorVar(status){
@@ -4311,11 +4795,29 @@ function renderThead(){
   if(subtitle){
     if(CURRENT_PERIOD === "jan_ago") subtitle.textContent = "Meta e check por colaborador — Janeiro a Agosto (já realizado)";
     else if(CURRENT_PERIOD === "y2027") subtitle.textContent = "Meta e check por colaborador — Metas para 2027";
-    else subtitle.textContent = "Meta e check mensal por colaborador — Setembro a Dezembro";
+    else if(CURRENT_PERIOD === "set_out") subtitle.textContent = "Meta e check mensal por colaborador — Setembro e Outubro (período encerrado)";
+    else subtitle.textContent = "Meta e check mensal por colaborador — Novembro e Dezembro";
   }
 }
 
+let LAST_SYNCED_PERIOD = null;
+function syncPeriodMonthUI(){
+  if(LAST_SYNCED_PERIOD === CURRENT_PERIOD) return;
+  LAST_SYNCED_PERIOD = CURRENT_PERIOD;
+  const keys = periodMonthKeys();
+  const first = (CURRENT_PERIOD === "set_out") ? "out" : "nov";
+  [["#tsMonthToggle","tsMonth"],["#gfMonthToggle","gfMonth"]].forEach(([sel,ds])=>{
+    document.querySelectorAll(sel+" .period-btn").forEach(btn=>{
+      const k = btn.dataset[ds]; btn.style.display = keys.includes(k) ? "" : "none";
+      btn.classList.toggle("active", k === first);
+    });
+  });
+  TS_CURRENT_MONTH = first; GF_CURRENT_MONTH = first;
+  const lab = document.getElementById("tsPeriodLabel"); if(lab) lab.textContent = (CURRENT_PERIOD === "set_out") ? "Set a Out/2026" : "Nov a Dez/2026";
+}
+
 function render(){
+  try{ syncPeriodMonthUI(); }catch(e){}
   renderThead();
   const months = activeMonths();
   const colCount = 3 + months.length;
@@ -4484,7 +4986,7 @@ function updateKPIs(items, curMonthKeyParam){
   // por padrão, mas fica fixada no mês escolhido até o usuário trocar de aba — assim setembro
   // continua consultável (congelado) mesmo depois que o painel passar a girar em torno de outubro.
   LAST_ITEMS_FOR_COLAB = items;
-  renderColabStats(items, COLAB_MONTH || curMonth);
+  renderColabStats(items, (COLAB_MONTH && activeMonths().some(m=>m.key===COLAB_MONTH)) ? COLAB_MONTH : curMonth);
 }
 
 /* ============================================================
@@ -4535,8 +5037,9 @@ function renderColabStats(items, curMonth){
 
   // aba de mês: só faz sentido dentro do período Set–Dez (Jan-Ago e 2027 são períodos únicos, sem abas)
   const filterRow = document.getElementById("colabMonthFilter");
-  if(filterRow) filterRow.style.display = (CURRENT_PERIOD === "set_dez") ? "" : "none";
+  if(filterRow) filterRow.style.display = (CURRENT_PERIOD === "set_dez" || CURRENT_PERIOD === "set_out") ? "" : "none";
   document.querySelectorAll("#colabMonthToggle .period-btn").forEach(btn=>{
+    btn.style.display = periodMonthKeys().includes(btn.dataset.colabMonth) ? "" : "none";
     btn.classList.toggle("active", btn.dataset.colabMonth === curMonth);
   });
 
@@ -4670,6 +5173,13 @@ const TIMESHEET_PEOPLE = [
   {key:"Rogério Lessa", label:"Rogério Lessa", role:"Gerente Geral", diretoria:"Diretoria de Projetos", institucional:10, gestao:10},
   {key:"Amarilis", label:"Amarilis", role:"Coordenador", diretoria:"Diretoria de Projetos", institucional:5, gestao:0},
   {key:"Iago", label:"Iago", role:"Assessor", diretoria:"Diretoria de Projetos", institucional:5, gestao:0},
+  // Equipe de Projetos 2026 (PDF "Equipe Projetos"): alocação só de Nov–Dez — estimativa a ajustar
+  {key:"Claire Muniz", label:"Claire Muniz", role:"Analista", diretoria:"Diretoria de Projetos", institucional:5, gestao:0},
+  {key:"Débora Pires", label:"Débora Pires", role:"Analista", diretoria:"Diretoria de Projetos", institucional:5, gestao:0},
+  {key:"Erick Cunha", label:"Erick Cunha", role:"Analista", diretoria:"Diretoria de Projetos", institucional:5, gestao:0},
+  {key:"João Paes", label:"João Paes", role:"Analista", diretoria:"Diretoria de Projetos", institucional:5, gestao:0},
+  {key:"Ricardo de Aquino", label:"Ricardo de Aquino", role:"Analista", diretoria:"Diretoria de Projetos", institucional:5, gestao:0},
+  {key:"Leandro", label:"Leandro Guedes", role:"Analista", diretoria:"Diretoria de Projetos", institucional:5, gestao:0},
 ];
 
 const TS_PROJECT_COLS = [
@@ -4710,6 +5220,12 @@ const TIMESHEET_BY_MONTH = {
     "Rogério Lessa":   {maz:0,  mup:0,  ccmec:0,  museduca:0,  metasSetoriais:0,  fma:80},
     "Amarilis":        {maz:5,  mup:20, ccmec:30, museduca:35, metasSetoriais:5,  fma:0},  // metas setoriais 15% -> 5% (exceção de novembro); 10% redistribuído (5/5) entre MUP/CCMEC, em múltiplos de 5%
     "Iago":            {maz:10, mup:35, ccmec:50, museduca:0,  metasSetoriais:0,  fma:0},
+    "Claire Muniz":    {maz:30, mup:20, ccmec:20, museduca:25, metasSetoriais:0,  fma:0},
+    "Débora Pires":    {maz:40, mup:25, ccmec:0,  museduca:30, metasSetoriais:0,  fma:0},
+    "Erick Cunha":     {maz:30, mup:20, ccmec:20, museduca:25, metasSetoriais:0,  fma:0},
+    "João Paes":       {maz:20, mup:25, ccmec:25, museduca:25, metasSetoriais:0,  fma:0},
+    "Ricardo de Aquino":{maz:0, mup:40, ccmec:15, museduca:40, metasSetoriais:0,  fma:0},
+    "Leandro":         {maz:25, mup:0,  ccmec:25, museduca:45, metasSetoriais:0,  fma:0},
   },
   dez: {
     "Sergio Mendes":   {maz:0,  mup:20, ccmec:15, museduca:30, metasSetoriais:0,  fma:5},
@@ -4719,6 +5235,12 @@ const TIMESHEET_BY_MONTH = {
     "Rogério Lessa":   {maz:0,  mup:0,  ccmec:0,  museduca:0,  metasSetoriais:0,  fma:80},
     "Amarilis":        {maz:0,  mup:20, ccmec:35, museduca:40, metasSetoriais:0,  fma:0},  // metas setoriais zeradas; os 5% de MAZ passaram para o MUP
     "Iago":            {maz:0,  mup:55, ccmec:40, museduca:0,  metasSetoriais:0,  fma:0},
+    "Claire Muniz":    {maz:20, mup:20, ccmec:25, museduca:30, metasSetoriais:0,  fma:0},
+    "Débora Pires":    {maz:30, mup:30, ccmec:0,  museduca:35, metasSetoriais:0,  fma:0},
+    "Erick Cunha":     {maz:20, mup:20, ccmec:25, museduca:30, metasSetoriais:0,  fma:0},
+    "João Paes":       {maz:15, mup:25, ccmec:25, museduca:30, metasSetoriais:0,  fma:0},
+    "Ricardo de Aquino":{maz:0, mup:35, ccmec:20, museduca:40, metasSetoriais:0,  fma:0},
+    "Leandro":         {maz:15, mup:0,  ccmec:35, museduca:45, metasSetoriais:0,  fma:0},
   },
 };
 
@@ -4736,6 +5258,7 @@ const TS_ROLE_NOTES = {
   "Gerente Geral": {institucional:"Ponto com a equipe (2h) · Assinaturas/documentos/bancos (2h)", gestao:"Planejamento da área e da equipe"},
   "Coordenador": {institucional:"Ponto com a equipe", gestao:"—"},
   "Assessor": {institucional:"Ponto com a equipe", gestao:"—"},
+  "Analista": {institucional:"Ponto com a equipe", gestao:"—"},
 };
 const TS_EXPANDED = new Set(); // colaboradores com o "+" aberto (persiste entre re-renders)
 
@@ -4812,6 +5335,7 @@ function renderTimesheet(){
   const cRaw = normalizeText(document.getElementById("fColab").value.trim()).replace(/^\d+\.\s*/, "");
   const dSel = document.getElementById("fDiretoria").value;
   const peopleFiltered = TIMESHEET_PEOPLE.filter(p =>
+    !!monthData[p.key] &&
     (!cRaw || normalizeText(p.label).includes(cRaw)) &&
     (!dSel || p.diretoria === dSel)
   );
@@ -4940,6 +5464,7 @@ function renderGoalsFirst(){
   const cRaw = normalizeText(document.getElementById("fColab").value.trim()).replace(/^\d+\.\s*/, "");
   const dSel = document.getElementById("fDiretoria").value;
   const peopleFiltered = TIMESHEET_PEOPLE.filter(p =>
+    !!monthData[p.key] &&
     (!cRaw || normalizeText(p.label).includes(cRaw)) &&
     (!dSel || p.diretoria === dSel)
   );
